@@ -1,0 +1,31 @@
+{
+  "target": "porch",
+  "channel_name": "stable",
+  "candidate_id": "cand-001",
+  "artifacts": [
+    {
+      "name": "manifest",
+      "path": "pantheon_data/consumers/porch/manifest.json",
+      "required": true,
+      "order": 1
+    },
+    {
+      "name": "private_graph",
+      "path": "pantheon_data/consumers/porch/private_graph.json",
+      "required": true,
+      "order": 2
+    },
+    {
+      "name": "private_chronicle",
+      "path": "pantheon_data/consumers/porch/private_chronicle.json",
+      "required": true,
+      "order": 3
+    },
+    {
+      "name": "optional_protocol_step",
+      "path": "pantheon_data/consumers/porch/optional_protocol_step.json",
+      "required": false,
+      "order": 4
+    }
+  ]
+}
