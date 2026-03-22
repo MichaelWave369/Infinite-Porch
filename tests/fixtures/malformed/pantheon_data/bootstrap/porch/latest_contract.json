@@ -1,0 +1,13 @@
+{
+  "target": "porch",
+  "channel_name": "candidate",
+  "candidate_id": "cand-003",
+  "artifacts": [
+    {
+      "name": "manifest",
+      "path": "pantheon_data/consumers/porch/manifest.json",
+      "required": true,
+      "order": 1
+    }
+  ]
+}
