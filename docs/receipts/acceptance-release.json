@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "candidate": "0.1.0",
+  "passed": true,
+  "checks": [
+    {
+      "name": "unique cryptographic identities",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "control API rejects missing operator token",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "scoped app credential cannot read operator grant records",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "agent credential cannot issue its own peer authority",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "client privacy delegation cannot escalate to remote processing",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "bounded local agent request executes through the common boundary",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "local client credential revocation is persistent and enforced",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "cross-origin control request refused",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "DNS rebinding host refused",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "uninstalled relay, federation, and WASM engines refuse explicitly",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Porch creation and recipient-bound one-use invitations",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "signed capability records discovered over real peer connections",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "advertising a model does not authorize use",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "grant output bounds filter routing before sending input to a peer",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "remote mock inference executes on eligible host and returns signed receipt",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "requester and executor record digest-based evidence",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "execution consumes measured grant accounting",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "duplicate job returns original receipt without another execution",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "LOCAL_ONLY input never produces an outbound peer job",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "oversized input refused before forwarding",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "executor revocation blocks next request despite cached client grant",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "client-encrypted blob replicated in bounded chunks and verified by full retrieval",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "retrieval decrypts locally and preserves plaintext integrity",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "corrupted remote blob refused",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "signed direct messaging uses the peer transport",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "interrupted encrypted transfer resumes at its durable offset after restart",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "restart retains identity, trust, grants, storage, and reconnects",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "replica retrieval survives provider restart",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "origin restart retains the original route and receipt without re-execution",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "reachable peers continue when another community node disappears",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "basic local and peer paths use no outside Internet or bootstrap",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "remote deletion records tombstone and prevents later retrieval",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "durable signed ledger chains verify after the scenario",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "duration_seconds": 0.768,
+  "evidence": {
+    "porch_id": "e25355de61d187ee5952edf9d8342c559803f878b6db9743e8a2d9ddafd4efc3",
+    "remote_job_receipt": {
+      "domain": "porch.job.receipt.v1",
+      "payload": {
+        "capability": "model.inference",
+        "duration_ms": 0,
+        "executor": "12D3KooWRnbVQDhhfQDAxNtHr1PfoTQNWGzaFQFbpUHietbsxtMa",
+        "finished_at": 1791058855,
+        "grant_nonce": "98d74a50-3c4b-462b-a6bb-863088a27fec",
+        "input_digest": "df21a38a6930f8f20a928613af714ff2325c1c987b915d945365045846bc66b0",
+        "job_id": "acceptance-model-1",
+        "measured": {
+          "gpu_seconds": null,
+          "input_bytes": 18,
+          "tokens": null
+        },
+        "model_version": "deterministic-v1",
+        "output": {
+          "mock": true,
+          "text": "MOCK inference porch-mock input-sha256:df21a38a6930f8f20a928613af714ff2325c1c987b915d945365045846bc66b0"
+        },
+        "output_digest": "fbdbf974776793c5a6d3324bacc9647a3e125f3f381a98bb46d010dd3759ee97",
+        "provider": "mock",
+        "reason": null,
+        "request_digest": "5f47bb1c9e7389dfab12aa454775b6637f272904a045b76766c16cb5e28121cf",
+        "requester": "12D3KooWNQ9TtC73CemJhRw2GHyN9rCZhy5yuL13tpb6YhR1mv5g",
+        "resource": "porch-mock",
+        "started_at": 1791058855,
+        "status": "COMPLETED",
+        "version": 1
+      },
+      "public_key": "08011220ed46e45e149584877ba26adbbad3884fa432a950cf2534f3c1e0fe87a6463e0d",
+      "signature": "29687219c53168c79cd0854afdb390518dc483ca85c4ae1d70842579fe978b90b933bd7ce6fa3dd47311444c4e690b0f31d647b0add693bf062fc2e53c64ad03",
+      "signer": "12D3KooWRnbVQDhhfQDAxNtHr1PfoTQNWGzaFQFbpUHietbsxtMa",
+      "version": 1
+    },
+    "node_ids": {
+      "ALPHA": "12D3KooWRnbVQDhhfQDAxNtHr1PfoTQNWGzaFQFbpUHietbsxtMa",
+      "BETA": "12D3KooWDdrePZU1yJiu3hPhEcGNjVxLV5TMkgprJCLUDJnVkNi6",
+      "GAMMA": "12D3KooWNQ9TtC73CemJhRw2GHyN9rCZhy5yuL13tpb6YhR1mv5g"
+    },
+    "transport_scope": "three OS processes; verified loopback TCP/Noise path and QUIC listeners; no external Internet dependencies; LAN-like simulation",
+    "unverified": [
+      "physical LAN and mDNS",
+      "WAN NAT traversal",
+      "live Ollama",
+      "Windows/macOS native packages",
+      "production security review"
+    ]
+  }
+}

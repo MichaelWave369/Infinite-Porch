@@ -1,0 +1,24 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> infinite-porch@0.1.0 build
+> npm run build -w @porch/desktop && npm run build -w @porch/sdk
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @porch/desktop@0.1.0 build
+> tsc --noEmit && vite build
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1742 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.43 kB │ gzip:  0.31 kB
+dist/assets/index-DzGYOzIV.css   12.73 kB │ gzip:  3.82 kB
+dist/assets/index-CPJpgS7r.js   258.97 kB │ gzip: 80.65 kB
+✓ built in 2.34s
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @porch/sdk@0.1.0 build
+> tsc
+

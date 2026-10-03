@@ -1,0 +1,15 @@
+/target/
+/node_modules/
+**/node_modules/
+/apps/desktop/dist/
+/apps/desktop/src-tauri/target/
+/state/
+*.key
+api.token
+*.sqlite*
+*.backup
+/test-output/
+/dist/
+/packages/sdk/dist/
+__pycache__/
+*.pyc

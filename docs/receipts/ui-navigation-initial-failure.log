@@ -1,0 +1,25 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: 'People', exact: true })[22m
+
+    at /workspace/scratch/99d40d4d7098/InfinitePorch/scripts/ui-smoke.mjs:33:59 {
+  log: [
+    "  - waiting for getByRole('button', { name: 'People', exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
+Traceback (most recent call last):
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/ui_acceptance.py", line 19, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/ui_acceptance.py", line 16, in main
+    subprocess.run(['node',str(ROOT/'scripts/ui-smoke.mjs'),gamma.api,str(gamma.root/'api.token'),str(ROOT/'docs/evidence')],cwd=ROOT,check=True)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['node', '/workspace/scratch/99d40d4d7098/InfinitePorch/scripts/ui-smoke.mjs', 'http://127.0.0.1:45115', '/tmp/porch-ui-0cn22pfy/GAMMA/api.token', '/workspace/scratch/99d40d4d7098/InfinitePorch/docs/evidence']' returned non-zero exit status 1.

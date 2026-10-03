@@ -1,0 +1,15 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> infinite-porch@0.1.0 typecheck
+> npm run typecheck -w @porch/desktop && npm run typecheck -w @porch/sdk
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @porch/desktop@0.1.0 typecheck
+> tsc --noEmit
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @porch/sdk@0.1.0 typecheck
+> tsc --noEmit
+

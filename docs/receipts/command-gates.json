@@ -1,0 +1,143 @@
+{
+  "candidate": "0.1.0",
+  "timestamp": "2026-10-03T20:23:57.921988+00:00",
+  "local_gates_passed": true,
+  "independent_verification": false,
+  "release_qualified": false,
+  "gates": [
+    {
+      "gate": "format",
+      "command": "cargo fmt --all -- --check",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": null,
+      "evidence": "docs/receipts/format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "gate": "Rust lint",
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": null,
+      "evidence": "docs/receipts/clippy.log",
+      "sha256": "21149c5cd167357413aaccbbeb7309023915b1f69f8068d010218564cdb7af4b"
+    },
+    {
+      "gate": "Rust tests",
+      "command": "cargo test --workspace --locked",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 13,
+      "evidence": "docs/receipts/rust-tests.log",
+      "sha256": "3870570c972397565cf79c33ec3f9eb1e2405ba2a7c951d7024a6b99dd7b879b"
+    },
+    {
+      "gate": "debug binaries",
+      "command": "cargo build --workspace --locked",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": null,
+      "evidence": "docs/receipts/debug-build.log",
+      "sha256": "a13613f8a4753aa928ff846051c513e67034626a54abae49b8b20782a6f30380"
+    },
+    {
+      "gate": "TypeScript checks",
+      "command": "npm run typecheck",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": null,
+      "evidence": "docs/receipts/typescript.log",
+      "sha256": "d80031546bd929183bd7823b12bd4b45450f1affa0b9e255dfa5dde7cf0bdd02"
+    },
+    {
+      "gate": "desktop and SDK build",
+      "command": "npm run build",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": null,
+      "evidence": "docs/receipts/desktop-build.log",
+      "sha256": "b8aa1c489d84815c96401f861e262436f3c23b9e155147ee8ef12b0467aba1ab"
+    },
+    {
+      "gate": "SDK tests",
+      "command": "npm test",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 2,
+      "evidence": "docs/receipts/sdk-tests.log",
+      "sha256": "2b11dd9850f6782a4a17cc2c255fe1a6331f22fcb4fc4e494411a431c8b8d7df"
+    },
+    {
+      "gate": "CLI smoke",
+      "command": "python3 tests/cli_smoke.py",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 8,
+      "evidence": "docs/receipts/cli-smoke.json",
+      "sha256": "ebd0c005d3490b70a7364e672fd38e8084d534b5e12e44b00bf8e3eabb0cc11b"
+    },
+    {
+      "gate": "three-process acceptance",
+      "command": "python3 tests/acceptance.py",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 33,
+      "evidence": "docs/receipts/acceptance.json",
+      "sha256": "6a4a2e01a19fc7291f50850cc9b513e632fd72dea50a15f8326f40dd45b7394b"
+    },
+    {
+      "gate": "release binaries",
+      "command": "cargo build --release --workspace --locked",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": null,
+      "evidence": "docs/receipts/release-build.log",
+      "sha256": "53ac8a793d91b25b498d7272518007e850176953d25f825813b45becac0d9fb0"
+    },
+    {
+      "gate": "release acceptance",
+      "command": "python3 tests/acceptance.py --binary target/release/porch-node --out docs/receipts/acceptance-release.json",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 33,
+      "evidence": "docs/receipts/acceptance-release.json",
+      "sha256": "c8e3dba9b01d0758be7b396de90caba764ee8ae2c40fb5ec6616973fe6a268a9"
+    },
+    {
+      "gate": "release UI acceptance",
+      "command": "python3 tests/ui_acceptance.py --binary target/release/porch-node",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 8,
+      "evidence": "docs/evidence/ui-receipt.json",
+      "sha256": "31b08969074ba9bdc52e943c053cda56cd48de81f721eb6ff8f3581da5091f50"
+    },
+    {
+      "gate": "portable artifact smoke",
+      "command": "extract portable ZIP; verify all manifest hashes; launch release daemon/UI; run packaged CLI status and signed local hash",
+      "status": "PASS",
+      "exit_code": 0,
+      "assertions_or_tests": 7,
+      "evidence": "docs/receipts/package-smoke.json",
+      "sha256": "8c5ee89d3895f95cc097504355ac4d5d29acaff3cc97d691ff03c58e593a9fb5"
+    }
+  ],
+  "environment": {
+    "os": "Ubuntu 24.04.3 x86_64",
+    "rust": "1.99.0",
+    "node": "24.19.0",
+    "npm": "11.9.0",
+    "python": "3.12.14",
+    "browser": "Chromium headless 153.0.8010.0",
+    "rust_toolchain_override": "stable alias resolves to the same pinned Rust 1.99.0",
+    "ui_browser_override": "PORCH_BROWSER_PATH selects unpacked external test Chromium; not included in delivered runtime"
+  },
+  "unverified": [
+    "physical LAN/mDNS and QUIC session",
+    "WAN/NAT/authorized relay",
+    "actual Ollama weights/GPU resources",
+    "Windows/macOS package execution and code signing",
+    "independent security/fuzz/load review"
+  ]
+}

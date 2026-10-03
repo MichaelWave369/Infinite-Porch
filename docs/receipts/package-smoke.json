@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "archive": "infinite-porch-0.1.0-linux-x86_64.zip",
+  "archive_sha256": "e4cfa52b59ce75bf04661cee0e77ecf424b386c209824a7f7cac1d1045916b3f",
+  "checks": [
+    "ZIP integrity",
+    "all manifest file hashes",
+    "extracted release daemon readiness",
+    "packaged CLI status",
+    "sharing disabled on first run",
+    "packaged desktop served",
+    "signed local hash job"
+  ],
+  "test_scope": "isolated fresh temporary data; no key/token/state included in package"
+}

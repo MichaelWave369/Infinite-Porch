@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "candidate": "0.1.0",
+  "passed": false,
+  "checks": [
+    {
+      "name": "unique cryptographic identities",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "control API rejects missing operator token",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "cross-origin control request refused",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "DNS rebinding host refused",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "Porch creation and recipient-bound one-use invitations",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "failure": "AssertionError()",
+  "duration_seconds": 0.801
+}

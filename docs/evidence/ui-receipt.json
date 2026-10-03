@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "browser": "Chromium headless 153.0.8010.0",
+  "scope": "real daemon UI, explicit deterministic mock model",
+  "checks": [
+    "operator refusal and login",
+    "actual remote job through UI",
+    "nine working navigation surfaces",
+    "ledger export",
+    "credentials remain in memory",
+    "390px responsive layout",
+    "logout",
+    "no page exceptions"
+  ],
+  "screenshots": [
+    "home.png",
+    "models.png",
+    "mobile.png"
+  ]
+}

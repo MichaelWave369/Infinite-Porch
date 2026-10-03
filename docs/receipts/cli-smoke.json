@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": [
+    "init",
+    "protected identity backup/restore",
+    "identity API",
+    "doctor",
+    "community create",
+    "local hash receipt",
+    "refusal exit code",
+    "explicit rotation proof"
+  ]
+}

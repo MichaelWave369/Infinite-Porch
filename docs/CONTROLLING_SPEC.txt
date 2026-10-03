@@ -1,0 +1,1632 @@
+# INFINITE PORCH
+## Build a People-Owned Network for Communication, Compute, Storage, AI, and Shared Infrastructure
+
+You are taking ownership of a new engineering project called **Infinite Porch**.
+
+Your job is not to write a proposal, mock up a dashboard, or build a networking demo.
+
+Your job is to **design, implement, test, document, and deliver the complete first production-capable version of a decentralized, people-owned network that allows ordinary computers to voluntarily connect and share services and resources with one another.**
+
+Continue through implementation. Do not stop after architecture or scaffolding.
+
+When something cannot reasonably be completed in the first implementation, create the real interface, tests, documentation, and extension boundary for it rather than inventing fake functionality.
+
+---
+
+# 1. THE IDEA
+
+Infinite Porch should allow ordinary people to install software on their PCs and create an independent logical network between those machines.
+
+The network must support:
+
+- direct peer-to-peer communication
+- encrypted identity
+- discovery of other authorized peers
+- private groups and communities
+- messaging
+- service discovery
+- voluntary compute sharing
+- AI/model inference sharing
+- storage sharing
+- resource-aware task routing
+- offline/local-network operation
+- Internet-assisted operation
+- future Wi-Fi/radio/community-mesh transports
+- auditable authorization
+- cryptographic receipts and provenance
+
+A person's computer becomes a **Porch Node**.
+
+Several Porch Nodes can form a **Porch**.
+
+Multiple Porches may optionally federate.
+
+There must be **no mandatory central cloud authority**.
+
+The existing Internet may be used as one transport, but it must not be the identity, authority, or service layer.
+
+Infinite Porch is therefore an overlay network capable of running across:
+
+- Ethernet
+- LAN
+- Wi-Fi
+- the public Internet
+- VPN-like links
+- community wireless
+- future radio transports
+- future PhiOS-native networking
+
+Transport must be replaceable.
+
+The architecture should survive loss of Internet connectivity whenever reachable peers still have another path between them.
+
+---
+
+# 2. CORE PHILOSOPHY
+
+The following rules are architectural invariants.
+
+## Sovereignty
+
+Users own their:
+
+- identity
+- devices
+- data
+- models
+- compute
+- storage
+- permissions
+- logs
+- relationships
+
+## Local First
+
+Prefer:
+
+LOCAL DEVICE  
+→ TRUSTED LOCAL PEERS  
+→ TRUSTED COMMUNITY  
+→ FEDERATED PEERS  
+→ OPTIONAL EXTERNAL/CLOUD PROVIDERS
+
+Cloud services must never be required for basic LAN operation.
+
+## Capability ≠ Authority
+
+A node advertising a capability does not automatically receive permission to exercise it.
+
+A model seeing a tool does not mean it may use it.
+
+A peer having GPU resources does not mean another peer may consume them.
+
+A peer being reachable does not mean it is trusted.
+
+All externally meaningful effects require explicit bounded authority.
+
+## Human Authority
+
+Human operators remain the final authority over:
+
+- joining
+- sharing
+- quotas
+- permissions
+- storage allocation
+- compute allocation
+- model exposure
+- network relaying
+- trust relationships
+- persistent agents
+
+## Observable ≠ Trusted
+
+Remote claims are claims until verified.
+
+Never confuse:
+
+- advertised capacity
+- measured capacity
+- authorized capacity
+- consumed capacity
+
+Keep those states separate.
+
+---
+
+# 3. RELATED PROJECTS
+
+Before implementation, inspect these existing projects read-only for concepts and reusable contracts where available:
+
+- PhiOS  
+  https://github.com/MichaelWave369/PhiOS
+
+- SuperPhiVessel  
+  https://github.com/MichaelWave369/SuperPhiVessel
+
+- CommonLine  
+  https://github.com/MichaelWave369/Commonline
+
+- PhiBot  
+  https://github.com/MichaelWave369/phibot
+
+Do not turn Infinite Porch into a hard dependency on them.
+
+Infinite Porch must remain independently installable and useful.
+
+Reuse architectural ideas where appropriate:
+
+- Capability ≠ Authority
+- local-first operation
+- CommonLine secure peer identity concepts
+- PhiOS governance
+- Reality Gate authorization
+- Reality Ledger receipts
+- Crane Fly resource/model routing
+- PhiBot governed agents
+- Super Φ.Vessel provider/model adapters
+
+Create clean adapters for ecosystem integration later.
+
+---
+
+# 4. PROPOSED SYSTEM COMPONENTS
+
+Use sensible naming, but preserve these conceptual boundaries.
+
+## PorchNode
+
+Long-running node daemon.
+
+Responsibilities:
+
+- networking
+- identity
+- discovery
+- encrypted sessions
+- authorization
+- services
+- resource advertisement
+- scheduling
+- job execution
+- storage
+- ledger
+- APIs
+
+Prefer Rust for the trusted node/runtime layer unless repository constraints provide a strong reason otherwise.
+
+The node must run on:
+
+- Windows
+- Linux
+- macOS
+
+PhiOS integration comes through Linux/PhiOS adapters.
+
+---
+
+## PorchID
+
+Each installation generates a cryptographic device identity locally.
+
+Use established cryptographic libraries.
+
+Do not invent cryptography.
+
+Prefer:
+
+- Ed25519 identity keys
+- secure authenticated transport
+- signed manifests
+- signed capability advertisements
+- signed authorization grants
+
+Private keys never leave the machine unless the user deliberately exports a protected backup.
+
+Support:
+
+- device identity
+- human-friendly aliases
+- device pairing
+- key rotation
+- revocation
+- trust records
+- multiple devices per human operator
+
+Do NOT attempt biometric identity.
+
+---
+
+## PorchNet
+
+Use a mature peer-to-peer networking stack, preferably rust-libp2p or an equally well-supported alternative.
+
+Evaluate and implement appropriate support for:
+
+- QUIC
+- TCP fallback
+- encrypted sessions
+- mDNS LAN discovery
+- Identify
+- Ping
+- Kademlia DHT
+- GossipSub
+- AutoNAT
+- relay
+- DCUtR / NAT hole punching
+- optional rendezvous/bootstrap nodes
+
+A bootstrap node may improve discovery but must not become central authority.
+
+Nodes must still support direct LAN discovery with zero Internet.
+
+---
+
+# 5. ADDRESSING
+
+Infinite Porch must have its own logical addressing layer.
+
+Do not make users reason primarily about IP addresses.
+
+Objects should be addressable by cryptographic identifiers such as:
+
+porch://peer/<peer-id>
+
+porch://service/<service-id>
+
+porch://blob/<content-id>
+
+porch://porch/<community-id>
+
+porch://model/<provider>/<model>
+
+Implement a signed service-record system that behaves somewhat like decentralized DNS.
+
+Human aliases may resolve to signed cryptographic records.
+
+Prevent silent alias takeover.
+
+---
+
+# 6. PORCHES / COMMUNITIES
+
+Users must be able to:
+
+- create a Porch
+- join a Porch
+- leave a Porch
+- invite another device
+- revoke a device
+- approve peers
+- create private groups
+- define resource-sharing policies
+
+Joining should be simple.
+
+Create secure short-lived invite packages or codes containing only the information required to establish initial trust.
+
+An invite must not itself provide unlimited permanent authority.
+
+Trust escalation should be explicit.
+
+---
+
+# 7. AUTHORITY SYSTEM
+
+Create a deny-by-default authorization system.
+
+A grant should bind at minimum:
+
+- issuer
+- recipient peer
+- capability
+- resource
+- action
+- scope
+- limits
+- creation time
+- expiration
+- nonce
+- optional exact-input digest
+- signature
+
+Examples:
+
+A peer may:
+
+- run model llama3.3
+- maximum 20 requests/hour
+- maximum 4 GB VRAM reservation
+- until midnight
+
+Another grant might allow:
+
+- store blobs
+- maximum 5 GB
+- encrypted only
+- replication factor ≤ 2
+
+Another:
+
+- relay Porch traffic
+- maximum 10 Mbps
+- no general Internet exit traffic
+
+Authorization must be checked immediately before effects occur.
+
+Revocation must work.
+
+Expired grants must fail closed.
+
+---
+
+# 8. RESOURCE ADVERTISEMENT
+
+Nodes voluntarily advertise selected resources.
+
+Examples:
+
+CPU:
+- cores
+- architecture
+- current load
+- operator allocation limit
+
+GPU:
+- vendor
+- device
+- VRAM
+- available VRAM
+- compute backend
+
+Memory:
+- physical RAM
+- currently shareable allocation
+
+Storage:
+- available voluntary quota
+- content-store capability
+
+AI:
+- Ollama models
+- supported inference engines
+- context limits when detectable
+- embeddings
+- vision support
+- tool support when known
+
+Network:
+- relay availability
+- approximate peer latency
+- bandwidth allocation policy
+
+Never advertise private system information unnecessarily.
+
+Resource advertisements must be signed and expire.
+
+Do not trust remote self-report blindly.
+
+Maintain both advertised and observed metrics.
+
+---
+
+# 9. PORCH COMPUTE
+
+Build a real distributed job system.
+
+A node should be able to submit a task and have policy determine whether it runs:
+
+- locally
+- on a trusted peer
+- on one of several eligible peers
+
+Do NOT begin by allowing arbitrary remote shell execution.
+
+That turns a pleasant community network into a malware delivery service with a charming logo.
+
+The first remote compute boundary should use safe task types such as:
+
+- AI inference
+- WASM sandbox jobs
+- deterministic built-in jobs
+- content hashing
+- image transformation through explicitly installed providers
+- approved plugin capabilities
+
+Create a versioned Job Manifest.
+
+Include:
+
+- job ID
+- requester
+- capability required
+- resource limits
+- input hashes
+- timeout
+- privacy policy
+- preferred execution location
+- authorization reference
+
+Return a signed Job Receipt.
+
+---
+
+# 10. AI / MODEL ROUTING
+
+This is a major feature.
+
+Build a provider-neutral distributed AI inference layer.
+
+Support local adapters beginning with:
+
+- Ollama
+- mock deterministic provider for testing
+
+Design adapters for future:
+
+- llama.cpp
+- vLLM
+- OpenAI-compatible APIs
+- PhiVessel
+- PhiBot
+- other providers
+
+A node may advertise selected models to trusted peers.
+
+For example:
+
+Node A:
+RTX GPU
+qwen
+llama
+embedding model
+
+Node B:
+CPU-only
+small utility model
+
+Node C:
+large GPU
+coding model
+
+The scheduler should route according to policy including:
+
+- trust
+- authorization
+- local-first preference
+- model capability
+- current load
+- available VRAM/RAM
+- latency
+- estimated cost
+- queue depth
+- privacy classification
+
+Do NOT send private prompts to remote peers unless policy explicitly allows remote processing.
+
+Implement data classifications such as:
+
+- LOCAL_ONLY
+- TRUSTED_PEERS
+- PORCH_ALLOWED
+- FEDERATED_ALLOWED
+
+A LOCAL_ONLY request must never leave the originating machine.
+
+---
+
+# 11. DISTRIBUTED AI RECEIPTS
+
+Every remote inference should optionally produce a receipt containing facts such as:
+
+- request ID
+- requester peer
+- executor peer
+- provider
+- model
+- model/version identifier if available
+- input digest
+- output digest
+- start/end time
+- duration
+- resource usage when measurable
+- authorization grant
+- result status
+- signature
+
+Never put private prompt text into the public/shared ledger by default.
+
+Use hashes and protected local detail records.
+
+---
+
+# 12. MODEL SCHEDULING
+
+Implement a deterministic baseline scheduler.
+
+A scheduling decision should be explainable.
+
+For example:
+
+candidate score =
+trust eligibility
++ capability match
++ locality preference
++ free resources
++ latency
++ load
+
+Hard policy constraints must eliminate candidates before scoring.
+
+Never allow a statistical/LLM router to override authorization.
+
+Later AI-assisted routing may propose a node.
+
+The deterministic authority layer makes the final decision.
+
+Create extension interfaces for future:
+
+- Crane Fly
+- councils
+- agent swarms
+- multi-model routing
+- model performance history
+- distributed inference engines
+
+Do not require those systems for v1.
+
+---
+
+# 13. PORCH VAULT
+
+Build encrypted distributed storage.
+
+Use content-addressed blobs.
+
+Content IDs should derive from cryptographic hashes.
+
+Support:
+
+- local CAS
+- optional peer replication
+- quotas
+- pinning
+- integrity verification
+- encrypted remote storage
+- retrieval
+- deletion/tombstone semantics
+- provenance receipts
+
+Data stored on another person's machine should preferably be client-side encrypted so the storage provider does not need plaintext access.
+
+Never imply that replication equals backup unless enough verified replicas exist.
+
+Track desired replicas separately from verified replicas.
+
+---
+
+# 14. MESSAGING
+
+Build a basic peer messaging service.
+
+Support:
+
+- direct peer messages
+- Porch channels
+- presence
+- service announcements
+- signed messages
+- offline queue where appropriate
+
+Messages should work on LAN without cloud services.
+
+Use the networking layer rather than creating a second unrelated transport stack.
+
+Design compatibility boundaries for CommonLine.
+
+---
+
+# 15. RELAYING
+
+Nodes may voluntarily relay Infinite Porch traffic for other peers.
+
+This must be:
+
+- opt-in
+- quota-controlled
+- visible
+- revocable
+- logged
+
+Do NOT implement a public anonymous general-purpose Internet exit proxy in v1.
+
+Infinite Porch relays carry Porch protocol traffic.
+
+A future Internet gateway can exist as a separately permissioned capability.
+
+---
+
+# 16. PARTITION TOLERANCE
+
+The system must expect the network to split.
+
+For example:
+
+Five houses have Internet.
+
+Internet disappears.
+
+The five houses still have local wireless connectivity.
+
+Infinite Porch services reachable through those local paths should continue functioning.
+
+Design for:
+
+- stale peers
+- disconnected communities
+- delayed synchronization
+- eventual reconnection
+- conflict-safe records
+- resuming transfers
+- expiring claims
+- clock uncertainty
+
+Do not assume globally perfect time.
+
+---
+
+# 17. PORCH LEDGER
+
+Create an append-only local Reality Ledger.
+
+Record important state transitions such as:
+
+- identity created
+- trust established
+- invite accepted
+- capability advertised
+- grant issued
+- grant denied
+- grant expired
+- grant revoked
+- job submitted
+- job accepted
+- job refused
+- job completed
+- storage replicated
+- peer connected
+- peer disconnected
+
+Each event should have:
+
+- sequence
+- event type
+- timestamp
+- subject
+- actor
+- relevant hashes
+- previous-event hash where useful
+- signature where appropriate
+
+The ledger is primarily evidence and provenance.
+
+It is NOT automatically a blockchain.
+
+Do not add cryptocurrency merely because distributed systems apparently attract tokens like porch lights attract moths.
+
+---
+
+# 18. RESOURCE ACCOUNTING
+
+Track actual resource sharing.
+
+Examples:
+
+- compute seconds
+- GPU seconds
+- bytes stored
+- bytes transferred
+- model calls
+- tokens when available
+- jobs accepted/refused
+
+Support voluntary fairness policies.
+
+For v1 this should be accounting, not money.
+
+Design an interface where communities could later implement:
+
+- gifting
+- quotas
+- credits
+- reciprocity systems
+- payment adapters
+
+Do not create speculative crypto/token economics.
+
+---
+
+# 19. USER EXPERIENCE
+
+Create an understandable desktop experience.
+
+A new user should be able to install Infinite Porch and see:
+
+## HOME
+
+- node status
+- identity
+- current Porch
+- connected peers
+- network health
+
+## PEOPLE / PEERS
+
+- peer name
+- device
+- connection
+- trust
+- latency
+- shared capabilities
+
+## RESOURCES
+
+- my shared CPU
+- GPU
+- storage
+- models
+- relay bandwidth
+- limits
+
+## COMPUTE
+
+- queued jobs
+- active jobs
+- completed jobs
+- remote/local execution
+
+## MODELS
+
+- local models
+- remote available models
+- provider
+- executor
+- privacy boundary
+- load
+
+## STORAGE
+
+- blobs
+- replicas
+- integrity
+- usage
+
+## NETWORK
+
+- transports
+- paths
+- peer discovery
+- relay status
+- DHT status
+
+## AUTHORITY
+
+- active grants
+- expired grants
+- revoked grants
+- pending requests
+
+## LEDGER
+
+- human-readable event stream
+- inspectable raw receipt
+
+Prefer a React/TypeScript UI.
+
+A Tauri desktop shell is appropriate if it keeps packaging manageable.
+
+The node daemon should remain usable headlessly through CLI/API.
+
+---
+
+# 20. CLI
+
+Create a serious command line interface.
+
+Examples of the intended experience:
+
+porch init
+
+porch status
+
+porch identity show
+
+porch create "Oak Street"
+
+porch invite create
+
+porch join <invite>
+
+porch peers
+
+porch resources
+
+porch share gpu --vram 6GB
+
+porch share storage --limit 100GB
+
+porch models
+
+porch model run qwen3 "hello"
+
+porch jobs
+
+porch ledger
+
+porch grants
+
+porch doctor
+
+Actual syntax may differ, but functionality should exist.
+
+---
+
+# 21. LOCAL API
+
+Expose a versioned localhost API for applications.
+
+Do not bind privileged control APIs publicly by default.
+
+Support:
+
+- REST or RPC
+- event stream
+- health
+- peers
+- resources
+- jobs
+- models
+- storage
+- grants
+- ledger
+
+Create typed clients where practical.
+
+This API becomes the primary integration seam for:
+
+- PhiOS
+- Super Φ.Vessel
+- PhiBot
+- CommonLine
+- future apps
+
+---
+
+# 22. SERVICE DISCOVERY
+
+Apps should be able to expose Porch services.
+
+A signed service manifest might include:
+
+- service ID
+- provider peer
+- type
+- protocol version
+- endpoint
+- capabilities
+- policy
+- expiry
+
+Examples:
+
+model.inference
+
+blob.storage
+
+message.channel
+
+compute.wasm
+
+phi.vessel
+
+phibot.agent
+
+commonline.voice
+
+Services disappear when advertisements expire.
+
+---
+
+# 23. AGENT-NATIVE ARCHITECTURE
+
+Humans and agents should use the same governed interfaces.
+
+Target flow:
+
+Human / Agent / Script / App
+→ Observation
+→ Intent
+→ Requested Capability
+→ Authority Validation
+→ Routing
+→ Execution
+→ Result
+→ Receipt
+→ Ledger
+→ Observation
+
+An AI agent must not receive magical networking privileges that ordinary clients cannot inspect.
+
+---
+
+# 24. SECURITY REQUIREMENTS
+
+Treat the network as hostile by default.
+
+Implement protections for:
+
+- malformed packets
+- replay
+- stale advertisements
+- forged identities
+- unauthorized jobs
+- resource exhaustion
+- giant messages
+- connection floods
+- storage exhaustion
+- job timeout
+- duplicate job execution
+- malicious peer claims
+- revoked peers
+
+Use bounded:
+
+- queues
+- messages
+- file sizes
+- job durations
+- concurrency
+- memory
+- storage
+- bandwidth
+
+No hidden persistence.
+
+No stealth operation.
+
+No credential theft.
+
+No unauthorized scanning.
+
+No arbitrary remote control.
+
+No automatic sharing without explicit operator configuration.
+
+---
+
+# 25. PRIVACY
+
+Private network information should stay local unless needed.
+
+Do not create a global public directory of users.
+
+Porch membership must not automatically reveal every device or resource globally.
+
+Design private/community discovery independently from optional public/federated discovery.
+
+Logs should avoid raw sensitive content where hashes suffice.
+
+---
+
+# 26. UPDATE AND VERSIONING
+
+Version network protocols.
+
+Peers with incompatible protocol versions must fail gracefully.
+
+Design:
+
+- protocol negotiation
+- migrations
+- schema versions
+- backward-compatible message evolution
+
+Auto-update must never silently replace trust policy.
+
+Software update authority and network authority are separate.
+
+---
+
+# 27. REPOSITORY STRUCTURE
+
+Create a clean monorepo.
+
+A reasonable structure might resemble:
+
+/crates
+  /porch-core
+  /porch-identity
+  /porch-network
+  /porch-authority
+  /porch-ledger
+  /porch-compute
+  /porch-models
+  /porch-storage
+  /porch-messaging
+  /porch-api
+  /porch-cli
+  /porch-node
+
+/apps
+  /desktop
+
+/packages
+  /protocol
+  /sdk
+
+/tests
+  /integration
+  /network
+  /security
+  /fixtures
+
+/docs
+
+/scripts
+
+You may improve this after examining implementation constraints.
+
+Keep dependency direction explicit.
+
+---
+
+# 28. DATA MODEL
+
+Use deterministic versioned schemas.
+
+Prefer serde-compatible Rust types and JSON or CBOR boundaries as appropriate.
+
+Important records include:
+
+- PeerIdentity
+- PorchIdentity
+- PeerProfile
+- TrustRecord
+- CapabilityManifest
+- ResourceAdvertisement
+- ServiceManifest
+- AuthorizationGrant
+- Revocation
+- JobManifest
+- JobResult
+- JobReceipt
+- BlobManifest
+- LedgerEvent
+- ModelManifest
+- RouteDecision
+- NetworkObservation
+
+Cryptographically relevant serialization must be canonical.
+
+---
+
+# 29. PERSISTENCE
+
+Use a dependable local database.
+
+SQLite is acceptable for metadata.
+
+Use a content-addressed filesystem/object store for blobs.
+
+Separate:
+
+- canonical durable state
+- caches
+- ephemeral network observations
+- sensitive secrets
+
+Never write private keys into ordinary logs or source-controlled configuration.
+
+---
+
+# 30. TEST NETWORK
+
+Create a deterministic development harness that launches at least three local Porch Nodes.
+
+Example:
+
+ALPHA
+- GPU/model provider
+- storage 1 GB
+
+BETA
+- compute
+- storage 500 MB
+
+GAMMA
+- client only
+
+Demonstrate:
+
+ALPHA ↔ BETA ↔ GAMMA
+
+Then prove:
+
+1. identities are unique
+2. peers discover each other
+3. authorization is required
+4. GAMMA can request an approved model job
+5. scheduler selects an eligible node
+6. job executes
+7. signed result returns
+8. receipt is recorded
+9. revoked permission blocks the next request
+10. a content blob can be replicated to an authorized peer
+11. integrity survives retrieval
+12. nodes reconnect after interruption
+
+Use a deterministic mock inference provider in CI.
+
+Live Ollama testing should be optional and separately detected.
+
+---
+
+# 31. FAILURE TESTING
+
+Test negative cases, not merely sunshine demos.
+
+Include:
+
+- invalid signature
+- corrupted message
+- unknown peer
+- expired invitation
+- expired grant
+- revoked grant
+- duplicate request
+- oversized request
+- unauthorized model
+- insufficient resources
+- peer disappearance
+- interrupted transfer
+- corrupted blob
+- unavailable model
+- model timeout
+- relay unavailable
+- partial network partition
+- restart/recovery
+
+The correct answer is sometimes REFUSE.
+
+Refusal must be represented as a first-class result with an explanation and ledger receipt.
+
+---
+
+# 32. OBSERVABILITY
+
+Provide useful diagnostics without surveillance.
+
+Implement:
+
+- structured logs
+- health endpoint
+- peer connectivity state
+- resource metrics
+- job metrics
+- route-decision explanation
+- ledger viewer
+- `porch doctor`
+
+Do not upload telemetry by default.
+
+If telemetry is ever added, it must be explicit opt-in.
+
+---
+
+# 33. INSTALLATION
+
+Create real developer and user installation paths.
+
+Support at minimum:
+
+Windows
+
+Linux
+
+macOS where feasible
+
+Provide:
+
+- build instructions
+- packaged node executable
+- desktop build
+- sample config
+- first-run flow
+- troubleshooting
+
+Where OS packaging cannot be completed in the environment, build the packaging configuration and document the exact remaining external signing/notarization requirement.
+
+---
+
+# 34. DOCUMENTATION
+
+Create:
+
+README.md
+
+docs/ARCHITECTURE.md
+
+docs/PROTOCOL.md
+
+docs/IDENTITY.md
+
+docs/AUTHORITY.md
+
+docs/NETWORKING.md
+
+docs/COMPUTE.md
+
+docs/MODEL_ROUTING.md
+
+docs/STORAGE.md
+
+docs/SECURITY.md
+
+docs/THREAT_MODEL.md
+
+docs/PRIVACY.md
+
+docs/LEDGER.md
+
+docs/CLI.md
+
+docs/API.md
+
+docs/PHIOS_INTEGRATION.md
+
+docs/COMMONLINE_INTEGRATION.md
+
+docs/ROADMAP.md
+
+docs/TESTING.md
+
+docs/OPERATIONS.md
+
+README must explain the project to a normal person before diving into protocol engineering.
+
+---
+
+# 35. THREAT MODEL
+
+Document concrete threats.
+
+Include:
+
+- malicious peer
+- compromised Porch member
+- stolen device
+- malicious compute provider
+- malicious requester
+- spam/flooding
+- Sybil identities
+- metadata leakage
+- replay attacks
+- forged service advertisements
+- malicious storage provider
+- corrupted stored content
+- malicious AI provider
+- prompt/data leakage
+- dependency compromise
+- bootstrap outage
+
+For each threat document:
+
+risk
+
+existing mitigation
+
+remaining risk
+
+future mitigation
+
+Do not claim security guarantees that have not been tested.
+
+---
+
+# 36. PHIOS INTEGRATION
+
+Create an adapter boundary where PhiOS can treat Infinite Porch as governed infrastructure.
+
+PhiOS should eventually be able to observe:
+
+- peers
+- models
+- compute
+- storage
+- communication services
+
+and request capabilities through PhiKernel governance.
+
+Infinite Porch does not inherit authority merely because PhiOS can see it.
+
+Target future path:
+
+Human
+→ PhiOS
+→ PhiKernel
+→ capability request
+→ Infinite Porch
+→ peer/service
+→ execution
+→ signed receipt
+→ Reality Ledger
+
+---
+
+# 37. SUPER Φ.VESSEL INTEGRATION
+
+Super Φ.Vessel should eventually treat remote Porch models as provider candidates.
+
+Example:
+
+Crane Fly receives a reasoning request.
+
+Available:
+
+LOCAL qwen
+LOCAL gemma
+PORCH peer-A llama
+PORCH peer-B coder
+
+Crane Fly proposes a route.
+
+Policy filters eligibility.
+
+Infinite Porch validates authority.
+
+Request executes.
+
+Receipt returns.
+
+Super Φ.Vessel synthesizes.
+
+Do not allow Crane Fly or an LLM to bypass Infinite Porch authorization.
+
+---
+
+# 38. COMMONLINE INTEGRATION
+
+CommonLine already explores cryptographic identity, P2P/WebRTC-style communication, governed media, and multi-party boundaries.
+
+Do not duplicate mature concepts unnecessarily.
+
+Create an adapter seam so CommonLine can eventually use Infinite Porch discovery/identity/transport services where that makes architectural sense.
+
+Keep either project independently runnable.
+
+---
+
+# 39. FUTURE PHYSICAL MESH
+
+Design the network interface so alternative transports can eventually carry Porch frames.
+
+Possible future transports include:
+
+- Wi-Fi Direct
+- community Wi-Fi mesh
+- point-to-point wireless
+- LoRa for limited control/messages
+- amateur-radio-compatible legal data modes
+- custom PhiOS mesh hardware
+
+Do not implement regulatory-sensitive radio transmission without appropriate hardware/legal constraints.
+
+The networking core must not assume that every peer path is high bandwidth.
+
+---
+
+# 40. DISTRIBUTED MODEL FUTURE
+
+The v1 goal is **job-level inference routing**.
+
+Do not falsely claim that multiple random PCs are jointly running one giant neural network unless that capability actually exists.
+
+However, design interfaces for future execution modes:
+
+SINGLE_NODE
+
+REMOTE_NODE
+
+ENSEMBLE
+
+PIPELINE
+
+SHARDED_MODEL
+
+Create the architecture seam now.
+
+Implement SINGLE_NODE and REMOTE_NODE fully.
+
+ENSEMBLE may be implemented if straightforward.
+
+SHARDED_MODEL can remain a documented future execution engine unless a reliable existing framework can be integrated cleanly.
+
+---
+
+# 41. ACCEPTANCE DEMO
+
+The repository is not finished until this scenario works.
+
+Three computers or three simulated nodes exist.
+
+Michael creates a Porch.
+
+Larrina joins using an invitation.
+
+A third node joins.
+
+Each node has a cryptographic identity.
+
+One shares storage.
+
+One exposes an Ollama-compatible model.
+
+One shares compute.
+
+Michael submits an AI request marked TRUSTED_PEERS.
+
+The system:
+
+1. discovers eligible resources
+2. filters unauthorized nodes
+3. evaluates routing
+4. chooses an eligible model host
+5. requests authorization
+6. executes inference
+7. returns result
+8. signs receipt
+9. updates accounting
+10. writes ledger events
+
+Then revoke the grant.
+
+Run the request again.
+
+It must fail closed.
+
+Then disconnect outside Internet access while leaving simulated/local peer connectivity.
+
+Local Porch functionality must remain available wherever the transport still connects nodes.
+
+That is the core proof.
+
+---
+
+# 42. QUALITY GATES
+
+Before declaring success run everything available:
+
+- format
+- lint
+- Rust checks
+- TypeScript checks
+- unit tests
+- integration tests
+- protocol tests
+- authorization tests
+- networking tests
+- restart/recovery tests
+- security-negative tests
+- desktop build
+- CLI smoke test
+- three-node acceptance harness
+
+CI must reproduce the deterministic tests.
+
+Do not hide flaky or failing tests.
+
+If a test cannot pass because of environment restrictions, state exactly which environmental dependency prevented it.
+
+---
+
+# 43. DELIVERY DISCIPLINE
+
+Do not produce thousands of lines of speculative architecture while leaving the implementation empty.
+
+Work vertically.
+
+The first complete spine should be:
+
+identity
+→ network
+→ peer discovery
+→ trust
+→ capability advertisement
+→ authorization
+→ remote job
+→ result
+→ receipt
+→ ledger
+
+Then expand:
+
+model routing
+
+storage
+
+messaging
+
+UI
+
+federation
+
+packaging
+
+Preserve a runnable state throughout development.
+
+---
+
+# 44. DO NOT
+
+Do not:
+
+- build a centralized SaaS and call it decentralized
+- require a vendor account
+- create cryptocurrency
+- invent cryptography
+- silently share resources
+- create a general anonymous exit proxy
+- allow arbitrary unauthenticated remote shell
+- expose control APIs to the public network
+- trust capability advertisements as ground truth
+- allow an LLM to authorize itself
+- bury failures
+- fabricate tests
+- fabricate benchmark numbers
+- claim NAT traversal works unless actually tested
+- claim Internet independence when the tested path still requires the Internet
+
+---
+
+# 45. FIRST ACTION
+
+Begin by inspecting the environment and existing related repositories.
+
+Then create or initialize the Infinite Porch repository.
+
+Write a concise architecture decision record.
+
+Immediately implement the smallest vertical network spine.
+
+Do not return to me merely with a plan.
+
+Build.
+
+Test.
+
+Continue through each subsystem.
+
+Repair failures as you encounter them.
+
+Leave the repository runnable after every major change.
+
+When the complete implementation is finished, provide:
+
+1. exact repository state and commit/branch
+2. architecture summary
+3. implemented capabilities
+4. test results
+5. security limitations
+6. commands to run a local node
+7. commands to start the three-node demonstration
+8. commands to expose an Ollama model
+9. commands to join another PC
+10. screenshots or evidence from the working UI if available
+11. remaining work separated clearly into REQUIRED vs FUTURE
+12. a final end-to-end acceptance receipt
+
+This project exists to answer one question:
+
+**Can ordinary people connect the computers they already own and voluntarily combine communication, storage, compute, and intelligence into infrastructure that they themselves control?**
+
+Build the first serious answer.

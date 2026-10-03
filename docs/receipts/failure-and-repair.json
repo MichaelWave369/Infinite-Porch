@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "candidate": "0.1.0",
+  "failures_preserved": [
+    {
+      "gate": "first cargo check",
+      "failure": "SwarmBuilder rejected Result<Behaviour, io::Error>",
+      "repair": "Create fallible mDNS outside the behaviour constructor and return Behaviour directly."
+    },
+    {
+      "gate": "initial acceptance and real peer security tests",
+      "failure": "Response signatures failed after CBOR serialization; five acceptance checks passed before discovery failed.",
+      "cause": "The selected CBOR codec serialized serde_json::Value null as an empty array, changing domain-separated signing material.",
+      "repair": "Use rust-libp2p's bounded JSON request-response codec, explicitly supported by the controlling specification. Keep signature verification enforced.",
+      "regression": "signing_material_survives_the_actual_wire_codec"
+    },
+    {
+      "gate": "peer revocation security test",
+      "failure": "The revoked connection closed before a refusal response returned.",
+      "repair": "The test now accepts authenticated REFUSED or transport closure, and separately asserts persisted revocation and unchanged execution accounting. No retry or bypass was added."
+    },
+    {
+      "gate": "wrong-principal attack regression",
+      "failure": "The strengthened origin RPC guard rejected the forged-request helper before it reached the peer.",
+      "repair": "Send the test attack through the raw authenticated transport, then assert the receiving execution boundary rejects requester/transport mismatch. The production outbound guard remains enforced."
+    },
+    {
+      "gate": "standard Chromium dependency installation",
+      "failure": "Browser archive download was empty/truncated; alternate package extraction encountered unsupported chown in this execution environment.",
+      "repair": "Use the alternate Chromium 153 headless binary decompressed in scratch. Select it through PORCH_BROWSER_PATH. Do not claim standard installer success.",
+      "evidence": "browser-install.log and ui-initial-failure.log"
+    },
+    {
+      "gate": "UI navigation accessibility",
+      "failure": "The People button accessible name included the visible count, so an exact navigation selector timed out.",
+      "repair": "Give navigation buttons explicit aria-labels and aria-current. Preserve the initial failure and rerun actual UI navigation.",
+      "evidence": "ui-navigation-initial-failure.log"
+    },
+    {
+      "gate": "mobile operator session",
+      "failure": "The compact sidebar hid the logout control, causing mobile logout acceptance to time out.",
+      "repair": "Add a visible mobile header logout control. Retain desktop sidebar control. Verify memory-only credentials, responsive layout and real logout.",
+      "evidence": "ui-mobile-initial-failure.log"
+    }
+  ],
+  "untouched_specification": "docs/CONTROLLING_SPEC.txt",
+  "deviation_class": "local implementation; JSON rather than CBOR wire encoding",
+  "authorization": "Controlling specification sections 21 and 28 permit JSON or CBOR and sensible implementation choices."
+}

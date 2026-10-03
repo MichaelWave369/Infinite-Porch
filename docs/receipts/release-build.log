@@ -1,0 +1,4 @@
+   Compiling porch-core v0.1.0 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-core)
+   Compiling porch-node v0.1.0 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+   Compiling porch-cli v0.1.0 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+    Finished `release` profile [optimized] target(s) in 36.82s

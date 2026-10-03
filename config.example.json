@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "alias": "My Porch Node",
+  "listen": ["/ip4/0.0.0.0/tcp/7332", "/ip4/0.0.0.0/udp/7332/quic-v1"],
+  "mdns": true,
+  "api": "127.0.0.1:7331",
+  "ollama_url": "http://127.0.0.1:11434",
+  "models": [],
+  "compute_hash": false,
+  "storage_quota": 0
+}

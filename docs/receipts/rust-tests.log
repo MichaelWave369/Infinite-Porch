@@ -1,0 +1,70 @@
+   Compiling porch-node v0.1.0 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+   Compiling porch-cli v0.1.0 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.97s
+     Running unittests src/main.rs (target/debug/deps/porch-32e1110a773119f8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/porch_core-262621d234f69809)
+
+running 5 tests
+test tests::expired_grant_is_not_permission ... ok
+test tests::router_cannot_trade_privacy_or_authority_for_speed ... ok
+test tests::ciphertext_is_private_integrity_bound_and_owner_bound ... ok
+test tests::version_and_future_engine_boundaries_refuse_instead_of_fallback ... ok
+test tests::signatures_reject_tamper_and_cross_protocol_replay ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/lib.rs (target/debug/deps/porch_node-8ff9caa8abead5ff)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/porch_node-c5dad7c1990137c8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/providers.rs (target/debug/deps/providers-6b85a46a312e6084)
+
+running 2 tests
+test ollama_http_contract_and_failure_behavior ... ok
+test slow_provider_duplicate_timeout_and_revocation_are_bounded ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.76s
+
+     Running tests/recovery.rs (target/debug/deps/recovery-c4a07b2a963d92be)
+
+running 2 tests
+test uncertain_jobs_never_reexecute_after_restart ... ok
+test completion_rename_recovery_and_expired_transfer_cleanup ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running tests/security.rs (target/debug/deps/security-be391030c1914891)
+
+running 4 tests
+test ledger_modification_and_backward_clock_are_detected ... ok
+test signing_material_survives_the_actual_wire_codec ... ok
+test actual_transport_rejects_forgery_replay_and_wrong_principal ... ok
+test expired_invites_and_grants_fail_closed ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.33s
+
+   Doc-tests porch_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests porch_node
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

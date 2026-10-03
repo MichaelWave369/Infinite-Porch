@@ -1,0 +1,56 @@
+{
+  "project": "Infinite Porch",
+  "candidate": "0.1.0",
+  "timestamp": "2026-10-03T20:23:57.921988+00:00",
+  "deviations": [
+    {
+      "id": "DEV-0001",
+      "class": "Local implementation",
+      "requirements": [
+        "REQ-004",
+        "REQ-028"
+      ],
+      "decision": "Bounded JSON wire codec instead of CBOR after null/array signing-material failure",
+      "authority": "Brief sections 21/28 permit JSON or CBOR; signatures kept enforced",
+      "evidence": "Actual wire codec regression test and preserved failure receipt"
+    },
+    {
+      "id": "DEV-0002",
+      "class": "Local implementation",
+      "requirements": [
+        "REQ-027"
+      ],
+      "decision": "Three focused Rust crates plus explicit node modules rather than speculative crate-per-concept tree",
+      "authority": "Brief section 27 explicitly permits improved monorepo structure",
+      "evidence": "Dependency direction and workspace build"
+    },
+    {
+      "id": "DEV-0003",
+      "class": "Local implementation",
+      "requirements": [
+        "REQ-019",
+        "REQ-033"
+      ],
+      "decision": "Built browser desktop served same-origin with portable node executables; no Tauri/native installer claim",
+      "authority": "React is preferred; Tauri shell is conditional on packaging feasibility, section 19; external package gaps must be disclosed in section 33",
+      "evidence": "Live UI tests/screenshots and portable packaging configuration"
+    },
+    {
+      "id": "DEV-0004",
+      "class": "Deferred qualification / open normative scope",
+      "requirements": [
+        "REQ-001",
+        "REQ-004",
+        "REQ-015",
+        "REQ-024",
+        "REQ-033",
+        "REQ-041",
+        "REQ-042"
+      ],
+      "decision": "Deliver honest local candidate; retain production/field/platform goals as REQUIRED, optional engines as FUTURE",
+      "authority": "Section 1 permits interfaces/tests/documented extension boundaries when first implementation cannot reasonably complete them. No amended production canon or release approval is claimed.",
+      "evidence": "ROADMAP.md, REQUIREMENTS.md, command gates and Wayne handoff",
+      "status": "Open required qualifications; human release authority retained"
+    }
+  ]
+}
