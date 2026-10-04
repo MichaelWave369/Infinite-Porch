@@ -1,30 +1,37 @@
-INFINITE PORCH 0.1.1 — PHYSICAL QUALIFICATION CANDIDATE
+INFINITE PORCH 0.1.2 — NATIVE QUALIFICATION CANDIDATE
 
-This is an engineering candidate, not a production-qualified release.
+This is an engineering candidate. Production qualified: false.
 
-Linux x86_64: extract the nested infinite-porch-0.1.1-linux-x86_64.zip.
-Run ./start.sh, open http://127.0.0.1:7331, and use the token in state/api.token
-locally. Sharing starts disabled. Ctrl+C stops the foreground daemon.
+Choose the native portable ZIP for your OS and CPU listed in DELIVERY_REPORT_0.1.2.md.
+Verify its SHA-256 against that report before extraction. Inside each portable
+package, manifest.json lists exact files and hashes. Packages are unsigned; no
+Windows Authenticode or macOS notarization/Gatekeeper/universal-binary claim is made.
+A native runner proves only the architecture actually recorded in its evidence.
 
-For TWO COMPUTERS follow docs/LINUX_QUALIFICATION.md or
- docs/WINDOWS_QUALIFICATION.md. Windows source builds require MSVC, Rust 1.89.0
-and Node 22+. No Windows executable is included unless explicitly listed in
-REPOSITORY_STATE.json. macOS is source-only and unverified.
+Linux/macOS: run ./start.sh in the extracted bundle. Windows: start.ps1 launches a
+foreground node; for the two-PC test use field-kit/windows/Porch-FieldLab.ps1.
+The local control API is http://127.0.0.1:7331 and requires state/api.token locally.
+Never expose the control API or Ollama's control port through the firewall.
 
-Use bin/porch qualify host/join/status/run/export/validate.
-Use bin/porch models scan/refresh/verify.
-Use bin/porch doctor for independent readiness categories.
+On PC-A / PC-B from the Windows field kit, run setup -Alias PC-A (or PC-B) with
+-Session field-001. Follow field-kit/windows/START_HERE.md for explicit fingerprint
+pairing and bounded model/message/storage grants. The requester command qualify
+-Guided automates the sequence while owner revocation/restart remain on the owner PC.
+Use only the exact installed real model tag. Mock provider tests never qualify weights.
 
-Evidence defaults exclude private prompts, unrelated job outputs, tokens,
-private keys and raw daemon logs. Only fixed public diagnostic output is exported.
-Validate exported evidence: bin/porch qualify validate evidence-directory
-Validate portable package integrity: python3 scripts/verify_package.py PACKAGE.zip
+The Qualification UI shows SOFTWARE, NETWORK, MODEL, SECURITY and PACKAGING gates
+separately. Import the delivered qualification-gates.json with qualify import-gates
+or the UI file input when it is present. It must match this binary's source commit.
+It does not import physical or independent-review PASS claims.
 
-Preserved baseline: 3a3ace51979110afc76fa2dda7a35108c41af15b.
-Current commit, branch and package hashes: REPOSITORY_STATE.json / SHA256SUMS.txt.
-Tests and supply-chain classification: docs/receipts/qualification/.
-Required software/external gates: docs/RELEASE_GATES.md.
-Roadmap REQUIRED/FUTURE: docs/ROADMAP.md.
+Evidence commands: porch qualify run/export/validate/snapshot/correlate.
+Read the physical report state; a command completing is not a PASS certificate.
+Do not share keys, tokens, state databases or raw private daemon logs. The public
+probe exports only selected diagnostic input/outputs and whitelisted metadata.
 
-Two physical nodes, real Ollama weights, offline LAN, native Windows/macOS and
-independent review remain external evidence gates until actually run.
+Baseline: 58d79264f3cb21d4a9dbc5dda474602c726e9d27. Protocol: 1. Schema: 2.
+Exact commit, branch, test totals, runner results, archives and hashes:
+DELIVERY_REPORT_0.1.2.md and release-evidence in the outer candidate ZIP.
+
+Physical LAN/mDNS, household WAN-off, residential WAN traversal, GPU/VRAM,
+sustained hardware load and independent security review require external evidence.

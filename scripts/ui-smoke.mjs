@@ -48,7 +48,7 @@ try {
   assert.equal(await page.locator('.gate-row').count(),16);
   assert.equal(await page.locator('.gate-row .badge.green').count(),0);
 
-  await page.getByLabel('Evidence environment').selectOption('PHYSICAL');
+  await page.getByLabel('Evidence environment').selectOption('PHYSICAL_LAN');
   await page.getByRole('button',{name:'Run qualification',exact:true}).click();
   await page.getByRole('alert').filter({hasText:'PHYSICAL_REQUIRES_OPERATOR_ATTESTATION'}).waitFor();
   await page.getByLabel('Evidence environment').selectOption('LOOPBACK');

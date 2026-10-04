@@ -13,3 +13,5 @@ api.token
 /packages/sdk/dist/
 __pycache__/
 *.pyc
+
+/release-evidence/

@@ -161,3 +161,38 @@ fn stored_metadata_rejects_unknown_caps_and_corrupt_content_ids() {
     config["limits"]["remote_shell"] = json!(true);
     assert!(serde_json::from_value::<Config>(config).is_err());
 }
+
+#[test]
+fn gate_import_requires_exact_build_and_cannot_close_physical_or_review_gates() -> Result<()> {
+    let root = tempfile::tempdir()?;
+    let node = Node::open(root.path(), Config::default())?;
+    let initial = qualification::gates(&node);
+    assert!(
+        initial["categories"]
+            .as_object()
+            .unwrap()
+            .values()
+            .flat_map(|v| v.as_array().unwrap())
+            .all(|g| g["result"] == "UNVERIFIED")
+    );
+    let mut report = json!({"schema_version":1,"commit":qualification::build()["commit"],"production_qualified":false,"gates":[{"id":"linux_native","result":"PASS","evidence_class":"NATIVE_HOSTED","source":"property fixture only"}]});
+    qualification::import_gates(&node, &report)?;
+    assert_eq!(
+        qualification::gates(&node)["categories"]["NETWORK"][1]["result"],
+        "UNVERIFIED"
+    );
+    for id in [
+        "physical_lan",
+        "wan_off_lan",
+        "wan_traversal",
+        "independent_review",
+        "physical_remote_ollama",
+    ] {
+        report["gates"][0]["id"] = json!(id);
+        assert!(qualification::import_gates(&node, &report).is_err());
+    }
+    report["gates"][0]["id"] = json!("linux_native");
+    report["commit"] = json!("wrong-build");
+    assert!(qualification::import_gates(&node, &report).is_err());
+    Ok(())
+}

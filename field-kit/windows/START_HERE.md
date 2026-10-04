@@ -35,6 +35,8 @@ On PC-A, start your already installed local Ollama and install a model whose lic
 .\Porch-FieldLab.ps1 qualify -Peer '<PC-A-ID>' -Model '<exact-installed-tag>' -SeparateMachinesConfirmed -Out .\baseline-B -Session field-001
 ```
 
+For a single guided requester sequence, add `-Guided` to `qualify`. It runs the baseline, pauses for the owner to revoke, verifies the refusal, checks requester restart, and asks for the owner's independently exported post-restart snapshot before correlation. Owner actions remain on PC-A because requester authority cannot revoke owner grants. Failed phases are retained while independent checks continue safely. The manual commands below provide the same phases individually.
+
 The public diagnostic checks identity, path, signed discovery, trust, message delivery, bounded authorization, actual remote inference, signed receipt, encrypted storage transfer, retrieval integrity and ledger. A mock invocation is PARTIAL. Failed steps remain FAIL even when independent steps succeed. Finish owner-mediated revocation and restart before the final report:
 
 ```powershell

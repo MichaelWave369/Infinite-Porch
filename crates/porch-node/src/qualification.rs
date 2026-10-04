@@ -69,6 +69,10 @@ pub async fn run(node: &Arc<Node>, args: &Value) -> Result<Value> {
         ),
         "INVALID_QUALIFICATION_ENVIRONMENT"
     );
+    ensure!(
+        environment != "PHYSICAL",
+        "LEGACY_PHYSICAL_CLASS_READ_ONLY_USE_PHYSICAL_LAN"
+    );
     let phase = args["phase"].as_str().unwrap_or("baseline");
     ensure!(
         matches!(
@@ -78,6 +82,10 @@ pub async fn run(node: &Arc<Node>, args: &Value) -> Result<Value> {
         "INVALID_QUALIFICATION_PHASE"
     );
     if is_physical(environment) {
+        ensure!(
+            std::env::var("GITHUB_ACTIONS").as_deref() != Ok("true"),
+            "HOSTED_RUNNER_CANNOT_CLAIM_PHYSICAL_CLASS"
+        );
         ensure!(
             args["separate_machines_confirmed"] == true,
             "PHYSICAL_REQUIRES_OPERATOR_ATTESTATION"

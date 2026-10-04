@@ -83,24 +83,3 @@ jobs:
           name: porch-0.1.2-hosted-live-ollama
           retention-days: 30
           path: release-evidence/live-ollama/
-
-  publish-history:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Publish preserved source history to new qualification branch
-        shell: bash
-        run: |
-          if test -f .ci/candidate.bundle; then
-            git fetch .ci/candidate.bundle 'refs/heads/*:refs/remotes/candidate/*' 'refs/tags/*:refs/tags/*'
-            candidate=$(cat .ci/candidate-commit.txt)
-            if ! git ls-remote --exit-code origin refs/heads/feat/porch-v0.1.2-native-qualification; then
-              git push origin "$candidate:refs/heads/feat/porch-v0.1.2-native-qualification"
-              git push origin refs/tags/baseline-v0.1.0-candidate refs/tags/v0.1.1-physical-qualification-candidate
-            fi
-          fi

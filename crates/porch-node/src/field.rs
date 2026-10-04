@@ -13,6 +13,10 @@ pub fn snapshot(node: &Node, args: &Value) -> Result<Value> {
     ensure!(qualification::valid_class(class), "INVALID_EVIDENCE_CLASS");
     let physical = qualification::is_physical(class);
     ensure!(
+        !physical || std::env::var("GITHUB_ACTIONS").as_deref() != Ok("true"),
+        "HOSTED_RUNNER_CANNOT_CLAIM_PHYSICAL_CLASS"
+    );
+    ensure!(
         !physical || args["separate_machines_confirmed"] == true,
         "PHYSICAL_ATTESTATION_REQUIRED"
     );
@@ -76,7 +80,8 @@ pub fn validate_snapshot(value: &Value) -> Result<Signed<Value>> {
             && p["peer_id"] == signed.signer
             && p["production_qualified"] == false
             && p["timestamp"].as_u64().is_some()
-            && p["ledger_verified"] == true,
+            && p["ledger_verified"] == true
+            && p["fingerprint_sha256"] == qualification::fingerprint(&signed.public_key)?,
         "FIELD_SCHEMA_OR_IDENTITY_MISMATCH"
     );
     let class = p["environment"].as_str().context("FIELD_CLASS_REQUIRED")?;
@@ -123,7 +128,19 @@ pub fn validate_snapshot(value: &Value) -> Result<Signed<Value>> {
                 g.signer == g.payload.issuer
                     && j["executor"] == g.signer
                     && j["requester"] == g.payload.recipient
-                    && j["route"]["chosen"] == j["executor"],
+                    && j["route"]["chosen"] == j["executor"]
+                    && g.payload.capability == job.capability
+                    && g.payload.resource == job.resource
+                    && g.payload.action == "run"
+                    && job.execution_mode == "REMOTE_NODE"
+                    && job.privacy != Privacy::LocalOnly
+                    && job.input.len() as u64 <= g.payload.limits.max_input_bytes
+                    && job.max_output_tokens <= g.payload.limits.max_output_tokens
+                    && job.timeout_ms <= g.payload.limits.max_duration_ms
+                    && g.payload
+                        .exact_input_digest
+                        .as_ref()
+                        .is_none_or(|d| d == &job.input_digest),
                 "FIELD_GRANT_OR_ROUTE_MISMATCH"
             );
         }
@@ -140,7 +157,7 @@ pub fn validate_snapshot(value: &Value) -> Result<Signed<Value>> {
                     && j["request_digest"] == r.request_digest
                     && r.output_digest == digest(&canonical(&r.output)?)
                     && r.finished_at >= r.started_at
-                    && r.finished_at <= p["timestamp"].as_u64().unwrap() + 2
+                    && r.finished_at <= p["timestamp"].as_u64().unwrap().saturating_add(2)
                     && matches!(
                         r.status.as_str(),
                         "COMPLETED" | "REFUSED" | "UNCERTAIN" | "FAILED"
@@ -149,7 +166,9 @@ pub fn validate_snapshot(value: &Value) -> Result<Signed<Value>> {
             );
             if origin {
                 ensure!(
-                    j["grant"]["payload"]["nonce"] == json!(r.grant_nonce),
+                    j["grant"]["payload"]["nonce"] == json!(r.grant_nonce)
+                        && j["job_manifest"]["resource"] == r.resource
+                        && j["job_manifest"]["capability"] == r.capability,
                     "FIELD_GRANT_NONCE_MISMATCH"
                 );
             }

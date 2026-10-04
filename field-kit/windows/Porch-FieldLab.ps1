@@ -8,7 +8,7 @@ param(
     [ValidateRange(1024,65535)][int]$ApiPort=7331,
     [ValidateRange(1024,65535)][int]$PeerPort=7332,
     [ValidateSet('PHYSICAL_LAN','NATIVE_HOSTED','LOOPBACK')][string]$Environment='PHYSICAL_LAN',
-    [switch]$SeparateMachinesConfirmed, [switch]$WanConditionConfirmed, [switch]$NoMdns
+    [switch]$Guided, [switch]$SeparateMachinesConfirmed, [switch]$WanConditionConfirmed, [switch]$NoMdns
 )
 . "$PSScriptRoot\Field-Common.ps1"
 $manifest = Test-PorchPackage $PackageRoot
@@ -30,7 +30,7 @@ function Save-Field($Value,[string]$Path) {
     if ($parent) { New-Item -ItemType Directory -Force $parent | Out-Null }
     $Value | ConvertTo-Json -Depth 80 | Set-Content -LiteralPath $Path -Encoding utf8
 }
-function Get-Checkpoint { Invoke-Operation 'field.snapshot' @{session=$Session;environment=$Environment;separate_machines_confirmed=[bool]$SeparateMachinesConfirmed} }
+function Get-Checkpoint { Invoke-Porch @('share','refresh') | Out-Null; Invoke-Operation 'field.snapshot' @{session=$Session;environment=$Environment;separate_machines_confirmed=[bool]$SeparateMachinesConfirmed} }
 function Start-FieldNode {
     try { return Invoke-Porch @('status') } catch {}
     if (Test-Path $settings) {
@@ -141,7 +141,33 @@ switch ($Command) {
         Invoke-Porch @('grants') | ConvertTo-Json -Depth 20 | Write-Output
         Write-Host 'VISIBLE, REACHABLE, AUTHORIZED, VERIFIED and SUCCESSFULLY_EXECUTED remain separate observations. Import each model, message and storage grant.'
     }
-    'qualify' { Run-Field 'baseline' | Out-Null }
+    'qualify' {
+        if (!$Guided) { Run-Field 'baseline' | Out-Null; break }
+        if (!$Out) { $script:Out=Join-Path (Get-Location) ("guided-"+$Session+'-'+[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff')) }
+        $guidedRoot=$Out
+        if (Test-Path $guidedRoot) { throw 'Guided evidence root already exists; choose fresh -Out' }
+        New-Item -ItemType Directory $guidedRoot | Out-Null
+        $events=@()
+        $script:Out=Join-Path $guidedRoot 'baseline'
+        try { Run-Field 'baseline' | Out-Null } catch { $events+=@{phase='baseline';result='FAIL';reason=$_.Exception.Message};Write-Warning $_.Exception.Message }
+        Confirm-Identity 'On PC-A run revoke -File model-grant.json for this requester. Confirm only after PC-A reports revocation.'
+        $script:Out=Join-Path $guidedRoot 'revoked'
+        try { Run-Field 'revoked' | Out-Null } catch { $events+=@{phase='revoked';result='FAIL';reason=$_.Exception.Message};Write-Warning $_.Exception.Message }
+        try {
+            $before=Get-Checkpoint;Stop-FieldNode;Start-FieldNode | Out-Null
+            $restart=Invoke-Operation 'field.restart' @{before=$before}
+            Save-Field $restart (Join-Path $guidedRoot 'restart.json')
+            if ($restart.payload.scenarios[0].result -ne 'PASS') { throw 'Restart persistence scenario failed' }
+        } catch { $events+=@{phase='restart';result='FAIL';reason=$_.Exception.Message};Write-Warning $_.Exception.Message }
+        Save-Field (Get-Checkpoint) (Join-Path $guidedRoot 'requester-participant.json')
+        Write-Host 'PC-A: run restart-check, then snapshot to PC-A-participant.json using this same session. Transfer that signed snapshot here.'
+        $remoteFile=Read-Host 'Path to the independently exported PC-A participant JSON'
+        & $cli qualify correlate $remoteFile (Join-Path $guidedRoot 'requester-participant.json') --out (Join-Path $guidedRoot 'report')
+        if ($LASTEXITCODE) { $events+=@{phase='correlate';result='FAIL';reason='Participant validation failed'} }
+        Save-Field @{events=$events;failed_events=$events.Count;no_absent_step_counts_as_pass=$true} (Join-Path $guidedRoot 'guided-events.json')
+        Write-Host "Guided evidence retained: $guidedRoot. Read report state; a command completing does not imply physical qualification."
+        if ($events.Count) { throw 'Guided run retained failures; inspect evidence and report' }
+    }
     'offline' {
         if (!$WanConditionConfirmed) { throw 'Human must remove only upstream Internet and confirm -WanConditionConfirmed; keep both PCs on the LAN' }
         $pre=Invoke-Porch @('network')

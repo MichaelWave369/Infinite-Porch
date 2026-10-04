@@ -1,4 +1,4 @@
-# Infinite Porch 0.1.1 — physical qualification candidate
+# Infinite Porch 0.1.2 — native qualification candidate
 
 Required Rust: **1.89.0**. The locked UUID dependency rejects 1.88; 1.89 is the tested compiler. Node 22.12+ and Python 3.12+ are used by the build and acceptance tooling.
 
@@ -6,24 +6,28 @@ Continue the 0.1.0 architecture: Ed25519 peer identities, QUIC or TCP/Noise,
 explicit trust and bounded grants, local Ollama, encrypted ciphertext storage,
 messaging, CLI, SDK, React desktop control UI and signed Reality Ledger.
 
-This candidate adds a first-class physical qualification workflow, present-time
-provider verification, authenticated path observations, signed sanitized evidence,
-recovery tests, schema migration, operator caps and platform helpers.
+This candidate adds native Windows/macOS/Linux runner execution, a guided Windows
+field lab, independent participant evidence correlation, sixteen separate UI gates,
+and an independent-security-review preparation kit. Protocol remains 1, schema 2.
+The 0.1.1 baseline `58d79264f3cb21d4a9dbc5dda474602c726e9d27` and its original
+receipts remain in the preserved history.
 
-| Evidence class | Status |
+| Evidence boundary | Where to inspect |
 | --- | --- |
-| Implementation | Qualification CLI/UI, live adapter, diagnostics, export/validator, migrations and hardening implemented |
-| Local verification | See `docs/receipts/qualification/command-gates.json` for executed checks |
-| CI | Multi-platform workflow configured; no remote CI execution claimed |
-| Physical computers / LAN / real weights | UNVERIFIED until separately collected evidence exists |
-| Windows and macOS native operation | UNVERIFIED; source workflows and guides provided |
-| Independent security review / production release | UNVERIFIED / not released |
-| Federation, public relays, WASM, sharding, GPU pooling | FUTURE; not installed |
+| Native software, runtime, migration and packages | Exact-commit runner summaries and raw gate logs in the delivery's `release-evidence/native/` |
+| Loopback peers and explicit mock | Native execution receipts; topology NATIVE_HOSTED_LOOPBACK, never a physical home LAN |
+| Hosted live Ollama | Separate real distribution/weight/inference experiment; actual PASS/SKIPPED/FAIL in its retained summary |
+| Physical PCs, LAN, WAN-off and remote model | Independently exported field participant records and correlation report; no hosted promotion |
+| Dependency audit and internal regression | Specific gate logs; dependency advisories and accepted decisions remain visible |
+| Independent security / production | Independent review UNVERIFIED; production_qualified always false |
+| Federation, relays, WASM, sharding, GPU pooling | Not installed |
 
-Start with [START_HERE.txt](START_HERE.txt). Exact two-PC procedures:
-[Windows](docs/WINDOWS_QUALIFICATION.md), [Linux](docs/LINUX_QUALIFICATION.md),
-[macOS](docs/MACOS_QUALIFICATION.md). The shared acceptance sequence is in
-[Physical qualification](docs/PHYSICAL_QUALIFICATION.md).
+Start with [START_HERE.txt](START_HERE.txt). On two physical Windows PCs use
+[field-kit/windows/START_HERE.md](field-kit/windows/START_HERE.md), including the
+single guided requester sequence. Security reviewers start at
+[security-review/README.md](security-review/README.md). The original Linux/macOS
+operator guides remain available under `docs/`; a platform is qualified only when
+its applicable native execution gates have actually passed for the delivered commit.
 
 ```sh
 cargo build --workspace --locked
@@ -54,8 +58,8 @@ needs no vendor account, cloud service, blockchain or central authority.
 ## Run from source
 
 Requirements: Rust 1.89.0, Node 22.12+, npm, Python 3.12+, and a C compiler for bundled
-SQLite. Linux x86_64 builds and local runtime are tested here. The CI configuration builds and tests Windows,
-Linux and macOS; those remote jobs have not been run for this candidate.
+SQLite. Linux x86_64 builds and local runtime are tested here. Per-commit native CI receipts record the actual Windows, Linux and macOS results;
+read the delivery report for the applicable suite and package outcome.
 
 ```sh
 npm ci
@@ -176,6 +180,6 @@ when built on Windows. There is no service installation or autostart.
 See [architecture](docs/ARCHITECTURE.md), [authority](docs/AUTHORITY.md),
 [security and limitations](docs/SECURITY.md), [testing evidence](docs/TESTING.md),
 [operations](docs/OPERATIONS.md), [API](docs/API.md) and [CLI](docs/CLI.md).
-The untouched current brief is [CONTROLLING_SPEC_0.1.1.txt](docs/CONTROLLING_SPEC_0.1.1.txt); the original 0.1.0 brief and baseline tag are preserved.
-The complete delivery assessment is [DELIVERY.md](docs/DELIVERY.md).
-The current traceability register is [REQUIREMENTS_0.1.1.md](docs/REQUIREMENTS_0.1.1.md).
+The current brief is [CONTROLLING_SPEC_0.1.2.txt](docs/CONTROLLING_SPEC_0.1.2.txt); both earlier briefs and baseline tags remain preserved.
+The current delivery assessment is DELIVERY_REPORT_0.1.2.md in the outer package.
+The current traceability register is [REQUIREMENTS_0.1.2.json](docs/REQUIREMENTS_0.1.2.json).
