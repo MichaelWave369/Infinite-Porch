@@ -1,6 +1,6 @@
 # Two-PC Windows field lab
 
-Use the **native Windows 0.1.2 portable ZIP**. Compare its SHA-256 with the separately obtained delivery report, extract it into a directory you own, and run PowerShell 7 from `field-kit/windows`. The binaries and manifest are unsigned. Hashes detect altered bytes; an unsigned manifest alone does not establish publisher authenticity.
+Use the **native Windows 0.1.2 portable ZIP**. Compare its SHA-256 with the separately obtained delivery report, extract it into a directory you own, and run PowerShell 7.5+ from `field-kit/windows`. PowerShell 7.5+ is required to preserve timestamp-like strings in signed JSON (`ConvertFrom-Json -DateKind String`). The binaries and manifest are unsigned. Hashes detect altered bytes; an unsigned manifest alone does not establish publisher authenticity.
 
 If Windows blocks downloaded scripts after you verify the ZIP hash, review the scripts and remove their download marker with `Get-ChildItem -LiteralPath . -Filter *.ps1 | Unblock-File`. Do not change a managed or machine-wide execution policy.
 

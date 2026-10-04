@@ -1,3 +1,4 @@
+#requires -Version 7.5
 [CmdletBinding()]
 param(
     [Parameter(Position=0,Mandatory)][ValidateSet('setup','pair-host','pair-join','model-host','model-join','storage-host','qualify','offline','restart-check','revoke','refused-check','snapshot','correlate','failure-check','stop')][string]$Command,
@@ -21,7 +22,7 @@ if ($Session -notmatch '^[A-Za-z0-9_-]{1,48}$') { throw 'Use a short public sess
 function Invoke-Porch([string[]]$Arguments) {
     $text = & $cli --data $State --api $api @Arguments
     if ($LASTEXITCODE -ne 0) { throw "Porch command refused: $($Arguments[0]) (exit $LASTEXITCODE)" }
-    $text -join "`n" | ConvertFrom-Json
+    $text -join "`n" | ConvertFrom-Json -DateKind String
 }
 function Invoke-Operation([string]$Operation, $Arguments) { Invoke-Porch @('call',$Operation,'--json',($Arguments | ConvertTo-Json -Depth 40 -Compress)) }
 function Save-Field($Value,[string]$Path) {
@@ -34,25 +35,26 @@ function Get-Checkpoint { Invoke-Porch @('share','refresh') | Out-Null; Invoke-O
 function Start-FieldNode {
     try { return Invoke-Porch @('status') } catch {}
     if (Test-Path $settings) {
-        $s=Get-Content $settings -Raw | ConvertFrom-Json
+        $s=Get-Content $settings -Raw | ConvertFrom-Json -DateKind String
         if ($s.api_port -ne $ApiPort -or $s.peer_port -ne $PeerPort) { throw 'Saved field ports differ; reuse setup ports' }
     }
     $listen='/ip4/0.0.0.0'; if ($Environment -ne 'PHYSICAL_LAN') { $listen='/ip4/127.0.0.1' }
     $args=@('--data',('"'+$State+'"'),'--api',"127.0.0.1:$ApiPort",'--listen',"$listen/tcp/$PeerPort",'--listen',"$listen/udp/$PeerPort/quic-v1",'--ui',('"'+(Join-Path $PackageRoot 'ui')+'"'))
     if ($NoMdns) { $args+='--no-mdns' }
     $process=Start-Process -FilePath $daemon -ArgumentList $args -PassThru -RedirectStandardOutput (Join-Path $State 'field-node.stdout.log') -RedirectStandardError (Join-Path $State 'field-node.stderr.log')
-    @{pid=$process.Id;path=$daemon;started=$process.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json | Set-Content (Join-Path $State 'field-owned-process.json')
+    # Record the actual image path: Windows can expand an 8.3 launch path.
+    @{pid=$process.Id;path=$process.MainModule.FileName;started=$process.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json | Set-Content (Join-Path $State 'field-owned-process.json')
     for ($i=0;$i -lt 100;$i++) { Start-Sleep -Milliseconds 150; try { return Invoke-Porch @('status') } catch { if ($process.HasExited) { throw 'Owned Porch node exited; preserve local logs' } } }
     throw 'Node did not become ready'
 }
 function Stop-FieldNode {
     $file=Join-Path $State 'field-owned-process.json'
     if (!(Test-Path $file)) { throw 'No field-owned process record; stop a manually launched node yourself' }
-    $owned=Get-Content $file -Raw | ConvertFrom-Json
+    $owned=Get-Content $file -Raw | ConvertFrom-Json -DateKind String
     $p=Get-Process -Id $owned.pid -ErrorAction Stop
     if ($p.Path -ne $owned.path -or $p.StartTime.ToUniversalTime().ToString('o') -ne $owned.started) { throw 'PID no longer identifies the field-owned node' }
     Stop-Process -Id $p.Id
-    $p.WaitForExit(8000) | Out-Null
+    if (!$p.WaitForExit(8000)) { throw 'Owned node did not stop; process record preserved' }
     Remove-Item $file
 }
 function Confirm-Identity([string]$Description) {
@@ -110,7 +112,7 @@ switch ($Command) {
     }
     'pair-join' {
         if (!$File -or !$Fingerprint) { throw '-File and -Fingerprint verified on PC-A required' }
-        $invite=Get-Content $File -Raw | ConvertFrom-Json
+        $invite=Get-Content $File -Raw | ConvertFrom-Json -DateKind String
         Write-Host "Host $($invite.signer) | Porch $($invite.payload.porch) | Expected recipient $($invite.payload.recipient)"
         Invoke-Porch @('identity','show') | ConvertTo-Json | Write-Host
         Write-Host ('Host fingerprint phrase: '+(Get-PorchFingerprintPhrase $Fingerprint))
@@ -197,7 +199,7 @@ switch ($Command) {
     }
     'revoke' {
         if (!$File) { throw '-File original model grant required' }
-        $grant=Get-Content $File -Raw | ConvertFrom-Json
+        $grant=Get-Content $File -Raw | ConvertFrom-Json -DateKind String
         Invoke-Porch @('grant','revoke',$grant.payload.nonce) | ConvertTo-Json | Write-Output
         Write-Host 'Requester now runs refused-check; export fresh snapshots on both PCs.'
     }
