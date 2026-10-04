@@ -1,85 +1,32 @@
-name: Native qualification 0.1.2
+name: Windows package repair diagnostic
 on:
   push:
-  pull_request:
-  workflow_dispatch:
-    inputs:
-      live_ollama:
-        type: boolean
-        default: false
-        description: Attempt real CPU Ollama weights on Ubuntu
+    branches: ['ci/porch-v0.1.2-windows-package-repair']
 permissions:
   contents: read
+  actions: read
 jobs:
-  native:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            evidence: ubuntu
-          - os: windows-latest
-            evidence: windows
-          - os: macos-latest
-            evidence: macos
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Restore exact candidate history when transported by API
-        shell: bash
-        run: |
-          if test -f .ci/candidate.bundle; then
-            expected=$(cat .ci/candidate-commit.txt)
-            git fetch .ci/candidate.bundle feat/porch-v0.1.2-native-qualification
-            git checkout -B feat/porch-v0.1.2-native-qualification FETCH_HEAD
-            test "$(git rev-parse HEAD)" = "$expected"
-          fi
-      - uses: dtolnay/rust-toolchain@1.89.0
-        with:
-          components: rustfmt, clippy
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Execute all applicable native gates
-        run: python scripts/native_qualification.py --out release-evidence/native/${{ matrix.evidence }}
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 37168990358
+          name: porch-0.1.2-windows-native
+          path: prior-native
+      - name: Diagnose extracted package using file-backed wrapper logs
+        env:
+          PORCH_EVIDENCE_ROOT: diagnostic
+        run: python tests/package_acceptance.py --archive (Get-ChildItem prior-native/packages/*.zip).FullName --out diagnostic/package.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: porch-0.1.2-${{ matrix.evidence }}-native
+          name: porch-0.1.2-windows-package-repair-diagnostic
           retention-days: 30
-          if-no-files-found: error
-          path: release-evidence/native/${{ matrix.evidence }}/
-  live-ollama:
-    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.live_ollama)
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Restore candidate source
-        shell: bash
-        run: |
-          if test -f .ci/candidate.bundle; then
-            git fetch .ci/candidate.bundle feat/porch-v0.1.2-native-qualification
-            git checkout -B feat/porch-v0.1.2-native-qualification FETCH_HEAD
-          fi
-      - uses: dtolnay/rust-toolchain@1.89.0
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: cargo build --workspace --locked
-      - run: python scripts/live_ollama_ci.py --out release-evidence/live-ollama
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: porch-0.1.2-hosted-live-ollama
-          retention-days: 30
-          path: release-evidence/live-ollama/
+          path: diagnostic/
