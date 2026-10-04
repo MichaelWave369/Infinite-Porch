@@ -1,0 +1,33 @@
+{
+  "candidate": "0.1.1",
+  "audit_tool": "cargo audit",
+  "raw_vulnerabilities": 2,
+  "gate": "PASS_WITH_REVIEWED_FINDINGS",
+  "findings": [
+    {
+      "id": "RUSTSEC-2026-0118",
+      "package": "hickory-proto 0.25.2",
+      "classification": "unreachable_in_current_configuration",
+      "reason": "unreachable: DNSSEC feature and validation handle are absent",
+      "upgrade_required_if_scope_changes": true
+    },
+    {
+      "id": "RUSTSEC-2026-0119",
+      "package": "hickory-proto 0.25.2",
+      "classification": "unreachable_in_current_configuration",
+      "reason": "unreachable: mDNS decodes with Hickory, but encodes manually without BinEncoder",
+      "upgrade_required_if_scope_changes": true
+    },
+    {
+      "id": "RUSTSEC-2024-0436",
+      "package": "paste 1.0.15",
+      "classification": "build_time_maintenance_risk",
+      "reason": "Transitive macro dependency. Retained for this bounded candidate; replace through upstream dependency update."
+    }
+  ],
+  "independent_security_review": "UNVERIFIED",
+  "mdns_source_hashes": {
+    "dns.rs": "54ea888e288679a55e91a6a47c4d6b03fb621689d462d04fcbdfb209b82f9bd6",
+    "query.rs": "bc3aec63cdc0b7e0d8cbbe848f940e8cf5615d98f3166b3adb51d5b1b67a288f"
+  }
+}

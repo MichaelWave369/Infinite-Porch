@@ -4,22 +4,27 @@
 No Internet connection, cloud account, Ollama, Python package, or bootstrap server
 is used by this harness. This proves loopback LAN-like paths, not physical Wi-Fi.
 """
-import argparse,hashlib,json,os,pathlib,socket,sqlite3,subprocess,sys,tempfile,time,urllib.error,urllib.request
+import argparse,hashlib,json,os,pathlib,socket,sqlite3,subprocess,sys,tempfile,time,tomllib,urllib.error,urllib.request
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 HTTP=urllib.request.build_opener(urllib.request.ProxyHandler({}))
-def port():
-    with socket.socket() as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
+def port(udp=False):
+    with socket.socket(socket.AF_INET,socket.SOCK_DGRAM if udp else socket.SOCK_STREAM) as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
 class TestNode:
     def __init__(self,name,root,binary,**extra):
         self.name=name;self.root=root/name;self.root.mkdir(parents=True,exist_ok=True)
-        self.binary=binary;self.api_port=port();self.tcp=port();self.extra=extra;self.process=None
+        self.binary=binary;self.api_port=port();self.tcp=port();self.udp=port(udp=True);self.extra=extra;self.process=None
         self.api=f'http://127.0.0.1:{self.api_port}';self.start()
     def start(self):
-        cmd=[str(self.binary),'--data',str(self.root),'--alias',self.name,'--api',f'127.0.0.1:{self.api_port}','--listen',f'/ip4/127.0.0.1/tcp/{self.tcp}','--listen','/ip4/127.0.0.1/udp/0/quic-v1','--no-mdns','--ui',str(ROOT/'apps/desktop/dist')]
+        cmd=[str(self.binary),'--data',str(self.root),'--alias',self.name,'--api',f'127.0.0.1:{self.api_port}','--listen',f'/ip4/127.0.0.1/tcp/{self.tcp}','--listen',f'/ip4/127.0.0.1/udp/{self.udp}/quic-v1','--no-mdns','--ui',str(self.extra.get('ui',ROOT/'apps/desktop/dist'))]
+        if self.extra.get('transport')=='tcp':
+            at=cmd.index(f'/ip4/127.0.0.1/udp/{self.udp}/quic-v1');del cmd[at-1:at+1]
+        elif self.extra.get('transport')=='quic':
+            at=cmd.index(f'/ip4/127.0.0.1/tcp/{self.tcp}');del cmd[at-1:at+1]
         if self.extra.get('model'):cmd+=['--mock-model',self.extra['model']]
         if self.extra.get('hash'):cmd+=['--share-hash']
         if self.extra.get('storage'):cmd+=['--storage-quota',str(self.extra['storage'])]
+        if self.extra.get('ollama'):cmd+=['--ollama',self.extra['ollama']]
         self.log=open(self.root/'daemon.log','a')
         self.process=subprocess.Popen(cmd,stdout=self.log,stderr=self.log)
         for _ in range(150):
@@ -154,9 +159,9 @@ def main():
         passed('durable signed ledger chains verify after the scenario')
         evidence['node_ids']={n.name:n.id for n in nodes};evidence['transport_scope']='three OS processes; verified loopback TCP/Noise path and QUIC listeners; no external Internet dependencies; LAN-like simulation'
         evidence['unverified']=['physical LAN and mDNS','WAN NAT traversal','live Ollama','Windows/macOS native packages','production security review']
-        result={'version':1,'candidate':'0.1.0','passed':True,'checks':checks,'duration_seconds':round(time.time()-start,3),'evidence':evidence}
+        result={'version':1,'candidate':tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version'],'passed':True,'checks':checks,'duration_seconds':round(time.time()-start,3),'evidence':evidence}
     except Exception as exc:
-        result={'version':1,'candidate':'0.1.0','passed':False,'checks':checks,'failure':repr(exc),'duration_seconds':round(time.time()-start,3)}
+        result={'version':1,'candidate':tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version'],'passed':False,'checks':checks,'failure':repr(exc),'duration_seconds':round(time.time()-start,3)}
         raise
     finally:
         for n in nodes:n.stop()

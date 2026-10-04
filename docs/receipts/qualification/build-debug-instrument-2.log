@@ -1,0 +1,9 @@
+   Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+error[E0425]: cannot find value `operation` in this scope
+    --> crates/porch-node/src/lib.rs:1272:36
+     |
+1272 |         eprintln!("DEBUG rpc SEND {operation}");
+     |                                    ^^^^^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `porch-node` (lib) due to 1 previous error

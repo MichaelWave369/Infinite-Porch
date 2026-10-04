@@ -26,7 +26,7 @@ exits 2; transport/validation errors exit nonzero.
 Storage grants use `--capability blob.storage --resource vault --action store
 --max-storage-bytes 4MiB`. Message grants use `message.direct`, `inbox`, `send`.
 Grant flags include TTL, total/hour calls, input bytes, output tokens, optional
-Porch scope and exact input digest. Full help documents accepted flags. A GPU
+duration (`--max-duration-ms`), Porch scope and exact input digest. Full help documents accepted flags. A GPU
 share command is deliberately absent because no VRAM reservation is enforced.
 
 Scoped apps can be issued credentials through the finite control interface:
@@ -44,3 +44,24 @@ shells; use the desktop operator or PowerShell escaped quotes as appropriate.
 Identity backup/restore/rotation work offline. Output file writes fail if a file
 already exists, so backup, invitation, grant and retrieval outputs do not silently
 overwrite prior artifacts. See IDENTITY.md for secret handling and rotation.
+
+0.1.1 physical workflow:
+
+```sh
+porch qualify host "Oak Street" --recipient PEER_ID --out invite.json
+porch qualify join invite.json --fingerprint VERIFIED_HOST_SHA256
+porch qualify status
+porch models scan
+porch models refresh
+porch models verify EXACT_INSTALLED_MODEL
+porch qualify run --peer PEER_ID --model EXACT_MODEL --environment PHYSICAL --separate-machines-confirmed
+porch qualify export fresh-evidence-directory
+porch qualify validate fresh-evidence-directory
+```
+
+Validation is offline and also accepts the UI's exported JSON container. Run
+phases are baseline, revoked, restart, offline and restored. `--message` adds a
+public probe with its own inbox grant. Physical/WAN attestations cannot prove
+the topology by themselves. See the platform guides for both sides of pairing
+and grant exchange. Use `porch --data STATE configure-limits limits.json` only
+while the daemon is stopped; validated limits take effect at restart.

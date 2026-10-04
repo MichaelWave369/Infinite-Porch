@@ -1,0 +1,48 @@
+hickory-proto v0.25.2
+├── hickory-proto feature "futures-io"
+│   └── hickory-proto feature "std"
+│       └── hickory-proto feature "mdns"
+│           └── libp2p-mdns v0.48.0
+│               ├── libp2p-mdns feature "default"
+│               │   └── libp2p v0.56.0
+│               │       ├── libp2p feature "autonat"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+│               │       │       └── porch-node feature "default" (command-line)
+│               │       │           └── porch-cli v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+│               │       │               └── porch-cli feature "default" (command-line)
+│               │       ├── libp2p feature "dcutr"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "default"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "identify"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "json"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "kad"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "macros"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "mdns"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "noise"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "ping"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "quic"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "relay"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "request-response"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "tcp"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       ├── libp2p feature "tokio"
+│               │       │   └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               │       └── libp2p feature "yamux"
+│               │           └── porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node) (*)
+│               └── libp2p-mdns feature "tokio"
+│                   └── libp2p feature "tokio" (*)
+├── hickory-proto feature "mdns" (*)
+├── hickory-proto feature "socket2"
+│   └── hickory-proto feature "mdns" (*)
+└── hickory-proto feature "std" (*)

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/process_failures.py", line 65, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/process_failures.py", line 42, in main
+    pending=pool.submit(b.call,'job.run',args,True);wait(lambda:Provider.calls>=1);old=a.id;a.stop();r=pending.result(timeout=10)
+                                                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/concurrent/futures/_base.py", line 458, in result
+    raise TimeoutError()
+TimeoutError

@@ -13,6 +13,7 @@ paths require `Authorization: Bearer TOKEN`. The static built UI is same-origin.
 | GET `/v1/resources`, `/models` | Signed selected advertisement and provider records |
 | GET `/v1/jobs`, `/grants`, `/storage`, `/messages`, `/ledger` | Bounded operator detail views |
 | GET `/v1/doctor` | Key/clock/disk and full surviving ledger checks |
+| GET `/v1/qualification` | Operator build, identity, path, provider, grant, job, ledger and qualification snapshot |
 | GET `/v1/events` | Authenticated committed ledger SSE with GAP notification |
 | POST `/v1/control` | `{ "operation": "job.run", "args": { ... } }` |
 
@@ -63,3 +64,11 @@ can consume its compiled package or source workspace. `stream()` uses authentica
 fetch/SSE and a bounded parser. Do not persist the operator credential in browser
 storage. The SDK prevents external API endpoints/path injection and defaults
 to local processing; the daemon independently enforces authority.
+
+0.1.1 finite operator operations also include model.scan/refresh/verify and
+qualification.host/join/run/export. These qualification/control operations
+require the root operator credential; scoped clients do not inherit them.
+qualification.export returns the signed sanitized container downloaded by the
+UI or written as a directory by the CLI. The offline validator and bounded
+evidence schema are documented in QUALIFICATION_RECEIPTS.md. No endpoint accepts
+machine-level chaos, arbitrary URL probes or remote overrides of local caps.

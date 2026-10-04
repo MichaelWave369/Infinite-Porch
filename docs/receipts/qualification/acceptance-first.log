@@ -1,0 +1,34 @@
+PASS unique cryptographic identities
+PASS control API rejects missing operator token
+PASS scoped app credential cannot read operator grant records
+PASS agent credential cannot issue its own peer authority
+PASS client privacy delegation cannot escalate to remote processing
+PASS bounded local agent request executes through the common boundary
+PASS local client credential revocation is persistent and enforced
+PASS cross-origin control request refused
+PASS DNS rebinding host refused
+PASS uninstalled relay, federation, and WASM engines refuse explicitly
+PASS Porch creation and recipient-bound one-use invitations
+PASS signed capability records discovered over real peer connections
+PASS advertising a model does not authorize use
+PASS grant output bounds filter routing before sending input to a peer
+PASS remote mock inference executes on eligible host and returns signed receipt
+PASS requester and executor record digest-based evidence
+PASS execution consumes measured grant accounting
+PASS duplicate job returns original receipt without another execution
+PASS LOCAL_ONLY input never produces an outbound peer job
+PASS oversized input refused before forwarding
+PASS executor revocation blocks next request despite cached client grant
+PASS client-encrypted blob replicated in bounded chunks and verified by full retrieval
+PASS retrieval decrypts locally and preserves plaintext integrity
+PASS corrupted remote blob refused
+PASS signed direct messaging uses the peer transport
+PASS interrupted encrypted transfer resumes at its durable offset after restart
+PASS restart retains identity, trust, grants, storage, and reconnects
+PASS replica retrieval survives provider restart
+PASS origin restart retains the original route and receipt without re-execution
+PASS reachable peers continue when another community node disappears
+PASS basic local and peer paths use no outside Internet or bootstrap
+PASS remote deletion records tombstone and prevents later retrieval
+PASS durable signed ledger chains verify after the scenario
+Acceptance passed: 33 checks. Receipt: docs/receipts/qualification/acceptance-debug.json

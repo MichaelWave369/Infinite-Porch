@@ -1,0 +1,76 @@
+{
+  "candidate": "0.1.1",
+  "environment": "LOOPBACK",
+  "provider": "owned HTTP contract fixture; no weights",
+  "passed": 10,
+  "checks": [
+    {
+      "name": "executor death yields bounded failure",
+      "result": "PASS"
+    },
+    {
+      "name": "executor identity persists after forced process stop",
+      "result": "PASS"
+    },
+    {
+      "name": "running job becomes visible UNCERTAIN",
+      "result": "PASS"
+    },
+    {
+      "name": "uncertain job retry does not reexecute",
+      "result": "PASS"
+    },
+    {
+      "name": "executor records terminal outcome after requester disappears",
+      "result": "PASS"
+    },
+    {
+      "name": "requester identity persists",
+      "result": "PASS"
+    },
+    {
+      "name": "requester restart reconciles original signed receipt once",
+      "result": "PASS"
+    },
+    {
+      "name": "resource advertisement was refreshed after restart",
+      "result": "PASS"
+    },
+    {
+      "name": "revocation remains effective after executor restart",
+      "result": "PASS"
+    },
+    {
+      "name": "signed ledger continuity survives both process stops",
+      "result": "PASS"
+    }
+  ],
+  "physical_qualification": "UNVERIFIED",
+  "transport": "quic",
+  "bounded_reconnection_observations": [
+    {
+      "phase": "executor_restart",
+      "attempt": 1,
+      "status": "REFUSED",
+      "reason": "DUPLICATE_JOB_UNCERTAIN"
+    },
+    {
+      "phase": "requester_restart",
+      "attempt": 1,
+      "status": "COMPLETED",
+      "reason": null
+    },
+    {
+      "phase": "revoked_restart",
+      "attempt": 1,
+      "status": "REFUSED",
+      "reason": "PEER_JOB_DEADLINE"
+    },
+    {
+      "phase": "revoked_restart",
+      "attempt": 2,
+      "status": "REFUSED",
+      "reason": "GRANT_REVOKED_OR_CHANGED"
+    }
+  ]
+}

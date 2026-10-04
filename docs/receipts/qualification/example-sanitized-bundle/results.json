@@ -1,0 +1,268 @@
+[
+  {
+    "evidence_file": "run.json",
+    "expectation": "Persisted cryptographic identity matches this node",
+    "id": "identity",
+    "observation": {
+      "fingerprint_sha256": "960cbad1f8f6edae106190ba078e1fa5504284fc811c00a3fa62705b1454f05a",
+      "peer_id": "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr"
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PASS",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Entire local signed ledger verifies",
+    "id": "ledger",
+    "observation": {
+      "verified": true
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PASS",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Probe local provider without enabling sharing",
+    "id": "ollama_local",
+    "observation": {
+      "model_count": 0,
+      "reachable": false
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "SKIPPED_ENVIRONMENT",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "LOCAL_ONLY generates no outbound remote job even with peers available",
+    "id": "local_only",
+    "observation": {
+      "local_status": "COMPLETED",
+      "outbound_after": 3,
+      "outbound_before": 3
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PASS",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Intended peer has explicit active trust",
+    "id": "peer_trust",
+    "observation": {
+      "trusted": true
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PASS",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Authenticated encrypted connection to the intended peer",
+    "id": "peer_path",
+    "observation": {
+      "authenticated": true,
+      "authenticated_peer": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+      "connected": true,
+      "connection_age_seconds": 0,
+      "connection_id": "1",
+      "connections": [
+        {
+          "authenticated": true,
+          "authenticated_peer": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+          "connected": true,
+          "connection_age_seconds": 0,
+          "connection_id": "1",
+          "direct": true,
+          "encrypted": true,
+          "encryption": "QUIC TLS 1.3",
+          "latency_ms": 1,
+          "local_socket": null,
+          "negotiated_protocol": "/infinite-porch/rpc/1",
+          "path": "LOOPBACK",
+          "path_basis": "authenticated transport IP classification; LAN topology/WAN state require operator evidence",
+          "relayed": false,
+          "remote_socket": "/ip4/127.0.0.1/udp/56320/quic-v1/p2p/12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+          "transport": "QUIC"
+        }
+      ],
+      "direct": true,
+      "encrypted": true,
+      "encryption": "QUIC TLS 1.3",
+      "latency_ms": 1,
+      "local_socket": null,
+      "negotiated_protocol": "/infinite-porch/rpc/1",
+      "path": "LOOPBACK",
+      "path_basis": "authenticated transport IP classification; LAN topology/WAN state require operator evidence",
+      "physical_topology_verified": false,
+      "relayed": false,
+      "remote_peer_id": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+      "remote_socket": "/ip4/127.0.0.1/udp/56320/quic-v1/p2p/12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+      "transport": "QUIC",
+      "trust_state": "TRUSTED"
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PASS",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Two separate computers confirmed by the operator, with a non-loopback direct path",
+    "id": "separate_physical_nodes",
+    "observation": {
+      "independent_physical_verification": false,
+      "observed_path": "LOOPBACK",
+      "operator_attested": false
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "UNVERIFIED",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "The selected remote executor completes real Ollama inference with a valid signed receipt",
+    "id": "remote_inference",
+    "observation": {
+      "executor": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+      "provider": "mock",
+      "reason": null,
+      "receipt_hash": "7597dbdb0278b9c6e9755736ec65017f1dbf29c48afb9558945db31e11ade0c5",
+      "route": {
+        "candidates": [
+          {
+            "authorized": true,
+            "capability_available": true,
+            "fresh": true,
+            "has_capacity": true,
+            "local": false,
+            "observed_latency_ms": 1,
+            "peer": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+            "queue_depth": 0,
+            "same_porch": true,
+            "trusted": true
+          }
+        ],
+        "capability": "model.inference",
+        "chosen": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+        "eligible": [
+          {
+            "local_executor": false,
+            "peer": "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn",
+            "resource_claims_verified": false,
+            "score_order": [
+              1,
+              0,
+              1
+            ]
+          }
+        ],
+        "excluded": [],
+        "federation": "NOT_INSTALLED",
+        "policy": "hard constraints, then local, queue, observed latency, peer-id",
+        "privacy": "TRUSTED_PEERS",
+        "resource": "qual-mock",
+        "version": 1
+      },
+      "status": "COMPLETED"
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PARTIAL",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Public diagnostic message returns a signed delivery receipt",
+    "id": "messaging",
+    "observation": {
+      "status": "DELIVERED"
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "PASS",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Compare pre/post restart identity, trust, revocation, storage and ledger",
+    "id": "restart_recovery",
+    "observation": {
+      "external_evidence_required": true
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "UNVERIFIED",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Independent reviewer evaluates the physical-network attack surface",
+    "id": "independent_security_review",
+    "observation": {
+      "external_evidence_required": true
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "UNVERIFIED",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Execute native Windows qualification",
+    "id": "windows_verification",
+    "observation": {
+      "external_evidence_required": true
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "UNVERIFIED",
+    "timestamp": 1791070992
+  },
+  {
+    "evidence_file": "run.json",
+    "expectation": "Execute native macOS qualification if claiming support",
+    "id": "macos_verification",
+    "observation": {
+      "external_evidence_required": true
+    },
+    "peers": [
+      "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+      "12D3KooWA6KDYKTrB4HApjTXfPyvkDtzcbpXHtQhKiQbYJj7KAZn"
+    ],
+    "result": "UNVERIFIED",
+    "timestamp": 1791070992
+  }
+]

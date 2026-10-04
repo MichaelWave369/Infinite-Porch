@@ -1,0 +1,12 @@
+{
+  "candidate": "0.1.1",
+  "controlling_spec": "docs/CONTROLLING_SPEC_0.1.1.txt",
+  "sha256": "37a97328fa947db3f249d26d99da6d47efe8519fb5f6780cb3dddf89a2d2e5c7",
+  "baseline_commit": "3a3ace51979110afc76fa2dda7a35108c41af15b",
+  "baseline_zip_sha256": "18409ce824a552862a812cba3ee3b6fba74fa7477935decf7f934f81c22e5936",
+  "authority": "Explicit 0.1.1 brief > 0.1.0 specification > conventions",
+  "physical_evidence": "UNVERIFIED",
+  "independent_review": "UNVERIFIED",
+  "production_release": false,
+  "scope": "Qualification, live provider checks, bounded fault testing, diagnostics, migration, platform workflows, security and package integrity; existing architecture preserved."
+}

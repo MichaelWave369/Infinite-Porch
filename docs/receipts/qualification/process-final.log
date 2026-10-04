@@ -1,0 +1,14 @@
+PASS executor death yields bounded failure
+PASS executor identity persists after forced process stop
+PASS running job becomes visible UNCERTAIN
+Traceback (most recent call last):
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/process_failures.py", line 65, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/process_failures.py", line 46, in main
+    r=b.call('job.run',args,allow_refusal=True);check('uncertain job retry does not reexecute',r['status']=='REFUSED' and 'UNCERTAIN' in r['reason'] and Provider.calls==1)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/process_failures.py", line 26, in check
+    def check(name,condition=True):assert condition,name;checks.append({'name':name,'result':'PASS'});print('PASS '+name,flush=True)
+                                          ^^^^^^^^^
+AssertionError: uncertain job retry does not reexecute

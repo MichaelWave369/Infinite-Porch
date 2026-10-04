@@ -1,0 +1,72 @@
+{
+  "candidate": "0.1.1",
+  "controlling_spec": "docs/CONTROLLING_SPEC_0.1.1.txt",
+  "material_scope_change": false,
+  "deviations": [
+    {
+      "id": "D-001",
+      "requirements": ["Q-002"],
+      "original_requirement": "Use the lowest compiler actually supported by the locked graph and align all declared versions.",
+      "pressure": "Cargo declared 1.88 while toolchain/CI/docs named 1.99.0; the locked uuid 1.27.0 rejects Rust 1.88.",
+      "change": "Pin Rust 1.89.0 everywhere; retain uuid and add a consistency gate.",
+      "classification": "Local implementation",
+      "alternatives_considered": ["Downgrade UUID only to retain 1.88", "Raise the minimum without evidence"],
+      "approval_status": "Authorized by controlling brief section 2; no separate decision needed.",
+      "evidence": ["msrv-1.88.log", "rust-release-gate.log", "toolchain-consistency.log"],
+      "files": ["Cargo.toml", "rust-toolchain.toml", ".github/workflows/ci.yml", "README.md", "scripts/check_toolchain.py"],
+      "rollback": "Baseline tag preserves original declarations; any future compiler/dependency change must rerun locked checks."
+    },
+    {
+      "id": "D-002",
+      "requirements": ["Q-004", "Q-005", "Q-007", "Q-009", "Q-010", "Q-012", "Q-013", "Q-014", "Q-017", "Q-028", "Q-030", "Q-032", "Q-035"],
+      "original_requirement": "Build physical/live/platform qualification, execute where possible and label unavailable external evidence honestly.",
+      "pressure": "Only a managed Linux environment is available; no second physical PC, real Ollama/weights, Windows/macOS runtime, PowerShell, systemd session or compatible idle /proc metrics.",
+      "change": "Use real loopback TCP/QUIC, explicit mocks and owned dynamic HTTP fixtures for local gates; provide exact external procedures. Keep physical/platform/review/idle results UNVERIFIED and missing live-provider scenarios SKIPPED_ENVIRONMENT.",
+      "classification": "Environment limitation; no scope removal",
+      "alternatives_considered": ["Wait without implementing qualification tooling", "Misclassify loopback or provider fixtures as physical/live evidence"],
+      "approval_status": "Explicitly authorized by brief sections 32 and 34. No physical success or release decision is inferred.",
+      "evidence": ["qualification-acceptance.json", "transports.json", "process-failures.json", "process-failures-quic.json", "live-ollama.json", "platform-contracts.json"],
+      "files": ["docs/PHYSICAL_QUALIFICATION.md", "docs/WINDOWS_QUALIFICATION.md", "docs/LINUX_QUALIFICATION.md", "docs/MACOS_QUALIFICATION.md", "docs/OFFLINE_LAN_TEST.md", "docs/PERFORMANCE.md"],
+      "rollback": "External runs add new separate evidence bundles; never overwrite local, failed or skipped evidence to relabel it."
+    },
+    {
+      "id": "D-003",
+      "requirements": ["Q-026", "Q-027"],
+      "original_requirement": "Review lockfiles and avoid speculative major dependency upgrades.",
+      "pressure": "CLI requires bounded streaming; node requires a size-enforcing request-response codec. Offline lock regeneration offers rustversion 1.0.22 rather than baseline 1.0.23.",
+      "change": "Reuse existing transitive futures/async-trait as direct dependencies; lock build helper rustversion 1.0.22 with its registry checksum. Keep runtime dependency majors unchanged.",
+      "classification": "Local implementation dependency adjustment",
+      "alternatives_considered": ["Keep the truncating stock codec", "Introduce a new serialization/network stack", "Unbounded dependency upgrades"],
+      "approval_status": "Within explicitly requested boundary hardening and supply-chain review.",
+      "evidence": ["rust-release-gate.log", "clippy-release-gate.log", "supply-chain-review.json"],
+      "files": ["Cargo.lock", "crates/porch-cli/Cargo.toml", "crates/porch-node/Cargo.toml", "crates/porch-node/src/wire_codec.rs"],
+      "rollback": "Baseline lockfile remains in history; any altered graph requires fresh compilation, wire regression and audit applicability review."
+    },
+    {
+      "id": "D-004",
+      "requirements": ["Q-012", "Q-013", "Q-014", "Q-026", "Q-033"],
+      "original_requirement": "Include Linux binaries, desktop artifacts and Windows artifacts if successfully built; state signing and reproducibility limits.",
+      "pressure": "No native Windows/macOS build environment or official signing identity is available.",
+      "change": "Deliver unsigned native Linux GNU node/CLI and same-origin built React UI. Supply Windows/macOS source/configuration/helpers; no native installer, Authenticode or notarization claim.",
+      "classification": "Environment limitation; bounded packaging choice",
+      "alternatives_considered": ["Claim unexecuted cross-platform artifacts", "Add a speculative desktop wrapper or fabricated signing identity"],
+      "approval_status": "Authorized by conditional artifact and honest platform requirements in the brief.",
+      "evidence": ["Final outer release-evidence/package.json", "Final portable manifest.json", "platform-contracts.json"],
+      "files": ["scripts/package.py", "scripts/verify_package.py", "scripts/platform/", "START_HERE.txt", "docs/WINDOWS_QUALIFICATION.md", "docs/MACOS_QUALIFICATION.md"],
+      "rollback": "Packages are separate immutable candidates; build a fresh native package on each verified platform."
+    },
+    {
+      "id": "D-005",
+      "requirements": ["Q-027"],
+      "original_requirement": "Run dependency tooling, preserve findings and classify applicability without blind upgrades.",
+      "pressure": "Two Hickory advisories and a paste maintenance warning exist. Final repeat uses the already fetched RustSec database snapshot.",
+      "change": "Preserve raw findings; gate exact disabled DNSSEC and inspected mDNS manual output encoder; classify paste as retained build-time maintenance risk. Final offline audit makes no freshness claim; default CI fetches fresh and fails fetch errors/new findings.",
+      "classification": "Recorded applicability assessment and environment limit",
+      "alternatives_considered": ["Global ignores", "Claim zero vulnerabilities", "Blind major-version upgrade"],
+      "approval_status": "Builder classification under section 27, not independent security approval or production risk acceptance.",
+      "evidence": ["cargo-audit.json", "hickory-features.txt", "supply-chain-review.json", "npm-audit.json", "audit-complete.log"],
+      "files": ["scripts/audit_gate.py", "docs/SUPPLY_CHAIN_REVIEW.md"],
+      "rollback": "New dependency/features/advisories fail the applicability gate until reviewed; production requires independent security review."
+    }
+  ]
+}

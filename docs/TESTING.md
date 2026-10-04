@@ -1,58 +1,60 @@
-# Reproducible verification
+# Reproduce the 0.1.1 local checks
 
-Run from repository root after `npm ci`, `npm run build` and
-`cargo build --workspace --locked`. No Ollama weights or outside Internet service
-is needed for deterministic tests. Peer tests use encrypted real sockets, not a
-replacement transport pretending to be the network.
+Use Rust **1.89.0**, Node 22.12+ and Python 3.12+. From source root first run
+`npm ci`, `npm run build` and `cargo build --workspace --locked`. All deterministic
+provider cases use explicit mocks or owned HTTP fixtures. Peer cases use actual
+daemon processes and encrypted sockets on loopback.
 
-| Gate | Command | Checked candidate evidence |
-|---|---|---|
-| Rust formatting | `cargo fmt --all -- --check` | receipts/format.log |
-| Strict Rust lint | `cargo clippy --workspace --all-targets --locked -- -D warnings` | receipts/clippy.log |
-| Core/security/provider/recovery tests | `cargo test --workspace --locked` | receipts/rust-tests.log; 13 tests |
-| TypeScript strict checks | `npm run typecheck` | receipts/typescript.log |
-| Desktop and SDK build | `npm run build` | receipts/desktop-build.log |
-| SDK authority/defaults | `npm test` | receipts/sdk-tests.log; two tests |
-| CLI/identity lifecycle | `python3 tests/cli_smoke.py` | receipts/cli-smoke.json; eight checks |
-| Three-process acceptance | `python3 tests/acceptance.py` | receipts/acceptance.json; 33 checks |
-| UI acceptance | `python3 tests/ui_acceptance.py` | evidence/ui-receipt.json, real screenshots |
-| Optimized node/CLI | `cargo build --release --workspace --locked` | receipts/release-build.log |
-| Portable package | `python3 scripts/package.py --skip-build` | package manifest and checksums |
+| Gate | Command | Selected source-stage result |
+| --- | --- | --- |
+| Toolchain consistency | `python3 scripts/check_toolchain.py` | Rust 1.89.0 consistent |
+| Rust format | `cargo fmt --all -- --check` | PASS |
+| Strict lint | `cargo clippy --workspace --all-targets --locked -- -D warnings` | PASS |
+| Rust regressions | `cargo test --workspace --locked` | 29 tests, including security, limits, provider, migration and recovery |
+| Debug build | `cargo build --workspace --locked` | PASS |
+| TypeScript | `npm run typecheck` | PASS |
+| Desktop and SDK build | `npm run build` | PASS |
+| SDK defaults/authority | `npm test` | 2 tests |
+| CLI | `python3 tests/cli_smoke.py` | 8 checks |
+| Original three-node acceptance | `python3 tests/acceptance.py` | 33 checks |
+| Qualification/API/privacy/export | `python3 tests/qualification_acceptance.py` | 32 checks |
+| Process interruption/reconciliation | `python3 tests/process_failures.py` | 10 checks, BOTH transport mode |
+| QUIC interruption/reconciliation | `python3 tests/process_failures.py --transport quic` | 10 checks, QUIC-only mode |
+| TCP, QUIC and BOTH paths | `python3 tests/transport_acceptance.py` | 12 checks |
+| Offline cap configuration | `python3 tests/limit_cli.py` | 5 checks |
+| Platform command contracts | `python3 scripts/check_platform.py` | 6 checks; native Windows/macOS UNVERIFIED |
+| UI | `python3 tests/ui_acceptance.py` | 11 checks, four screenshots |
+| Dependency review | `python3 scripts/audit_gate.py`; `npm audit --audit-level=high` | Rust findings reviewed, npm zero findings |
+| Portable native build | `python3 scripts/package.py` | Run after a source commit; output must use a fresh directory |
+| Extracted native package | `python3 tests/package_acceptance.py --archive ARCHIVE --out package-result.json` | Collected after source commit in release-evidence |
 
-The three-process harness creates ALPHA (explicit mock model/storage), BETA
-(hash/storage) and GAMMA (client). It pairs recipient-bound invitations, discovers
-signed services, refuses unauthorized routing, executes a permitted remote model
-job, validates a signed receipt/accounting, proves duplicate idempotency and
-LOCAL_ONLY non-forwarding, revokes authority, encrypts/replicates/fetches/corrupts a
-blob, sends a message, resumes an upload after provider restart, recovers a cached
-origin receipt, and continues on a reachable island after ALPHA stops. It cleans
-private test state unless `--keep-state` is requested; do not commit that directory.
+The source-stage command-gates.json under receipts/qualification selects final
+logs and structured receipts and hashes those evidence files. Earlier attempts
+and repaired failures remain visible. Original 0.1.0 results are historical;
+they are not summed again into current totals. The two process modes exercise
+the same ten assertions on distinct transport configurations.
 
-Rust negative tests include forged signatures, signer/transport/requester mismatch,
-unknown/revoked peers, replay, exhausted grant, expired invite/grant, ledger edit,
-backward clock, provider failure/oversize/timeout, duplicate active work, active
-revocation and uncertain restart refusal. Storage recovery injects the durable
-rename-before-metadata crash state explicitly. Those fixtures do not establish
-real power-loss durability or hardware resource isolation.
+UI testing requires compatible Chromium (`npx playwright install chromium`).
+`PORCH_BROWSER_PATH` selects an existing headless browser. This environment's
+standard download failed; the successful UI run used a separately installed
+Chromium 153.0.8010.0. The UI test launches real nodes, logs in, submits a remote
+mock job, navigates ten pages, validates qualification attestation/count/export,
+renders a hostile alias as text, checks memory-only tokens and 390px layout,
+logs out and requires no page exceptions. No API response is substituted.
 
-UI testing requires a Chromium installation (`npx playwright install chromium`).
-`PORCH_BROWSER_PATH` can select an already installed compatible headless Chromium.
-The test launches actual daemons, logs in, submits a remote mock job through the
-form, navigates nine surfaces, exports ledger, checks memory-only credentials,
-mobile layout, logout and browser exceptions. No API response is stubbed.
+The package test extracts a fresh archive, verifies every manifest hash, runs
+the bundled CLI/node/UI, initializes private state, executes a builtin job,
+exports/validates a qualification run and verifies the ledger. On Unix it also
+checks private modes and the user install helper. It never uses production state.
 
-CI `.github/workflows/ci.yml` runs format/lint/Rust/TS/SDK/CLI/acceptance/build/package
-gates on Linux, Windows and macOS, with UI checks on Linux. Configuration is
-committed; remote CI execution has not happened because no remote repository was
-provided. Dependency installation requires network; the built local runtime and
-acceptance peer paths do not.
+The final local Rust audit ran with `--offline`, using an earlier fetched advisory
+snapshot. CI uses the default fresh fetch; a fetch failure remains a failure.
+Neither route suppresses new findings. See SUPPLY_CHAIN_REVIEW.md for retained
+findings and exact applicability conditions.
 
-Initial failures are retained in receipts/acceptance-initial-failure.json and
-failure-and-repair.json. A CBOR null/array serialization bug changed signing material;
-the bounded JSON codec repaired it and a real-wire regression test preserves it.
-Tests were not relaxed to accept an invalid signature. Later repaired cases and
-the final command receipt document what was actually run.
-
-No live Ollama, physical LAN mDNS, WAN NAT, native package signing, sustained load,
-radio or independent audit result is claimed. Such qualifications remain REQUIRED
-or FUTURE as classified in ROADMAP.md.
+The live suite is separate:
+`python3 scripts/qualify_ollama.py --data state --model EXACT_MODEL --out live.json`.
+Use `--cli` for a bundled executable. Missing Ollama/weights are skipped rather
+than passed. Physical LAN, mDNS, outside-Internet removal, native Windows/macOS,
+hardware load/durability and independent review require the external procedures.
+Multi-platform CI is configured, not remotely executed in this delivery.

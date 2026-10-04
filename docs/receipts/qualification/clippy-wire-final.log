@@ -1,0 +1,23 @@
+    Checking porch-core v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-core)
+   Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+    Checking porch-cli v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+error: used `assert_eq!` with a literal bool
+   --> crates/porch-node/tests/qualification.rs:101:5
+    |
+101 | /     assert_eq!(
+102 | |         c.query_row("SELECT revoked FROM grants", [], |r| r.get::<_, bool>(0))?,
+103 | |         true
+104 | |     );
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#bool_assert_comparison
+    = note: `-D clippy::bool-assert-comparison` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::bool_assert_comparison)]`
+help: replace it with `assert!(..)`
+    |
+101 ~     assert!(
+102 ~         c.query_row("SELECT revoked FROM grants", [], |r| r.get::<_, bool>(0))?
+    |
+
+error: could not compile `porch-node` (test "qualification") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...

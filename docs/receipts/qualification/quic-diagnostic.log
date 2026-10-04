@@ -1,0 +1,32 @@
+joined
+refresh 0 [{'peer': '12D3KooWPkvAvt8GXq5Nv8UdH42poZ2iPDqYibM6qBhvMp3oPtVw', 'reason': None, 'updated': True}]
+refresh 1 [{'peer': '12D3KooWPkvAvt8GXq5Nv8UdH42poZ2iPDqYibM6qBhvMp3oPtVw', 'reason': None, 'updated': True}]
+refresh 2 [{'peer': '12D3KooWPkvAvt8GXq5Nv8UdH42poZ2iPDqYibM6qBhvMp3oPtVw', 'reason': None, 'updated': True}]
+A DEBUG CONN ConnectionId(1) Listener { local_addr: /ip4/127.0.0.1/udp/53684/quic-v1, send_back_addr: /ip4/127.0.0.1/udp/40267/quic-v1 }
+DEBUG swarm RECEIVE porch.join
+DEBUG receive porch.join
+DEBUG receive HASHED
+DEBUG swarm REPLY
+DEBUG swarm RECEIVE resources
+DEBUG receive resources
+DEBUG receive HASHED
+DEBUG swarm REPLY
+DEBUG swarm RECEIVE resources
+DEBUG receive resources
+DEBUG receive HASHED
+DEBUG swarm REPLY
+DEBUG swarm RECEIVE resources
+DEBUG receive resources
+DEBUG receive HASHED
+DEBUG swarm REPLY
+
+B DEBUG rpc SEND porch.join
+DEBUG swarm SEND porch.join
+DEBUG CONN ConnectionId(1) Dialer { address: /ip4/127.0.0.1/udp/53684/quic-v1/p2p/12D3KooWPkvAvt8GXq5Nv8UdH42poZ2iPDqYibM6qBhvMp3oPtVw, role_override: Dialer, port_use: Reuse }
+DEBUG rpc SEND resources
+DEBUG swarm SEND resources
+DEBUG rpc SEND resources
+DEBUG swarm SEND resources
+DEBUG rpc SEND resources
+DEBUG swarm SEND resources
+

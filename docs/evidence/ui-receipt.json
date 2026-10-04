@@ -5,16 +5,20 @@
   "checks": [
     "operator refusal and login",
     "actual remote job through UI",
-    "nine working navigation surfaces",
+    "ten working navigation surfaces",
     "ledger export",
     "credentials remain in memory",
     "390px responsive layout",
     "logout",
-    "no page exceptions"
+    "no page exceptions",
+    "qualification environment/attestation enforcement",
+    "qualification counts and sanitized export",
+    "untrusted alias rendered as text"
   ],
   "screenshots": [
     "home.png",
     "models.png",
+    "qualification.png",
     "mobile.png"
   ]
 }

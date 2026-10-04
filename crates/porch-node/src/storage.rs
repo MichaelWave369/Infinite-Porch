@@ -116,17 +116,21 @@ pub fn put_local(node: &Node, plaintext: &[u8]) -> Result<Value> {
     let _guard = node.storage_lock.lock().unwrap();
     let key = random_bytes::<32>();
     let ciphertext = seal(plaintext, &key, &node.id)?;
+    ensure!(
+        ciphertext.len() <= node.config.read().unwrap().limits.blob_bytes,
+        "BLOB_EXCEEDS_OPERATOR_CAP"
+    );
     let cid = digest(&ciphertext);
     let p = path(node, &cid)?;
     let used: u64 = node.db.transaction(|tx| {
         Ok(tx.query_row(
-            "SELECT coalesce(sum(size),0) FROM blobs WHERE owner=?1 AND tombstone=0",
-            [&node.id],
+            "SELECT (SELECT coalesce(sum(size),0) FROM blobs WHERE tombstone=0)+(SELECT coalesce(sum(size),0) FROM uploads)",
+            [],
             |r| r.get(0),
         )?)
     })?;
     ensure!(
-        used + ciphertext.len() as u64 <= 128 * 1024 * 1024,
+        used + ciphertext.len() as u64 <= node.config.read().unwrap().limits.storage_total_bytes,
         "LOCAL_VAULT_QUOTA_EXHAUSTED"
     );
     private_write(&p, &ciphertext)?;
@@ -215,7 +219,9 @@ pub fn receive(node: &Node, peer: &str, op: &str, args: &Value) -> Result<Value>
             expire_uploads(node, time)?;
             let size = args["size"].as_u64().context("SIZE_REQUIRED")?;
             ensure!(
-                size >= 40 && size <= MAX_BLOB as u64 && args["encryption"] == "xchacha20poly1305",
+                size >= 40
+                    && size <= node.config.read().unwrap().limits.blob_bytes as u64
+                    && args["encryption"] == "xchacha20poly1305",
                 "INVALID_ENCRYPTED_BLOB"
             );
             let offset=node.db.transaction(|tx|{
@@ -230,6 +236,7 @@ pub fn receive(node: &Node, peer: &str, op: &str, args: &Value) -> Result<Value>
                 let used:u64=tx.query_row("SELECT coalesce(sum(size),0) FROM blobs WHERE owner!=?1 AND tombstone=0",[&node.id],|r|r.get(0))?;
                 let reserved:u64=tx.query_row("SELECT coalesce(sum(size),0) FROM uploads",[],|r|r.get(0))?;
                 ensure!(used+reserved+size<=quota,"STORAGE_QUOTA_EXHAUSTED");
+                let total:u64=tx.query_row("SELECT (SELECT coalesce(sum(size),0) FROM blobs WHERE tombstone=0)+(SELECT coalesce(sum(size),0) FROM uploads)",[],|r|r.get(0))?;ensure!(total+size<=node.config.read().unwrap().limits.storage_total_bytes,"STORAGE_TOTAL_CAP_EXHAUSTED");
                 node.check_grant(tx,&grant,crate::GrantUse{peer,cap:"blob.storage",resource:"vault",action:"store",input:None,consume:true,bytes:size,time})?;
                 tx.execute("INSERT INTO uploads(cid,owner,size,grant_nonce,expires) VALUES(?1,?2,?3,?4,?5)",params![cid,peer,size,grant.payload.nonce,grant.payload.expires_at])?;Ok(0)
             })?;
@@ -432,7 +439,9 @@ pub async fn retrieve_cipher(
         .await?;
         let size = out["size"].as_u64().context("INVALID_REMOTE_SIZE")?;
         ensure!(
-            size <= MAX_BLOB as u64 && out["cid"] == cid && out["offset"] == bytes.len(),
+            size <= node.config.read().unwrap().limits.blob_bytes as u64
+                && out["cid"] == cid
+                && out["offset"] == bytes.len(),
             "INVALID_REMOTE_BLOB"
         );
         let chunk = hex::decode(out["data_hex"].as_str().context("INVALID_CHUNK")?)?;

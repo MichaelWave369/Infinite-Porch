@@ -1,0 +1,16 @@
+{
+  "alias": "B",
+  "build": {
+    "branch": "feat/porch-v0.1.1-physical-qualification",
+    "commit": "3a3ace51979110afc76fa2dda7a35108c41af15b",
+    "independent_security_review": "UNVERIFIED",
+    "physical_qualification": "UNVERIFIED",
+    "protocol_version": 1,
+    "release_status": "CANDIDATE",
+    "software_version": "0.1.1",
+    "source_tree_dirty_at_build": true,
+    "target": "x86_64-unknown-linux-gnu"
+  },
+  "fingerprint_sha256": "960cbad1f8f6edae106190ba078e1fa5504284fc811c00a3fa62705b1454f05a",
+  "peer_id": "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr"
+}

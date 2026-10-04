@@ -1,108 +1,61 @@
-# Infinite Porch 0.1.0 delivery assessment
+# Infinite Porch 0.1.1 candidate assessment
 
-## Repository state
+The engineering milestone continues baseline commit
+`3a3ace51979110afc76fa2dda7a35108c41af15b` on
+`feat/porch-v0.1.1-physical-qualification`. The original source, history and
+`baseline-v0.1.0-candidate` tag are preserved. The current controlling brief is
+CONTROLLING_SPEC_0.1.1.txt; REQUIREMENTS_0.1.1.md maps its 35 sections to code,
+checks and remaining external evidence. Protocol version remains **1**.
 
-Independent new Rust/TypeScript monorepo. Branch
-`feat/porch-v0.1.0-candidate`. The bundle's REPOSITORY_STATE.json records the exact
-commit and clean tracked state. Its git bundle preserves that commit/history;
-the source snapshot contains the same tracked files. No remote repository was
-provided or created, and related projects were inspected read-only.
+The Rust core/node/CLI, libp2p transport, SQLite authority, encrypted vault, SDK
+and React UI remain the architecture. This candidate adds qualification commands
+and a tenth UI page, fingerprint-confirmed pairing, current provider observations,
+actual connection diagnostics, signed sanitized export and an offline validator.
+It adds safe configurable caps, schema-1 backup/migration to schema 2, clock
+checks, state locking, platform helpers and reproducible local fault scenarios.
 
-## Architecture and implemented behavior
+Repairs include redundant parallel connection attempts, stale QUIC session
+recovery after a quick restart, oversized JSON frames hidden by a truncated
+reader, unbounded qualification messaging waits, wrong database-owner migration,
+provider digest changes, quota/revocation effect races and private error leakage.
+Fault tests retry the same job ID, manifest and executor; an uncertain job never
+silently executes again. A lost first transport attempt is retained in the
+recovery receipt. See FAILURE_INJECTION.md and SECURITY.md for practical limits.
 
-Rust core/daemon/CLI, rust-libp2p authenticated peer sessions, SQLite authority and
-evidence, encrypted filesystem CAS, same-origin React desktop and typed scoped SDK.
-No mandatory cloud authority. Implemented local vertical spine: identity, invite/
-trust, signed claims, bounded grants, deterministic routing, real remote jobs,
-signed receipts, accounting and ledger.
+Local verification comprises 29 Rust tests, 33 original peer checks, 32
+qualification checks, 10 process-failure checks in each of two transport
+configurations, 12 transport checks, eight CLI checks, five cap checks, six
+platform contract checks, 11 UI checks and two SDK tests. Format, strict lint,
+types and builds passed. These are 158 heterogeneous local tests/checks before
+the separate native release-package gate. They are not physical evidence.
+The final optimized package checks, exact source commit, binary requirements and
+archive hashes are collected after the source commit and appear in the outer
+DELIVERY_REPORT.md, REPOSITORY_STATE.json and release-evidence/ directory.
 
-The expanded candidate includes protected identity backup/rotation, client app
-delegation, direct/pairwise channel messaging and bounded offline outbox, builtin
-hash compute, loopback Ollama adapter, explicit mock inference, chunked encrypted
-replication/readback/tombstones, resumable transfer and uncertain-job recovery,
-logical addresses, operator UI/CLI/API/SSE and portable package configuration.
+All selected source-stage results and commands are in
+receipts/qualification/command-gates.json. Earlier failures remain in raw logs;
+they are not selected as final passes. The example signed bundle and UI download
+validate offline. A signed node statement establishes who reported its public
+probe results; it cannot establish physical ownership, WAN disconnection or an
+honest remote provider by itself.
 
-Mock inference is labeled and selected explicitly. Ollama contract tests use
-simulated HTTP provider fixtures. The test network uses actual daemon processes
-and encrypted loopback TCP/Noise paths, with QUIC listeners. It does not qualify
-physical LAN, WAN/NAT or live model weights. No GPU pooling, private provider
-attestation, running relay/federation/WASM or sharded execution is claimed.
+The live Ollama path is implemented and HTTP contracts are exercised, but no
+Ollama process or weights are available here. The opt-in live suite records two
+SKIPPED_ENVIRONMENT and three UNVERIFIED scenarios. Windows/macOS build and
+qualification flows are supplied; native execution, Windows ACLs, PowerShell
+parsing and macOS signing remain UNVERIFIED. CI is configured for all three
+platforms; no remote CI run occurred. Linux executables are unsigned GNU builds
+for the recorded runtime, not a universal Linux compatibility claim.
 
-## Test evidence
+Cargo audit findings are retained with a bounded applicability review, including
+two Hickory advisories and a paste maintenance warning. The final audit used an
+existing RustSec snapshot and makes no freshness claim. npm audit reported zero
+findings for the checked locked graph. See SUPPLY_CHAIN_REVIEW.md.
 
-Format, strict Rust lint, TypeScript checks, Rust/desktop/SDK builds pass. The
-candidate has 13 passing Rust tests, two SDK tests, eight CLI checks, 33 end-to-end
-peer checks and eight real-UI checks. Raw command logs, repaired initial failures,
-the final structured gate receipt and acceptance result live in docs/receipts.
-The release acceptance result is recorded separately from the debug harness.
-The Linux x86_64 portable package contains optimized node/CLI and built UI, with
-SHA-256 manifest. Windows/macOS CI and package configuration exist but have not
-run remotely; no native signing/notarization success is asserted.
-
-## Run, demonstrate and share
-
-From source root:
-
-```sh
-npm ci
-npm run build
-cargo build --workspace --locked
-./target/debug/porch --data state init --alias "Michael"
-./target/debug/porch-node --data state --ui apps/desktop/dist
-```
-
-Open `http://127.0.0.1:7331`, using the private local state/api.token. A delivered
-portable Linux build runs with start.sh. The API remains loopback; peer traffic
-uses separately configured transport listeners.
-
-```sh
-python3 tests/acceptance.py
-python3 scripts/demo.py
-```
-
-The harness stops automatically and writes the final acceptance receipt. The
-interactive three-daemon demonstration runs until Ctrl+C, prints UI addresses
-and token paths and explicitly offers mock inference, compute and storage.
-
-For a live already-installed Ollama model:
-
-```sh
-./target/debug/porch --data state model discover
-./target/debug/porch --data state share model qwen3:8b
-./target/debug/porch --data state grant issue --recipient PEER_ID --capability model.inference --resource qwen3:8b --max-calls 20 --ttl 3600 --out inference-grant.json
-```
-
-The approved requesting PC imports that grant then runs with TRUSTED_PEERS. The
-default LOCAL_ONLY request stays on the origin. See README.md for both sides.
-
-For another PC, start its node and exchange its public ID. On the owner:
-
-```sh
-./target/debug/porch --data state create "Oak Street"
-./target/debug/porch --data state invite --recipient RECIPIENT_PEER_ID --ttl 600 --out porch-invite.json
-```
-
-Transfer the signed invite directly to the intended PC, then run
-`porch --data state join porch-invite.json` there. Membership supplies no resource
-authority. Verify pinned peer ID and intended LAN port reachability; issue and
-import each bounded grant separately.
-
-## UI, limitations and remaining work
-
-Actual daemon UI evidence: evidence/home.png, models.png and mobile.png. The
-browser test submitted a real remote mock job; no API state was substituted.
-
-SECURITY.md and THREAT_MODEL.md explain local plaintext key/DB risks, malicious
-providers, metadata exposure, cancellation uncertainty, bounded-load limits and
-ledger rollback. ROADMAP.md explicitly separates REQUIRED production work from
-FUTURE engines. Required work includes independent review/fuzz/load/crash tests,
-OS secret/permission qualification, live Ollama/hardware policies, physical LAN/
-QUIC/mDNS and WAN/authorized relay evidence, platform builds/signing and recovery/
-metrics/app-registration completeness. Future work includes federation, mesh/
-radio, additional providers, full ecosystem/media adapters and sharded models.
-
-The untouched controlling brief, requirement register, freeze/build/deviation
-receipts, final acceptance.json and Wayne handoff preserve scope and provenance.
-Local builder verification is complete for the stated candidate. The original
-production-capable objective remains open. No independent verification or public
-release claim is made; final release authority stays human-owned.
+Exact external procedures are in WINDOWS_QUALIFICATION.md,
+LINUX_QUALIFICATION.md, OLLAMA_QUALIFICATION.md and OFFLINE_LAN_TEST.md; the shared
+pairing, revocation, restart and export sequence is in PHYSICAL_QUALIFICATION.md.
+RELEASE_GATES.md and ROADMAP.md keep required physical/platform/security evidence
+separate from future engines. No production qualification, independent review,
+official signing or release authorization is claimed. WAYNE_HANDOFF.md prepares
+the candidate for independent reproduction.

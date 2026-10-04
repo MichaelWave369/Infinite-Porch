@@ -1,0 +1,32 @@
+    Checking bitflags v2.13.2
+    Checking porch-core v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-core)
+   Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+    Checking linux-raw-sys v0.12.1
+    Checking fastrand v2.5.0
+    Checking netlink-packet-route v0.28.0
+    Checking nix v0.30.1
+    Checking tower-http v0.6.11
+    Checking rusqlite v0.37.0
+    Checking rustix v1.1.5
+    Checking reqwest v0.12.28
+    Checking tempfile v3.27.0
+    Checking rtnetlink v0.20.0
+    Checking if-watch v3.2.2
+    Checking libp2p-tcp v0.44.1
+    Checking libp2p-mdns v0.48.0
+    Checking libp2p-quic v0.13.1
+    Checking libp2p v0.56.0
+error: this looks like an `else if` but the `else` is missing
+   --> crates/porch-node/src/network.rs:261:226
+    |
+261 | ...string()){p["negotiated_protocol"]=json!("/infinite-porch/rpc/1");}if let Some(reply)=pending.remove(&request_id){let _=reply.send(Ok(...
+    |                                                                       ^
+    |
+    = note: to remove this lint, add the missing `else` or add a new line before the second `if`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#suspicious_else_formatting
+    = note: `-D clippy::suspicious-else-formatting` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::suspicious_else_formatting)]`
+
+error: could not compile `porch-node` (lib test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `porch-node` (lib) due to 1 previous error

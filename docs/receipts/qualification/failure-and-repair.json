@@ -1,0 +1,60 @@
+{
+  "candidate": "0.1.1",
+  "preservation": "Earlier raw attempts remain in this directory; only selected final gates count as current passing results.",
+  "repairs": [
+    {
+      "finding": "Repeated connection calls and concurrent TCP/QUIC dialing could stall qualification or route RPC over an unexpected connection.",
+      "repair": "Batch identity-pinned addresses, use DisconnectedAndNotDialing and retain address fallback to that same peer; bind RPC protocol and RTT to the actual connection ID.",
+      "evidence": ["qualification-release-gate.log", "transport-complete.log", "rust-release-gate.log"],
+      "regression": "Repeated discovery/jobs under TCP, QUIC and BOTH; wrong-first-address fallback cannot change the confirmed identity."
+    },
+    {
+      "finding": "After a rapid QUIC executor restart, a stale UDP session could make a job wait fail before reconnecting.",
+      "repair": "Bound the peer-job deadline and disconnect that stale pinned session only on deadline. Explicit retries retain the original ID, manifest and executor.",
+      "evidence": ["process-quic-green.log", "process-failures-quic.json", "process-both-green.log", "process-failures.json"],
+      "remaining_behavior": "A first transport deadline remains possible and is preserved in bounded_reconnection_observations. At most three test-controlled retries require the original receipt or signed expected refusal and no additional provider effect."
+    },
+    {
+      "finding": "The stock JSON frame reader could accept a valid prefix followed by padding beyond its configured byte cap.",
+      "repair": "Read cap plus one byte and reject oversize before parsing; bound outgoing bytes without changing protocol-1 JSON/EOF semantics.",
+      "evidence": ["rust-release-gate.log"],
+      "regression": "Exact limit, oversized padded valid JSON and oversized writes."
+    },
+    {
+      "finding": "Qualification messaging against an offline peer could consume an excessive transport wait.",
+      "repair": "Use a separate five-second diagnostic wait and record messaging FAIL.",
+      "evidence": ["qualification-release-gate.log", "qualification-acceptance.json"],
+      "regression": "Offline messaging qualification completes within the bounded command budget."
+    },
+    {
+      "finding": "Migration review found that an existing foreign database owner should be refused before backup or schema DDL.",
+      "repair": "Check persisted ownership before creating the migration backup; preserve schema/identity on refusal.",
+      "evidence": ["rust-release-gate.log"],
+      "regression": "Wrong-owner schema-1 state fails without backup creation; backup collision and unsupported future schemas also fail closed."
+    },
+    {
+      "finding": "The original peer harness still wrote candidate 0.1.0 into an otherwise current successful receipt.",
+      "repair": "Read the candidate version from workspace Cargo metadata and rerun all 33 peer checks.",
+      "evidence": ["peer-release-gate.log", "peer-acceptance.json"]
+    },
+    {
+      "finding": "Windows-generated package manifests could use backslashes unlike canonical ZIP entries.",
+      "repair": "Use as_posix for manifest and ZIP relative paths; native package tests still remain required on Windows.",
+      "evidence": ["scripts/package.py", "Final release-evidence/package.json"],
+      "native_windows": "UNVERIFIED"
+    }
+  ],
+  "environment_failures": [
+    {
+      "finding": "Cached Cargo test artifacts included a non-executable recovery binary.",
+      "evidence": "rust-delivery.log",
+      "resolution": "Clean the affected package artifacts and rebuild; final rust-release-gate.log executes all 29 tests. This is not classified as a product recovery failure."
+    },
+    {
+      "finding": "Standard Playwright Chromium archive installation failed.",
+      "evidence": "browser-install.log",
+      "resolution": "Use a separately installed compatible Chromium 153.0.8010.0 via PORCH_BROWSER_PATH; successful UI evidence is ui-complete.log. No browser runtime dependency is added to the product."
+    }
+  ],
+  "external_failures_not_executed": ["Real power loss", "Physical router WAN removal", "Native Windows/macOS interruption", "Live Ollama process stop with actual weights"]
+}

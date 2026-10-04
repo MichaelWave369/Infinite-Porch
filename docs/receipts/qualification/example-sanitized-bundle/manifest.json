@@ -1,0 +1,25 @@
+{
+  "domain": "porch.qualification.manifest.v1",
+  "payload": {
+    "created_at": 1791070993,
+    "environment": "LOOPBACK",
+    "files": {
+      "ledger-verification.json": "5b5666c7cc730eabe152556180d2e1d8653812576d99e56d9642bb4361f318dc",
+      "node.json": "f2afe3ca8b577be24d866ecd2f0b85509784e7f7d44596ba16e7af3ee44984c6",
+      "receipts.json": "84f52aca2acf9855b2a7c23e561637e8b20ed7cb746297946717a9a87af433e8",
+      "results.json": "615e5dacec9e73d5195c7c1451ea4e0d8bb284f14d936eb981ca68471426bbf2",
+      "run.json": "b5360220c37a0be4d005fa6b064a328e7581ff938ecfccaddb455a834eb735ac",
+      "sanitized-log.json": "4f085824fe2f5f9a4cb250a0b67f1e9ff6e248eb929bf3deb18bebde197f5802"
+    },
+    "official_release_signature": false,
+    "peer_id": "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+    "production_qualified": false,
+    "run_id": "fe47e40b-c9fb-4bc2-afb1-8559873c214b",
+    "schema_version": 1,
+    "signed_by_node_identity": true
+  },
+  "public_key": "0801122055f58df951ce0727fdd5cc6f94fa25613226f5339b8c561ff9dd5cccd0eebd1b",
+  "signature": "b86c344e9f2f54a69e378fc8966c149a9ea91d9fa2229e82a7c62549f3671952a51ed51cc8f15e9bf3bfd2cd819d34d45dcfea09c14c38b06cae3de4519a6d08",
+  "signer": "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+  "version": 1
+}

@@ -1,37 +1,50 @@
-# Builder-facing report
+# Builder-Facing Report
 
-Infinite Porch 0.1.0 is an independently runnable local candidate controlled by
-the unchanged attached build brief. The production-capable objective remains open.
+**Project:** Infinite Porch
 
-Built: Rust identity/daemon/CLI; authenticated libp2p peer paths; signed bounded
-grants; deterministic job routing/execution/receipts; scoped app credentials;
-SQLite evidence/accounting; encrypted resumable storage; messaging; React desktop;
-typed independent ecosystem adapters; portable package and three-platform CI.
+**Controlling specification:** CONTROLLING_SPEC_0.1.1.txt (unchanged)
 
-Executed locally: encrypted TCP/Noise sessions among three OS processes, governed
-remote inference, revocation, non-forwarded LOCAL_ONLY/above-grant input, private
-replication/full readback/corruption refusal, provider/origin restart recovery,
-partition survival and real UI controls. All final available gates pass: 13 Rust
-tests, two SDK tests, eight CLI checks, 33 peer checks and eight UI checks, plus
-format/lint/type/build gates. Linux release executables and screenshots are included.
+**Milestone / candidate:** 0.1.1 physical qualification candidate
 
-Substitutions are explicit: deterministic mock inference for the CI scenario and
-HTTP fixtures for the Ollama contract. Peer connections are real; physical homes,
-WAN/NAT and live model hardware are unverified. JSON wire serialization replaced
-a CBOR signing-material bug with a regression test. No hard ecosystem dependency.
+## What was built
 
-REQUIRED before production: independent review/fuzz/load/recovery qualification,
-OS secret/ACL controls, real Ollama/GPU policies, physical LAN/QUIC/mDNS, authorized
-WAN/relay and Windows/macOS builds/signing, complete recovery/metrics/app registration.
-FUTURE: federation, physical mesh/radio, sandbox/plugin engines, additional
-providers, media integrations and genuine distributed model engines.
+First-class qualification CLI/UI, verified-fingerprint pairing, provider state
+tracking, actual connection diagnostics, signed sanitized bundles, offline
+validation, safe operator caps, private schema migration, recovery/fault tests
+and Windows/Linux/macOS procedures. The existing architecture and protocol 1
+are retained.
 
-No public remote was created. Exact branch/commit and clean tracked state appear
-in the bundle's REPOSITORY_STATE.json; the git bundle preserves them. Evidence,
-commands, security boundaries and screenshots are in DELIVERY.md and docs/receipts.
+## What is real versus substituted
 
-Human decision: release remains human-owned after required evidence; no permission
-was needed for the already-authorized local build. Atomic next action: reproduce
-the acceptance harness on a separate physical LAN with an actual installed model.
+- Implemented: live loopback Ollama adapter and finite qualification operations.
+- Demonstrated locally: 158 software assertions across Rust, CLI, SDK, UI, real
+  loopback peers and fault scenarios; native package checks collected separately.
+- Mocked/simulated: inference mocks and owned HTTP fixtures; no model weights.
+- Unable to verify: physical LAN/WAN removal, real Ollama, Windows/macOS, systemd,
+  idle host metrics and independent security review.
 
-Wayne handoff prepared. No independent verification or release claim is made.
+## Material deviations
+
+Rust 1.89.0 is the lowest supported compiler for the locked UUID dependency.
+Existing transitive futures/async-trait are direct dependencies; the build helper
+rustversion resolves to 1.0.22. Final Rust audit uses an existing snapshot.
+Reviewed dependency findings remain visible. See deviations.json.
+
+## Human decision required
+
+None for this authorized candidate build. Production release remains human-owned.
+
+## One atomic next action
+
+Run the two-PC Windows guide on the RTX 5070 and RTX 3060 machines with one
+already installed Ollama model, preserving baseline and revoked exports.
+
+## Evidence bundle
+
+Source-stage evidence: receipts/qualification/. Exact commit, final package
+verification and hashes: outer DELIVERY_REPORT.md and release-evidence/.
+
+## Wayne handoff status
+
+Candidate prepared for independent proving-ground verification. No independent
+verification or production release claim is made by the Forge.

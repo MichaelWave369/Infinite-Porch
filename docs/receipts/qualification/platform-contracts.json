@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "CLI contract qualify run",
+    "CLI contract qualify export",
+    "CLI contract qualify join",
+    "CLI contract grant issue",
+    "CLI contract configure-limits",
+    "POSIX install helper syntax"
+  ],
+  "passed": 6,
+  "powershell_syntax": "UNVERIFIED: PowerShell unavailable",
+  "windows_runtime": "UNVERIFIED",
+  "macos_runtime": "UNVERIFIED",
+  "systemd_execution": "UNVERIFIED"
+}

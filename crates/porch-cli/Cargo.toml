@@ -2,6 +2,7 @@
 name = "porch-cli"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 
 [[bin]]
@@ -17,3 +18,5 @@ tokio.workspace = true
 clap.workspace = true
 reqwest.workspace = true
 hex.workspace = true
+
+futures = "0.3"

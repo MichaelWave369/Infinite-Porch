@@ -1,0 +1,30 @@
+{
+  "candidate": "0.1.1",
+  "requirement_sections": 35,
+  "json_documents_valid": true,
+  "selected_gate_evidence_hashes_valid": true,
+  "controlling_spec_hashes": {
+    "docs/CONTROLLING_SPEC.txt": "4e668341934d471be3b912c41eed24a124a0992528841a3a1f75b592e6bd6386",
+    "docs/CONTROLLING_SPEC_0.1.1.txt": "37a97328fa947db3f249d26d99da6d47efe8519fb5f6780cb3dddf89a2d2e5c7"
+  },
+  "required_guides_present": [
+    "START_HERE.txt",
+    "README.md",
+    "docs/PHYSICAL_QUALIFICATION.md",
+    "docs/WINDOWS_QUALIFICATION.md",
+    "docs/LINUX_QUALIFICATION.md",
+    "docs/MACOS_QUALIFICATION.md",
+    "docs/OLLAMA_QUALIFICATION.md",
+    "docs/OFFLINE_LAN_TEST.md",
+    "docs/FAILURE_INJECTION.md",
+    "docs/QUALIFICATION_RECEIPTS.md",
+    "docs/SECURITY.md",
+    "docs/THREAT_MODEL.md",
+    "docs/TROUBLESHOOTING.md",
+    "docs/RELEASE_GATES.md",
+    "docs/ROADMAP.md"
+  ],
+  "secret_review": "No bearer credential or raw token fields found in qualification receipts/UI evidence; package includes tracked source and explicit artifacts only. Disposable runtime state is excluded.",
+  "physical_qualification": "UNVERIFIED",
+  "independent_review": "UNVERIFIED"
+}

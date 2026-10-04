@@ -23,6 +23,10 @@ enum Command {
         #[arg(long, default_value = "My Porch Node")]
         alias: String,
     },
+    /// Update safe operator caps while the daemon is stopped; restart required.
+    ConfigureLimits {
+        file: PathBuf,
+    },
     Status,
     Peers,
     Resources,
@@ -31,6 +35,10 @@ enum Command {
     Grants,
     Network,
     Doctor,
+    Qualify {
+        #[command(subcommand)]
+        command: QualifyCommand,
+    },
     Identity {
         #[command(subcommand)]
         command: IdentityCommand,
@@ -58,6 +66,7 @@ enum Command {
         #[command(subcommand)]
         command: ShareCommand,
     },
+    #[command(alias = "models")]
     Model {
         #[command(subcommand)]
         command: ModelCommand,
@@ -90,6 +99,44 @@ enum Command {
         operation: String,
         #[arg(long, default_value = "{}")]
         json: String,
+    },
+}
+#[derive(Subcommand)]
+enum QualifyCommand {
+    Host {
+        name: String,
+        #[arg(long)]
+        recipient: String,
+        #[arg(long)]
+        out: PathBuf,
+    },
+    Join {
+        invite: PathBuf,
+        #[arg(long)]
+        fingerprint: String,
+    },
+    Status,
+    Run {
+        #[arg(long)]
+        peer: Option<String>,
+        #[arg(long)]
+        model: Option<String>,
+        #[arg(long,default_value="LOOPBACK",value_parser=["SIMULATED","LOOPBACK","PHYSICAL"])]
+        environment: String,
+        #[arg(long,default_value="baseline",value_parser=["baseline","revoked","offline","restored","restart"])]
+        phase: String,
+        #[arg(long)]
+        separate_machines_confirmed: bool,
+        #[arg(long)]
+        wan_condition_confirmed: bool,
+        #[arg(long)]
+        message: bool,
+    },
+    Export {
+        directory: PathBuf,
+    },
+    Validate {
+        path: PathBuf,
     },
 }
 #[derive(Subcommand)]
@@ -145,6 +192,11 @@ enum ShareCommand {
 enum ModelCommand {
     List,
     Discover,
+    Scan,
+    Refresh,
+    Verify {
+        model: String,
+    },
     Run {
         model: String,
         prompt: String,
@@ -177,6 +229,8 @@ enum GrantCommand {
         max_input_bytes: u64,
         #[arg(long, default_value_t = 512)]
         max_output_tokens: u32,
+        #[arg(long, default_value_t = 30000)]
+        max_duration_ms: u64,
         #[arg(long,value_parser=parse_bytes,default_value="0")]
         max_storage_bytes: u64,
         #[arg(long)]
@@ -256,7 +310,13 @@ fn write_json(path: &Path, value: &Value) -> Result<()> {
 async fn http(a: &Args, read: Option<&str>, operation: &str, args: Value) -> Result<Value> {
     let url = reqwest::Url::parse(&a.api)?;
     ensure!(
-        url.scheme() == "http" && matches!(url.host_str(), Some("127.0.0.1" | "[::1]" | "::1")),
+        url.scheme() == "http"
+            && matches!(url.host_str(), Some("127.0.0.1" | "[::1]" | "::1"))
+            && url.username().is_empty()
+            && url.password().is_none()
+            && url.path() == "/"
+            && url.query().is_none()
+            && url.fragment().is_none(),
         "CLI_API_MUST_BE_LOOPBACK"
     );
     let token = std::fs::read_to_string(
@@ -264,7 +324,11 @@ async fn http(a: &Args, read: Option<&str>, operation: &str, args: Value) -> Res
             .clone()
             .unwrap_or_else(|| a.data.join("api.token")),
     )?;
-    let client = porch_node::models::client()?;
+    let client = reqwest::Client::builder()
+        .no_proxy()
+        .redirect(reqwest::redirect::Policy::none())
+        .timeout(std::time::Duration::from_secs(60))
+        .build()?;
     let response = if let Some(kind) = read {
         client.get(format!("{}/v1/{kind}", a.api.trim_end_matches('/')))
     } else {
@@ -276,7 +340,18 @@ async fn http(a: &Args, read: Option<&str>, operation: &str, args: Value) -> Res
     .send()
     .await?;
     let status = response.status();
-    let value: Value = response.json().await?;
+    use futures::StreamExt;
+    let mut stream = response.bytes_stream();
+    let mut bytes = Vec::new();
+    while let Some(chunk) = stream.next().await {
+        let chunk = chunk?;
+        ensure!(
+            bytes.len() + chunk.len() <= 32 * 1024 * 1024,
+            "API_RESPONSE_TOO_LARGE"
+        );
+        bytes.extend(chunk);
+    }
+    let value: Value = serde_json::from_slice(&bytes)?;
     ensure!(
         status.is_success(),
         "{}",
@@ -287,13 +362,85 @@ async fn http(a: &Args, read: Option<&str>, operation: &str, args: Value) -> Res
 #[tokio::main]
 async fn main() -> Result<()> {
     let a = Args::parse();
+    let mut export_dir = None;
     let mut save = None;
     let mut binary = None;
     let mut op = String::new();
     let mut args = json!({});
     let mut read = None;
     match &a.command {
+        Command::ConfigureLimits { file } => {
+            ensure!(
+                a.data.join("identity.key").exists(),
+                "INITIALIZE_NODE_FIRST"
+            );
+            let caps: porch_node::limits::LimitsConfig = serde_json::from_value(read_json(file)?)?;
+            caps.validate()?;
+            let mut c = Config::load(&a.data)?;
+            c.limits = caps;
+            let node = porch_node::Node::open(&a.data, c.clone())?;
+            node.db.set("config", &serde_json::to_value(&c)?)?;
+            write_json(&a.data.join("config.json"), &serde_json::to_value(&c)?)?;
+            node.event(
+                "operator.limits.changed",
+                &node.id,
+                json!({"config_digest":digest(&canonical(&c)?)}),
+            )?;
+            println!(
+                "{}",
+                serde_json::to_string_pretty(
+                    &json!({"saved":true,"restart_required":true,"limits":c.limits})
+                )?
+            );
+            return Ok(());
+        }
+        Command::Qualify { command } => match command {
+            QualifyCommand::Status => read = Some("qualification"),
+            QualifyCommand::Host {
+                name,
+                recipient,
+                out,
+            } => {
+                op = "qualification.host".into();
+                args = json!({"name":name,"recipient":recipient});
+                save = Some(out.clone());
+            }
+            QualifyCommand::Join {
+                invite,
+                fingerprint,
+            } => {
+                op = "qualification.join".into();
+                args = json!({"invite":read_json(invite)?,"fingerprint":fingerprint});
+            }
+            QualifyCommand::Run {
+                peer,
+                model,
+                environment,
+                phase,
+                separate_machines_confirmed,
+                wan_condition_confirmed,
+                message,
+            } => {
+                op = "qualification.run".into();
+                args = json!({"peer":peer,"model":model,"environment":environment,"phase":phase,"separate_machines_confirmed":separate_machines_confirmed,"wan_condition_confirmed":wan_condition_confirmed,"message":message});
+            }
+            QualifyCommand::Export { directory } => {
+                op = "qualification.export".into();
+                export_dir = Some(directory.clone());
+            }
+            QualifyCommand::Validate { path } => {
+                let value = porch_node::qualification::validate_export(
+                    &porch_node::qualification::read_export(path)?,
+                )?;
+                println!("{}", serde_json::to_string_pretty(&value)?);
+                return Ok(());
+            }
+        },
         Command::Init { alias } => {
+            ensure!(
+                !a.data.join("porch.sqlite").exists() || a.data.join("identity.key").exists(),
+                "EXISTING_STATE_IDENTITY_MISSING_RESTORE_BACKUP"
+            );
             let key = identity(&a.data)?;
             let c = Config {
                 alias: alias.clone(),
@@ -311,7 +458,7 @@ async fn main() -> Result<()> {
             println!(
                 "{}",
                 serde_json::to_string_pretty(
-                    &json!({"initialized":true,"peer":key.public().to_peer_id().to_string(),"next":"porch-node --data <this-directory>"})
+                    &json!({"initialized":true,"peer":key.public().to_peer_id().to_string(),"fingerprint_sha256":digest(&key.public().encode_protobuf()),"next":"porch-node --data <this-directory>"})
                 )?
             );
             return Ok(());
@@ -421,6 +568,12 @@ async fn main() -> Result<()> {
         Command::Model { command } => match command {
             ModelCommand::List => read = Some("models"),
             ModelCommand::Discover => op = "model.discover".into(),
+            ModelCommand::Scan => op = "model.scan".into(),
+            ModelCommand::Refresh => op = "model.refresh".into(),
+            ModelCommand::Verify { model } => {
+                op = "model.verify".into();
+                args = json!({"model":model});
+            }
             ModelCommand::Run {
                 model,
                 prompt,
@@ -453,13 +606,14 @@ async fn main() -> Result<()> {
                 calls_per_hour,
                 max_input_bytes,
                 max_output_tokens,
+                max_duration_ms,
                 max_storage_bytes,
                 porch,
                 exact_input_digest,
                 out,
             } => {
                 op = "grant.issue".into();
-                args = json!({"recipient":recipient,"capability":capability,"resource":resource,"action":action,"ttl_seconds":ttl,"porch":porch,"exact_input_digest":exact_input_digest,"limits":{"max_calls":max_calls,"calls_per_hour":calls_per_hour,"max_input_bytes":max_input_bytes,"max_output_tokens":max_output_tokens,"max_storage_bytes":max_storage_bytes}});
+                args = json!({"recipient":recipient,"capability":capability,"resource":resource,"action":action,"ttl_seconds":ttl,"porch":porch,"exact_input_digest":exact_input_digest,"limits":{"max_calls":max_calls,"calls_per_hour":calls_per_hour,"max_input_bytes":max_input_bytes,"max_output_tokens":max_output_tokens,"max_duration_ms":max_duration_ms,"max_storage_bytes":max_storage_bytes}});
                 save = out.clone();
             }
         },
@@ -523,7 +677,15 @@ async fn main() -> Result<()> {
         }
     }
     let value = http(&a, read, &op, args).await?;
-    if let Some(out) = save {
+    if let Some(directory) = export_dir {
+        porch_node::qualification::write_export(&directory, &value)?;
+        println!(
+            "{}",
+            serde_json::to_string_pretty(
+                &json!({"exported":directory,"validation":porch_node::qualification::validate_export(&value)?})
+            )?
+        );
+    } else if let Some(out) = save {
         write_json(&out, &value)?;
         println!("Saved {}", out.display());
     } else if let Some(out) = binary {

@@ -1,7 +1,7 @@
 use crate::{
     Node, clients,
     models::{self, ModelSpec},
-    storage,
+    network, qualification, storage,
 };
 use anyhow::{Context, Result, ensure};
 use axum::{
@@ -140,45 +140,40 @@ async fn guard(State(node): State<Arc<Node>>, mut request: Request, next: Next) 
     response
 }
 async fn health() -> Json<Value> {
-    Json(json!({"status":"READY","protocol_version":VERSION,"candidate":"0.1.0"}))
+    Json(json!({"status":"READY","protocol_version":VERSION,"candidate":env!("CARGO_PKG_VERSION")}))
 }
 async fn read(State(node): State<Arc<Node>>, Path(kind): Path<String>) -> Response {
+    if kind == "doctor" {
+        return Json(qualification::doctor(&node).await).into_response();
+    }
     let result = (|| -> Result<Value> {
         match kind.as_str() {
             "status" => node.snapshot(),
             "identity" => Ok(
-                json!({"id":node.id,"public_key":hex::encode(node.key.public().encode_protobuf()),"address":format!("porch://peer/{}",node.id)}),
+                json!({"id":node.id,"public_key":hex::encode(node.key.public().encode_protobuf()),"address":format!("porch://peer/{}",node.id),"fingerprint_sha256":qualification::local_fingerprint(&node)}),
             ),
             "peers" => Ok(json!(node.db.trust_rows()?)),
             "resources" => Ok(serde_json::to_value(node.advertisement()?)?),
             "models" => Ok(
-                json!({"local":node.config.read().unwrap().models,"remote":node.db.records("advertisements")?}),
+                json!({"local":node.config.read().unwrap().models,"remote":node.db.records("advertisements")?,"verification":models::states(&node)?}),
             ),
             "grants" => Ok(json!(node.db.grants()?)),
             "ledger" | "jobs" | "messages" => Ok(json!(node.db.records(&kind)?)),
             "storage" => storage::list(&node),
-            "network" => Ok(node.observations.read().unwrap().clone()),
-            "doctor" => {
-                node.db.verify_ledger(&node.id)?;
-                node.db.time()?;
-                let probe = node.root.join(format!("doctor-{}", nonce()));
-                private_write(&probe, b"porch diagnostic")?;
-                std::fs::remove_file(probe)?;
-                Ok(
-                    json!({"status":"PASS","identity":true,"ledger_chain":"VERIFIED","control_api":"LOOPBACK_AUTHENTICATED","disk_writable":true,"ollama":"not-probed","wan_nat":"not-qualified"}),
-                )
-            }
+            "network" => Ok(network::diagnostics(&node)),
+            "qualification" => qualification::status(&node),
+            "active-jobs" => Ok(json!(node.db.active_jobs()?)),
             _ => anyhow::bail!("UNKNOWN_API_RESOURCE"),
         }
     })();
     match result {
-        Ok(value) => Json(value).into_response(),
+        Ok(value) => bounded_response(&node, value),
         Err(e) => refused(e),
     }
 }
 async fn control(State(node): State<Arc<Node>>, Json(request): Json<Control>) -> Response {
     match operate(&node, &request.operation, &request.args).await {
-        Ok(value) => Json(value).into_response(),
+        Ok(value) => bounded_response(&node, value),
         Err(e) => refused(e),
     }
 }
@@ -199,13 +194,14 @@ pub async fn serve(node: Arc<Node>, ui: PathBuf) -> Result<()> {
     let api = node.config.read().unwrap().api.clone();
     let listener = tokio::net::TcpListener::bind(&api).await?;
     node.config.write().unwrap().api = listener.local_addr()?.to_string();
+    let request_limit = node.config.read().unwrap().limits.request_body_bytes;
     let app = Router::new()
         .route("/health", get(health))
         .route("/v1/control", post(control))
         .route("/v1/events", get(events))
         .route("/v1/{kind}", get(read))
         .fallback_service(ServeDir::new(ui).append_index_html_on_directories(true))
-        .layer(DefaultBodyLimit::max(MAX_BLOB * 2 + 4096))
+        .layer(DefaultBodyLimit::max(request_limit))
         .layer(middleware::from_fn_with_state(node.clone(), guard))
         .with_state(node);
     axum::serve(listener, app)
@@ -223,6 +219,24 @@ pub async fn operate(node: &Arc<Node>, operation: &str, args: &Value) -> Result<
             .to_string())
     };
     match operation {
+        "qualification.run" => qualification::run(node,args).await,
+        "qualification.export" => qualification::export(node),
+        "qualification.host" => {
+            let name=required("name")?;
+            if let Some(current)=node.db.get("porch")?.filter(|v|!v.is_null()) { ensure!(current["name"]==name && current["issuer"]==node.id,"EXISTING_PORCH_REQUIRES_EXPLICIT_OPERATOR_CHANGE"); }
+            else {node.create_porch(&name)?;}
+            let recipient=required("recipient")?; let _:libp2p::PeerId=recipient.parse()?;
+            Ok(serde_json::to_value(node.invite(&json!({"recipient":recipient,"ttl_seconds":600}))?)?)
+        },
+        "qualification.join" => {
+            let invite:Signed<Invite>=serde_json::from_value(args["invite"].clone())?;
+            invite.verify("porch.invite.v1")?;
+            ensure!(qualification::fingerprint(&invite.public_key)?==required("fingerprint")?.replace([' ',':','-'],"").to_ascii_lowercase(),"PAIRING_FINGERPRINT_MISMATCH");
+            ensure!(invite.payload.recipient.as_deref()==Some(&node.id),"QUALIFICATION_REQUIRES_RECIPIENT_BOUND_INVITE");
+            node.join(invite).await
+        },
+        "model.scan" | "model.refresh" => models::scan(node).await,
+        "model.verify" => node.run(&json!({"resource":required("model")?,"input":qualification::PUBLIC_PROMPT,"privacy":"LOCAL_ONLY","max_output_tokens":16})).await,
         "client.issue" => clients::issue(node, args),
         "client.revoke" => clients::revoke(node, &required("nonce")?),
         "peer.approve" => {
@@ -365,12 +379,12 @@ pub async fn operate(node: &Arc<Node>, operation: &str, args: &Value) -> Result<
                 c.compute_hash = v;
             }
             if let Some(v) = args["storage_quota"].as_u64() {
-                ensure!(v <= 1024 * 1024 * 1024 * 1024, "STORAGE_QUOTA_TOO_LARGE");
+                ensure!(v <= c.limits.storage_total_bytes, "STORAGE_QUOTA_EXCEEDS_OPERATOR_CAP");
                 c.storage_quota = v;
             }
             if let Some(model) = args.get("model") {
                 let name = model["name"].as_str().context("MODEL_NAME_REQUIRED")?;
-                ensure!(!name.is_empty() && name.len() <= 128, "INVALID_MODEL_NAME");
+                ensure!(crate::valid_label(name,128), "INVALID_MODEL_NAME");
                 let provider = model["provider"].as_str().unwrap_or("ollama");
                 ensure!(
                     matches!(provider, "ollama" | "mock"),
@@ -387,6 +401,18 @@ pub async fn operate(node: &Arc<Node>, operation: &str, args: &Value) -> Result<
                 } else {
                     Some("deterministic-v1".into())
                 };
+                ensure!(c.models.len()<c.limits.services.saturating_sub(3) || c.models.iter().any(|m|m.name==name),"MODEL_SERVICE_LIMIT");
+                if c.models.iter().any(|m|m.name==name && (m.version!=version || m.provider!=provider)) {
+                    node.db.transaction(|tx| {
+                        let rows={let mut query=tx.prepare("SELECT nonce,record FROM grants WHERE issuer=?1 AND revoked=0")?;
+                            query.query_map([&node.id],|r|Ok((r.get::<_,String>(0)?,r.get::<_,String>(1)?)))?.collect::<rusqlite::Result<Vec<_>>>()?};
+                        for (nonce,record) in rows {let grant:Signed<Grant>=serde_json::from_str(&record)?;
+                            if grant.payload.capability=="model.inference" && grant.payload.resource==name {
+                                tx.execute("UPDATE grants SET revoked=1 WHERE nonce=?1",[nonce])?;
+                            }
+                        } Ok(())
+                    })?;
+                }
                 c.models.retain(|m| m.name != name);
                 c.models.push(ModelSpec {
                     name: name.into(),
@@ -527,5 +553,19 @@ pub async fn operate(node: &Arc<Node>, operation: &str, args: &Value) -> Result<
             anyhow::bail!("EXECUTION_ENGINE_NOT_INSTALLED")
         }
         _ => anyhow::bail!("OPERATOR_OPERATION_UNSUPPORTED"),
+    }
+}
+
+fn bounded_response(node: &Node, value: Value) -> Response {
+    if serde_json::to_vec(&value)
+        .is_ok_and(|v| v.len() <= node.config.read().unwrap().limits.response_body_bytes)
+    {
+        Json(value).into_response()
+    } else {
+        (
+            StatusCode::PAYLOAD_TOO_LARGE,
+            Json(json!({"status":"REFUSED","reason":"API_RESPONSE_EXCEEDS_OPERATOR_CAP"})),
+        )
+            .into_response()
     }
 }

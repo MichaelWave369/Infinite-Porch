@@ -1,0 +1,11 @@
+PASS executor death yields bounded failure
+PASS executor identity persists after forced process stop
+PASS running job becomes visible UNCERTAIN
+PASS uncertain job retry does not reexecute
+PASS executor records terminal outcome after requester disappears
+PASS requester identity persists
+PASS requester restart reconciles original signed receipt once
+PASS resource advertisement was refreshed after restart
+PASS revocation remains effective after executor restart
+PASS signed ledger continuity survives both process stops
+Process failure suite passed: 10 checks.

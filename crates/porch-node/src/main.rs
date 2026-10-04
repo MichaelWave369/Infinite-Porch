@@ -71,6 +71,14 @@ async fn main() -> Result<()> {
     let node = Node::open(&a.data, config)?;
     network::start(node.clone()).await?;
     tracing::info!(peer=%node.id,api=%node.config.read().unwrap().api,token_file=%a.data.join("api.token").display(),"node ready; operator token is stored locally");
+    let provider = node.clone();
+    tokio::spawn(async move {
+        let mut interval = tokio::time::interval(std::time::Duration::from_secs(15));
+        loop {
+            interval.tick().await;
+            let _ = porch_node::models::scan(&provider).await;
+        }
+    });
     let background = node.clone();
     tokio::spawn(async move {
         let mut interval = tokio::time::interval(std::time::Duration::from_secs(30));

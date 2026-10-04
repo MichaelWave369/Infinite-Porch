@@ -1,0 +1,55 @@
+{
+  "environment": "LOOPBACK",
+  "physical_network": "UNVERIFIED",
+  "passed": 12,
+  "checks": [
+    {
+      "name": "tcp replay refuses",
+      "result": "PASS"
+    },
+    {
+      "name": "tcp discovery stays live after repeated connects",
+      "result": "PASS"
+    },
+    {
+      "name": "tcp repeated signed job round trips",
+      "result": "PASS"
+    },
+    {
+      "name": "tcp encrypted authenticated protocol evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "quic replay refuses",
+      "result": "PASS"
+    },
+    {
+      "name": "quic discovery stays live after repeated connects",
+      "result": "PASS"
+    },
+    {
+      "name": "quic repeated signed job round trips",
+      "result": "PASS"
+    },
+    {
+      "name": "quic encrypted authenticated protocol evidence",
+      "result": "PASS"
+    },
+    {
+      "name": "both replay refuses",
+      "result": "PASS"
+    },
+    {
+      "name": "both discovery stays live after repeated connects",
+      "result": "PASS"
+    },
+    {
+      "name": "both repeated signed job round trips",
+      "result": "PASS"
+    },
+    {
+      "name": "both encrypted authenticated protocol evidence",
+      "result": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "environment": "LOCAL_MICROBENCHMARK",
+  "iterations": 100,
+  "physical_performance": "UNVERIFIED",
+  "scope": "domain-separated JSON receipt assertions; no model or LAN timing",
+  "sign_total_microseconds": 25911,
+  "verify_total_microseconds": 1061788
+}

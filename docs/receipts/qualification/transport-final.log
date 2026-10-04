@@ -1,0 +1,13 @@
+PASS tcp replay refuses
+PASS tcp discovery stays live after repeated connects
+PASS tcp repeated signed job round trips
+PASS tcp encrypted authenticated protocol evidence
+PASS quic replay refuses
+PASS quic discovery stays live after repeated connects
+PASS quic repeated signed job round trips
+PASS quic encrypted authenticated protocol evidence
+PASS both replay refuses
+PASS both discovery stays live after repeated connects
+PASS both repeated signed job round trips
+PASS both encrypted authenticated protocol evidence
+Transport suite passed: 12 checks.

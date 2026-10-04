@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.png binary
+*.zip binary
+docs/CONTROLLING_SPEC*.txt -text whitespace=cr-at-eol
+docs/receipts/**/*.log -text whitespace=-blank-at-eof,-blank-at-eol,cr-at-eol

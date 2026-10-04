@@ -1,20 +1,60 @@
-# Infinite Porch
+# Infinite Porch 0.1.1 — physical qualification candidate
+
+Required Rust: **1.89.0**. The locked UUID dependency rejects 1.88; 1.89 is the tested compiler. Node 22.12+ and Python 3.12+ are used by the build and acceptance tooling.
+
+Continue the 0.1.0 architecture: Ed25519 peer identities, QUIC or TCP/Noise,
+explicit trust and bounded grants, local Ollama, encrypted ciphertext storage,
+messaging, CLI, SDK, React desktop control UI and signed Reality Ledger.
+
+This candidate adds a first-class physical qualification workflow, present-time
+provider verification, authenticated path observations, signed sanitized evidence,
+recovery tests, schema migration, operator caps and platform helpers.
+
+| Evidence class | Status |
+| --- | --- |
+| Implementation | Qualification CLI/UI, live adapter, diagnostics, export/validator, migrations and hardening implemented |
+| Local verification | See `docs/receipts/qualification/command-gates.json` for executed checks |
+| CI | Multi-platform workflow configured; no remote CI execution claimed |
+| Physical computers / LAN / real weights | UNVERIFIED until separately collected evidence exists |
+| Windows and macOS native operation | UNVERIFIED; source workflows and guides provided |
+| Independent security review / production release | UNVERIFIED / not released |
+| Federation, public relays, WASM, sharding, GPU pooling | FUTURE; not installed |
+
+Start with [START_HERE.txt](START_HERE.txt). Exact two-PC procedures:
+[Windows](docs/WINDOWS_QUALIFICATION.md), [Linux](docs/LINUX_QUALIFICATION.md),
+[macOS](docs/MACOS_QUALIFICATION.md). The shared acceptance sequence is in
+[Physical qualification](docs/PHYSICAL_QUALIFICATION.md).
+
+```sh
+cargo build --workspace --locked
+npm ci
+npm run build
+cargo run -p porch-cli -- init --alias MIKEY-PC
+cargo run -p porch-node -- --data state --ui apps/desktop/dist
+# In another terminal:
+target/debug/porch qualify status
+target/debug/porch models scan
+target/debug/porch qualify run --environment LOOPBACK
+target/debug/porch qualify export qualification-local
+target/debug/porch qualify validate qualification-local
+```
+
+The control API remains literal loopback, same-origin and token authenticated.
+The peer transport is a separate surface. Sharing starts disabled; advertisements
+provide no invocation authority. Qualification probes use a fixed public prompt
+and do consume applicable grants. Skipped checks never count as passes.
+
+## Architecture and operator reference
 
 Connect computers you own with people you choose. Offer a little storage, share
 an installed model, send a message, or run a bounded task on an approved device.
 Each device keeps its own identity, permissions and evidence. Basic operation
 needs no vendor account, cloud service, blockchain or central authority.
 
-**0.1.0 is a runnable local candidate, not a qualified production release.** The
-three-process acceptance demo uses real encrypted peer connections and explicit
-mock inference. Live Ollama, physical LAN discovery, WAN traversal and native
-Windows/macOS packages still require qualification. [Required work and future
-extensions](docs/ROADMAP.md) are kept separate.
-
 ## Run from source
 
-Requirements: Rust 1.99.0, Node 22+, npm, Python 3.10+, and a C compiler for bundled
-SQLite. Linux is verified here. The CI configuration builds and tests Windows,
+Requirements: Rust 1.89.0, Node 22.12+, npm, Python 3.12+, and a C compiler for bundled
+SQLite. Linux x86_64 builds and local runtime are tested here. The CI configuration builds and tests Windows,
 Linux and macOS; those remote jobs have not been run for this candidate.
 
 ```sh
@@ -40,7 +80,7 @@ python3 tests/acceptance.py
 python3 scripts/demo.py
 ```
 
-The first command runs the complete automated proof, then stops the nodes. The
+The first command runs the deterministic peer checks, then stops the nodes. The
 second leaves ALPHA, BETA and GAMMA running for inspection and prints each UI
 address and local token-file location. It explicitly offers a deterministic
 **MOCK** model, hash compute and encrypted storage. Use a fresh demo state
@@ -73,14 +113,15 @@ Start a node on each PC. Exchange the intended recipient's peer ID through a
 channel you trust. On the Porch creator:
 
 ```sh
-./target/debug/porch --data state create "Oak Street"
-./target/debug/porch --data state invite --recipient RECIPIENT_PEER_ID --ttl 600 --out porch-invite.json
+./target/debug/porch --data state qualify host "Oak Street" --recipient RECIPIENT_PEER_ID --out porch-invite.json
+./target/debug/porch --data state identity show
 ```
 
-Transfer that package to the recipient and run:
+Compare the entire fingerprint directly on the intended creator PC. Transfer the
+invitation to its bound recipient and run:
 
 ```sh
-./target/debug/porch --data state join porch-invite.json
+./target/debug/porch --data state qualify join porch-invite.json --fingerprint VERIFIED_CREATOR_SHA256
 ./target/debug/porch --data state peers
 ./target/debug/porch --data state share refresh
 ```
@@ -97,7 +138,7 @@ not execution. Members approve direct relationships and grants separately.
 | `porch-core` | Versioned records, canonical signatures, encryption and deterministic routing |
 | `porch-node` | libp2p transport, SQLite authority/accounting, providers, vault, messaging and API |
 | `porch` | Operator CLI, pairing, grants, identity backup/rotation and diagnostics |
-| React desktop UI | Nine operator views served by the local daemon |
+| React desktop UI | Ten operator views served by the local daemon |
 | TypeScript SDK | Scoped application requests and independent ecosystem adapters |
 
 Encrypted sessions use QUIC or TCP/Noise. Signed advertisements are claims;
@@ -116,6 +157,13 @@ npm run typecheck
 npm test
 python3 tests/cli_smoke.py
 python3 tests/acceptance.py
+python3 tests/qualification_acceptance.py
+python3 tests/process_failures.py
+python3 tests/process_failures.py --transport quic
+python3 tests/transport_acceptance.py
+python3 tests/limit_cli.py
+python3 scripts/check_platform.py
+python3 scripts/check_toolchain.py
 npx playwright install chromium
 python3 tests/ui_acceptance.py
 python3 scripts/package.py
@@ -128,5 +176,6 @@ when built on Windows. There is no service installation or autostart.
 See [architecture](docs/ARCHITECTURE.md), [authority](docs/AUTHORITY.md),
 [security and limitations](docs/SECURITY.md), [testing evidence](docs/TESTING.md),
 [operations](docs/OPERATIONS.md), [API](docs/API.md) and [CLI](docs/CLI.md).
-The untouched build brief is [CONTROLLING_SPEC.txt](docs/CONTROLLING_SPEC.txt).
+The untouched current brief is [CONTROLLING_SPEC_0.1.1.txt](docs/CONTROLLING_SPEC_0.1.1.txt); the original 0.1.0 brief and baseline tag are preserved.
 The complete delivery assessment is [DELIVERY.md](docs/DELIVERY.md).
+The current traceability register is [REQUIREMENTS_0.1.1.md](docs/REQUIREMENTS_0.1.1.md).

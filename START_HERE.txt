@@ -1,0 +1,30 @@
+INFINITE PORCH 0.1.1 — PHYSICAL QUALIFICATION CANDIDATE
+
+This is an engineering candidate, not a production-qualified release.
+
+Linux x86_64: extract the nested infinite-porch-0.1.1-linux-x86_64.zip.
+Run ./start.sh, open http://127.0.0.1:7331, and use the token in state/api.token
+locally. Sharing starts disabled. Ctrl+C stops the foreground daemon.
+
+For TWO COMPUTERS follow docs/LINUX_QUALIFICATION.md or
+ docs/WINDOWS_QUALIFICATION.md. Windows source builds require MSVC, Rust 1.89.0
+and Node 22+. No Windows executable is included unless explicitly listed in
+REPOSITORY_STATE.json. macOS is source-only and unverified.
+
+Use bin/porch qualify host/join/status/run/export/validate.
+Use bin/porch models scan/refresh/verify.
+Use bin/porch doctor for independent readiness categories.
+
+Evidence defaults exclude private prompts, unrelated job outputs, tokens,
+private keys and raw daemon logs. Only fixed public diagnostic output is exported.
+Validate exported evidence: bin/porch qualify validate evidence-directory
+Validate portable package integrity: python3 scripts/verify_package.py PACKAGE.zip
+
+Preserved baseline: 3a3ace51979110afc76fa2dda7a35108c41af15b.
+Current commit, branch and package hashes: REPOSITORY_STATE.json / SHA256SUMS.txt.
+Tests and supply-chain classification: docs/receipts/qualification/.
+Required software/external gates: docs/RELEASE_GATES.md.
+Roadmap REQUIRED/FUTURE: docs/ROADMAP.md.
+
+Two physical nodes, real Ollama weights, offline LAN, native Windows/macOS and
+independent review remain external evidence gates until actually run.

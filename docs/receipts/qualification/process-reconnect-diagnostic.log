@@ -1,0 +1,7 @@
+PASS executor death yields bounded failure
+PASS executor identity persists after forced process stop
+PASS running job becomes visible UNCERTAIN
+OBSERVATION retry: {"status": "REFUSED", "reason": "DUPLICATE_JOB_UNCERTAIN", "provider_calls": 1, "path": {"authenticated": true, "authenticated_peer": "12D3KooWAXJh44n339ALeNseAQaPvScJVemjpm9eLjHm9sANeuCF", "connected": true, "connection_age_seconds": 0, "direct": true, "encrypted": true, "encryption": "Noise XX", "latency_ms": 1, "local_socket": null, "negotiated_protocol": "/infinite-porch/rpc/1", "path": "LOOPBACK", "path_basis": "authenticated transport IP classification; LAN topology/WAN state require operator evidence", "physical_topology_verified": false, "relayed": false, "remote_peer_id": "12D3KooWAXJh44n339ALeNseAQaPvScJVemjpm9eLjHm9sANeuCF", "remote_socket": "/ip4/127.0.0.1/tcp/60225/p2p/12D3KooWAXJh44n339ALeNseAQaPvScJVemjpm9eLjHm9sANeuCF", "transport": "TCP/Noise", "trust_state": "TRUSTED"}}
+PASS uncertain job retry does not reexecute
+PASS executor records terminal outcome after requester disappears
+PASS requester identity persists

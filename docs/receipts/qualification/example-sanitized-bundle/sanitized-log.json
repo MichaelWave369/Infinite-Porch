@@ -1,0 +1,73 @@
+{
+  "events": [
+    {
+      "id": "identity",
+      "result": "PASS",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "ledger",
+      "result": "PASS",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "ollama_local",
+      "result": "SKIPPED_ENVIRONMENT",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "local_only",
+      "result": "PASS",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "peer_trust",
+      "result": "PASS",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "peer_path",
+      "result": "PASS",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "separate_physical_nodes",
+      "result": "UNVERIFIED",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "remote_inference",
+      "result": "PARTIAL",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "messaging",
+      "result": "PASS",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "restart_recovery",
+      "result": "UNVERIFIED",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "independent_security_review",
+      "result": "UNVERIFIED",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "windows_verification",
+      "result": "UNVERIFIED",
+      "timestamp": 1791070992
+    },
+    {
+      "id": "macos_verification",
+      "result": "UNVERIFIED",
+      "timestamp": 1791070992
+    }
+  ],
+  "private_outputs_exported": false,
+  "private_prompts_exported": false,
+  "public_probe_outputs_exported": true,
+  "source": "qualification-only"
+}

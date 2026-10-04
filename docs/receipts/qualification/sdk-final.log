@@ -1,0 +1,15 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> infinite-porch@0.1.1 test
+> node --test tests/sdk.test.mjs
+
+✔ remote endpoints and path injection cannot become control APIs (0.987406ms)
+✔ applications and model-routing adapters default to LOCAL_ONLY (2.919266ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.677462

@@ -1,0 +1,551 @@
+{
+  "candidate": "0.1.1",
+  "source": "docs/CONTROLLING_SPEC_0.1.1.txt",
+  "requirements": [
+    {
+      "id": "Q-001",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 1",
+      "requirement": "Inspect and preserve baseline",
+      "status": "Executed locally",
+      "implementation_target": "baseline tag; freeze receipt; continued branch",
+      "verification_hook": "specification-freeze.json; git history",
+      "evidence": "specification-freeze.json; git history",
+      "dependencies": [],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-002",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 2",
+      "requirement": "Consistent lowest supported Rust compiler",
+      "status": "Executed locally",
+      "implementation_target": "Cargo, rust-toolchain, README, CI; check_toolchain.py",
+      "verification_hook": "msrv-1.88.log; rust-release-gate.log; toolchain-consistency.log",
+      "evidence": "msrv-1.88.log; rust-release-gate.log; toolchain-consistency.log",
+      "dependencies": [
+        "Q-001"
+      ],
+      "deviations": [
+        "D-001"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-003",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 3",
+      "requirement": "First-class qualification mode",
+      "status": "Demonstrated locally",
+      "implementation_target": "qualification.rs; CLI qualify; Qualification.tsx",
+      "verification_hook": "qualification-acceptance.json; ui-receipt.json",
+      "evidence": "qualification-acceptance.json; ui-receipt.json",
+      "dependencies": [
+        "Q-001"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-004",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 4",
+      "requirement": "Two independent physical machines and governed inference",
+      "status": "Integrated; physical UNVERIFIED",
+      "implementation_target": "host/join; provider; bounded grants; signed receipts; physical/platform guides",
+      "verification_hook": "qualification-acceptance.json (mock/loopback); live-ollama.json",
+      "evidence": "qualification-acceptance.json (mock/loopback); live-ollama.json",
+      "dependencies": [
+        "Q-003",
+        "Q-005",
+        "Q-011"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-005",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 5",
+      "requirement": "Separate live Ollama qualification and availability states",
+      "status": "Executed locally with HTTP fixtures; weights UNVERIFIED",
+      "implementation_target": "models.rs scan/refresh/verify; provider_runtime.rs; qualify_ollama.py",
+      "verification_hook": "rust-release-gate.log; live-ollama.json (2 skipped, 3 unverified)",
+      "evidence": "rust-release-gate.log; live-ollama.json (2 skipped, 3 unverified)",
+      "dependencies": [
+        "Q-003"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-006",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 6",
+      "requirement": "Privacy classes and no unauthorized prompt forwarding",
+      "status": "Demonstrated locally",
+      "implementation_target": "deterministic route; executor grant boundary; digest-only refusal evidence",
+      "verification_hook": "peer-acceptance.json; qualification-acceptance.json; Rust privacy/security tests",
+      "evidence": "peer-acceptance.json; qualification-acceptance.json; Rust privacy/security tests",
+      "dependencies": [
+        "Q-004"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-007",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 7",
+      "requirement": "Internet-off LAN independence",
+      "status": "Implemented procedure; physical UNVERIFIED",
+      "implementation_target": "offline/restored phases; path checks; WAN attestation; OFFLINE_LAN_TEST.md",
+      "verification_hook": "qualification-acceptance.json proves label boundaries, not WAN removal",
+      "evidence": "qualification-acceptance.json proves label boundaries, not WAN removal",
+      "dependencies": [
+        "Q-004",
+        "Q-010"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-008",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 8",
+      "requirement": "Controlled failure injection",
+      "status": "Executed locally",
+      "implementation_target": "faults.rs; provider_runtime.rs; process_failures.py; recovery.rs",
+      "verification_hook": "rust-release-gate.log; process-failures.json; process-failures-quic.json",
+      "evidence": "rust-release-gate.log; process-failures.json; process-failures-quic.json",
+      "dependencies": [
+        "Q-001"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-009",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 9",
+      "requirement": "Restart preserves authority and uncertain jobs",
+      "status": "Demonstrated locally; physical durability UNVERIFIED",
+      "implementation_target": "state lock; persistent identity/trust/grants; pinned routes; UNCERTAIN recovery",
+      "verification_hook": "peer-acceptance.json; process failure receipts; Rust recovery tests",
+      "evidence": "peer-acceptance.json; process failure receipts; Rust recovery tests",
+      "dependencies": [
+        "Q-008",
+        "Q-025"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-010",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 10",
+      "requirement": "Authenticated actual network-path diagnostics",
+      "status": "Demonstrated locally; LAN/WAN UNVERIFIED",
+      "implementation_target": "network.rs connection IDs/sockets/protocol/RTT/age; advanced UI",
+      "verification_hook": "transports.json; qualification-acceptance.json",
+      "evidence": "transports.json; qualification-acceptance.json",
+      "dependencies": [
+        "Q-003"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-011",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 11",
+      "requirement": "Clear safe first pairing and fingerprint",
+      "status": "Demonstrated locally",
+      "implementation_target": "recipient-bound invite; full SHA-256 comparison; batched pinned dial fallback",
+      "verification_hook": "qualification-acceptance.json; Rust invitation/fingerprint tests",
+      "evidence": "qualification-acceptance.json; Rust invitation/fingerprint tests",
+      "dependencies": [
+        "Q-003"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-012",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 12",
+      "requirement": "Windows readiness without false qualification",
+      "status": "Implemented; native UNVERIFIED",
+      "implementation_target": "MSVC CI; install/qualify PowerShell helpers; user ACL and firewall guide",
+      "verification_hook": "platform-contracts.json (CLI contracts only); WINDOWS_QUALIFICATION.md",
+      "evidence": "platform-contracts.json (CLI contracts only); WINDOWS_QUALIFICATION.md",
+      "dependencies": [
+        "Q-011",
+        "Q-026"
+      ],
+      "deviations": [
+        "D-002",
+        "D-004"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-013",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 13",
+      "requirement": "macOS readiness without false qualification",
+      "status": "Implemented; native UNVERIFIED",
+      "implementation_target": "native-source guide; user permissions/firewall; CI; signing limits",
+      "verification_hook": "MACOS_QUALIFICATION.md; platform-contracts.json",
+      "evidence": "MACOS_QUALIFICATION.md; platform-contracts.json",
+      "dependencies": [
+        "Q-026"
+      ],
+      "deviations": [
+        "D-002",
+        "D-004"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-014",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 14",
+      "requirement": "Linux complete qualification path",
+      "status": "Integrated; local native package gate collected post-commit",
+      "implementation_target": "install-user.sh; systemd template; two-PC install/share/storage/revoke/restart guide",
+      "verification_hook": "LINUX_QUALIFICATION.md; final release-evidence/package.json",
+      "evidence": "LINUX_QUALIFICATION.md; final release-evidence/package.json",
+      "dependencies": [
+        "Q-004",
+        "Q-026"
+      ],
+      "deviations": [
+        "D-002",
+        "D-004"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-015",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 15",
+      "requirement": "Standard sanitized signed evidence bundle",
+      "status": "Demonstrated locally",
+      "implementation_target": "6 whitelisted files plus signed manifest; CLI/UI export; offline validator",
+      "verification_hook": "example-sanitized-bundle/; example-validation.json; ui-bundle-validation.json",
+      "evidence": "example-sanitized-bundle/; example-validation.json; ui-bundle-validation.json",
+      "dependencies": [
+        "Q-003"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-016",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 16",
+      "requirement": "Six explicit outcome states and skip discipline",
+      "status": "Demonstrated locally",
+      "implementation_target": "scenario schema/counts; UI; validator; no production badge",
+      "verification_hook": "qualification-acceptance.json; example signed bundle; UI receipt",
+      "evidence": "qualification-acceptance.json; example signed bundle; UI receipt",
+      "dependencies": [
+        "Q-015"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-017",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 17",
+      "requirement": "Physical-network security review and regressions",
+      "status": "Executed locally; independent review UNVERIFIED",
+      "implementation_target": "SECURITY.md; THREAT_MODEL.md; exact grants; codec; aliases; caps; safe_error",
+      "verification_hook": "Rust security/caps/faults tests; qualification/API/UI acceptance",
+      "evidence": "Rust security/caps/faults tests; qualification/API/UI acceptance",
+      "dependencies": [
+        "Q-008",
+        "Q-019"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-018",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 18",
+      "requirement": "Separate and hardened localhost control plane",
+      "status": "Demonstrated locally",
+      "implementation_target": "literal loopback bind/URLs; same origin/Host; strong token; authenticated SSE",
+      "verification_hook": "qualification-acceptance.json; peer-acceptance.json; UI receipt",
+      "evidence": "qualification-acceptance.json; peer-acceptance.json; UI receipt",
+      "dependencies": [
+        "Q-017"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-019",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 19",
+      "requirement": "Safe operator-configurable resource caps",
+      "status": "Demonstrated locally",
+      "implementation_target": "limits.rs; offline configure-limits; queue/frame/body/grant/storage caps",
+      "verification_hook": "limit-cli.json; Rust caps and wire-codec tests",
+      "evidence": "limit-cli.json; Rust caps and wire-codec tests",
+      "dependencies": [
+        "Q-017"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-020",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 20",
+      "requirement": "Inspect deterministic routing facts",
+      "status": "Demonstrated locally",
+      "implementation_target": "existing route decision with candidates, reasons, selected peer and grant facts",
+      "verification_hook": "peer-acceptance.json; example run.json/receipts.json",
+      "evidence": "peer-acceptance.json; example run.json/receipts.json",
+      "dependencies": [
+        "Q-006"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-021",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 21",
+      "requirement": "Dedicated honest Qualification UI",
+      "status": "Demonstrated locally",
+      "implementation_target": "Qualification.tsx; 10-page navigation; counts/provider/path/export; CANDIDATE",
+      "verification_hook": "ui-receipt.json; qualification.png; ui-bundle-validation.json",
+      "evidence": "ui-receipt.json; qualification.png; ui-bundle-validation.json",
+      "dependencies": [
+        "Q-003",
+        "Q-015",
+        "Q-016"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-022",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 22",
+      "requirement": "Clear physical CLI workflow",
+      "status": "Demonstrated locally",
+      "implementation_target": "qualify host/join/status/run/export/validate; models alias; grants; doctor",
+      "verification_hook": "qualification-acceptance.json; platform-contracts.json; CLI.md",
+      "evidence": "qualification-acceptance.json; platform-contracts.json; CLI.md",
+      "dependencies": [
+        "Q-003",
+        "Q-011"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-023",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 23",
+      "requirement": "Fourteen-category doctor with remediation",
+      "status": "Demonstrated locally",
+      "implementation_target": "qualification::doctor; CLI/API; explicit unknown LAN/NAT/platform results",
+      "verification_hook": "qualification-acceptance.json; CLI smoke; package doctor gate",
+      "evidence": "qualification-acceptance.json; CLI smoke; package doctor gate",
+      "dependencies": [
+        "Q-010",
+        "Q-017"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-024",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 24",
+      "requirement": "Bounded wall-clock safety and monotonic durations",
+      "status": "Executed locally",
+      "implementation_target": "persistent last security time; 2-second future-created skew; rollback refusal/anomaly",
+      "verification_hook": "Rust security tests; SECURITY.md; db.rs",
+      "evidence": "Rust security tests; SECURITY.md; db.rs",
+      "dependencies": [
+        "Q-009"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-025",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 25",
+      "requirement": "Schema version, private backup and migration",
+      "status": "Executed locally",
+      "implementation_target": "schema 2; owner check before DDL; schema-1 backup; collision/future failure",
+      "verification_hook": "Rust qualification/caps migration regressions; rust-release-gate.log",
+      "evidence": "Rust qualification/caps migration regressions; rust-release-gate.log",
+      "dependencies": [
+        "Q-001"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-026",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 26",
+      "requirement": "Integrity metadata, lockfiles and unsigned package",
+      "status": "Implemented; native artifact gate collected post-commit",
+      "implementation_target": "package.py; verify_package.py; build.rs; package_acceptance.py",
+      "verification_hook": "final portable manifest and release-evidence/package.json; outer manifest",
+      "evidence": "final portable manifest and release-evidence/package.json; outer manifest",
+      "dependencies": [
+        "Q-002"
+      ],
+      "deviations": [
+        "D-003",
+        "D-004"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-027",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 27",
+      "requirement": "Supply-chain tooling and classified findings",
+      "status": "Executed locally with retained findings",
+      "implementation_target": "audit_gate.py; raw cargo/npm audit; exact feature/source applicability checks",
+      "verification_hook": "supply-chain-review.json; SUPPLY_CHAIN_REVIEW.md; audit-complete.log",
+      "evidence": "supply-chain-review.json; SUPPLY_CHAIN_REVIEW.md; audit-complete.log",
+      "dependencies": [
+        "Q-002"
+      ],
+      "deviations": [
+        "D-003",
+        "D-005"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-028",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 28",
+      "requirement": "Honest performance baseline by environment",
+      "status": "Executed locally; idle metrics and physical UNVERIFIED",
+      "implementation_target": "qualification harness timers; Python SHA-256 sample; Rust receipt microbenchmark",
+      "verification_hook": "qualification-acceptance.json; receipt-performance.json; PERFORMANCE.md",
+      "evidence": "qualification-acceptance.json; receipt-performance.json; PERFORMANCE.md",
+      "dependencies": [
+        "Q-003"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-029",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 29",
+      "requirement": "Preserve non-goals",
+      "status": "Preserved",
+      "implementation_target": "no new federation, public relay, payments, shell, sharding, GPU pooling or marketplace engine",
+      "verification_hook": "ROADMAP.md; current diff and preserved protocol",
+      "evidence": "ROADMAP.md; current diff and preserved protocol",
+      "dependencies": [
+        "Q-001"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-030",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 30",
+      "requirement": "CI software gates without physical claims",
+      "status": "Configured; remote execution UNVERIFIED",
+      "implementation_target": "3-platform CI; Linux UI/audit; native package/schema/migration/security gates",
+      "verification_hook": "ci.yml; local command-gates.json; TESTING.md",
+      "evidence": "ci.yml; local command-gates.json; TESTING.md",
+      "dependencies": [
+        "Q-008",
+        "Q-026",
+        "Q-027"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-031",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 31",
+      "requirement": "Complete required guides and status distinctions",
+      "status": "Implemented",
+      "implementation_target": "START_HERE; README; all requested qualification/security/release/roadmap guides",
+      "verification_hook": "docs/ guides; DELIVERY.md; REQUIREMENTS_0.1.1.md",
+      "evidence": "docs/ guides; DELIVERY.md; REQUIREMENTS_0.1.1.md",
+      "dependencies": [
+        "Q-003"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-032",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 32",
+      "requirement": "Separate software completion and external evidence gates",
+      "status": "Software evidence collected; physical UNVERIFIED",
+      "implementation_target": "RELEASE_GATES.md; selected local gates; final post-commit package verification",
+      "verification_hook": "command-gates.json; final delivery report; release-evidence/",
+      "evidence": "command-gates.json; final delivery report; release-evidence/",
+      "dependencies": [
+        "Q-030",
+        "Q-031"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-033",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 33",
+      "requirement": "Complete versioned deliverable with source/history/binaries/evidence",
+      "status": "Prepared by committed package tooling; final collection post-commit",
+      "implementation_target": "git archive/bundle; native Linux portable/UI; 16-item DELIVERY_REPORT.md",
+      "verification_hook": "outer REPOSITORY_STATE.json; delivery manifest; archive checksum",
+      "evidence": "outer REPOSITORY_STATE.json; delivery manifest; archive checksum",
+      "dependencies": [
+        "Q-026",
+        "Q-032"
+      ],
+      "deviations": [
+        "D-004"
+      ],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-034",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 34",
+      "requirement": "Persist through inspect/build/fix/test/package",
+      "status": "Executed locally",
+      "implementation_target": "preserved failures; repaired source; final selected checks; reviewable package",
+      "verification_hook": "raw receipts; git history; DELIVERY.md",
+      "evidence": "raw receipts; git history; DELIVERY.md",
+      "dependencies": [
+        "Q-001"
+      ],
+      "deviations": [],
+      "authority": "Explicit current human controlling brief"
+    },
+    {
+      "id": "Q-035",
+      "source": "docs/CONTROLLING_SPEC_0.1.1.txt section 35",
+      "requirement": "Make physical success criterion testable and falsifiable",
+      "status": "Integrated; external success UNVERIFIED",
+      "implementation_target": "fixed public probes; signed grants/receipts; recovery; phase exports; exact physical guides",
+      "verification_hook": "PHYSICAL_QUALIFICATION.md; RELEASE_GATES.md; final bundle",
+      "evidence": "PHYSICAL_QUALIFICATION.md; RELEASE_GATES.md; final bundle",
+      "dependencies": [
+        "Q-004",
+        "Q-007",
+        "Q-009",
+        "Q-015"
+      ],
+      "deviations": [
+        "D-002"
+      ],
+      "authority": "Explicit current human controlling brief"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "suite": "real Ollama opt-in",
+  "scenarios": [
+    {
+      "id": "live_provider",
+      "expectation": "Local Ollama tags endpoint responds",
+      "observation": {
+        "reachable": false,
+        "scan": {
+          "currently_reachable": false,
+          "duration_ms": 0,
+          "inventory": [],
+          "loaded_models": null,
+          "observation_ttl_seconds": 30,
+          "observed_at": 1791066045,
+          "provider": "ollama",
+          "provider_version": null,
+          "reason": "MALFORMED_OR_PROVIDER_TRANSPORT_FAILURE",
+          "sharing_automatically_enabled": false
+        }
+      },
+      "result": "SKIPPED_ENVIRONMENT",
+      "timestamp": 1791066045,
+      "evidence_file": "live-ollama.json",
+      "peers": []
+    },
+    {
+      "id": "live_inference",
+      "expectation": "Explicit --model selects real weights",
+      "observation": {
+        "model": null
+      },
+      "result": "SKIPPED_ENVIRONMENT",
+      "timestamp": 1791066045,
+      "evidence_file": "live-ollama.json",
+      "peers": []
+    },
+    {
+      "id": "provider_process_death",
+      "expectation": "Repeat operator-controlled live procedure in docs/OLLAMA_QUALIFICATION.md",
+      "observation": {
+        "live_external_test_required": true
+      },
+      "result": "UNVERIFIED",
+      "timestamp": 1791066045,
+      "evidence_file": "live-ollama.json",
+      "peers": []
+    },
+    {
+      "id": "model_unload",
+      "expectation": "Repeat operator-controlled live procedure in docs/OLLAMA_QUALIFICATION.md",
+      "observation": {
+        "live_external_test_required": true
+      },
+      "result": "UNVERIFIED",
+      "timestamp": 1791066045,
+      "evidence_file": "live-ollama.json",
+      "peers": []
+    },
+    {
+      "id": "model_inventory_change",
+      "expectation": "Repeat operator-controlled live procedure in docs/OLLAMA_QUALIFICATION.md",
+      "observation": {
+        "live_external_test_required": true
+      },
+      "result": "UNVERIFIED",
+      "timestamp": 1791066045,
+      "evidence_file": "live-ollama.json",
+      "peers": []
+    }
+  ],
+  "physical_qualification": "UNVERIFIED"
+}

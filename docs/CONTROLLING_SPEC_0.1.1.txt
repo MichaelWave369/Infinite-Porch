@@ -1,0 +1,1234 @@
+You are continuing ownership of **Infinite Porch**.
+
+Current candidate:
+
+- Version: **0.1.0 candidate**
+- Branch: `feat/porch-v0.1.0-candidate`
+- Commit: `3a3ace51979110afc76fa2dda7a35108c41af15b`
+
+The existing candidate already includes:
+
+- governed P2P jobs
+- cryptographic identities
+- peer trust and grants
+- encrypted storage
+- messaging
+- CLI
+- SDK
+- desktop UI
+- model routing interfaces
+- Reality Ledger / receipts
+- test harnesses
+- Linux binaries
+- acceptance receipts
+- install/run/Ollama guides
+
+The previous candidate passed:
+
+- 33 peer checks
+- 13 Rust tests
+- 2 SDK tests
+- 8 CLI checks
+- 8 UI checks
+- 7 package checks
+- format
+- lint
+- build gates
+
+Do NOT restart architecture from scratch.
+
+Do NOT add large speculative features.
+
+Do NOT broaden scope into federation, blockchain, public relays, sharded models, WASM marketplaces, or new major subsystems.
+
+Your objective is:
+
+# INFINITE PORCH 0.1.1
+## PHYSICAL QUALIFICATION, LIVE MODEL VALIDATION, FAILURE HARDENING, AND CROSS-PLATFORM READINESS
+
+The goal is to turn the existing software candidate into something that can be installed on physically separate PCs and proven to work outside the deterministic local harness.
+
+The focus is **evidence over expansion**.
+
+---
+
+# 1. FIRST ACTION
+
+Inspect the current repository exactly as it exists.
+
+Confirm:
+
+- current branch
+- current commit
+- working tree status
+- project structure
+- current tests
+- packaging scripts
+- current protocol version
+- current CLI commands
+- current Ollama adapter
+- current UI
+- current qualification evidence
+
+Do not replace working systems merely because you would architect them differently.
+
+Create a new branch:
+
+`feat/porch-v0.1.1-physical-qualification`
+
+or another clearly equivalent qualification branch.
+
+Preserve the 0.1.0 candidate as a stable baseline.
+
+---
+
+# 2. FIX KNOWN VERSION INCONSISTENCY
+
+There is currently a toolchain/version inconsistency.
+
+`Cargo.toml` reportedly declares:
+
+`rust-version = "1.88"`
+
+while:
+
+- `rust-toolchain.toml`
+- CI
+- README
+
+reportedly expect Rust 1.99.0.
+
+Verify this.
+
+Make the required Rust version consistent everywhere.
+
+Prefer the lowest actually-supported compiler version if the code compiles and tests cleanly there.
+
+Do not arbitrarily increase the minimum version.
+
+Create a test or CI check preventing future drift between:
+
+- Cargo metadata
+- rust-toolchain
+- documentation
+- CI
+
+---
+
+# 3. CREATE A REAL PHYSICAL QUALIFICATION MODE
+
+Add a clear first-class command or workflow for physical deployment.
+
+Examples:
+
+`porch qualify host`
+
+`porch qualify join`
+
+`porch qualify status`
+
+`porch qualify run`
+
+or a similarly clean interface.
+
+A user should not need to manually reconstruct internal API calls to qualify two real machines.
+
+Qualification mode must clearly expose:
+
+- local node identity
+- machine alias
+- local listen addresses
+- reachable LAN addresses
+- peer ID
+- current Porch/community ID
+- pairing state
+- trust state
+- network path
+- negotiated transport
+- encryption/security state
+- model inventory
+- grants
+- active jobs
+- latest receipt
+- ledger status
+
+It should distinguish:
+
+`SIMULATED`
+
+from:
+
+`PHYSICAL`
+
+and never confuse one for the other.
+
+---
+
+# 4. TWO-PHYSICAL-MACHINE QUALIFICATION
+
+Build the repository around this real acceptance target:
+
+MACHINE A
+
+- Windows or Linux
+- Infinite Porch node
+- operator identity A
+- local Ollama
+- at least one model when available
+
+MACHINE B
+
+- Windows or Linux
+- Infinite Porch node
+- operator identity B
+- may or may not have Ollama/model
+
+The system must support the following real flow.
+
+## Step A
+
+Machine A initializes.
+
+Machine B initializes.
+
+Both independently generate identities.
+
+## Step B
+
+A creates a Porch.
+
+A generates a short-lived invitation.
+
+B joins.
+
+## Step C
+
+Both machines discover and authenticate each other.
+
+Prefer LAN discovery where available.
+
+Pairing must not require a central cloud account.
+
+## Step D
+
+A or B exposes an Ollama model.
+
+Remote node observes the model advertisement.
+
+Critically:
+
+**model advertisement must NOT imply authority to invoke it.**
+
+## Step E
+
+Operator issues a bounded grant.
+
+Example:
+
+- recipient peer
+- model capability
+- max calls
+- optional token/time/resource limits
+- expiration
+
+## Step F
+
+Remote machine submits an actual inference request.
+
+Routing selects the physical remote node.
+
+Actual Ollama inference occurs.
+
+Return:
+
+- model output
+- executor peer
+- request digest
+- result digest
+- route decision
+- timing
+- authorization reference
+- signed execution receipt
+
+## Step G
+
+Revoke the grant.
+
+Submit again.
+
+The request MUST fail closed.
+
+Create evidence for both success and refusal.
+
+---
+
+# 5. LIVE OLLAMA QUALIFICATION
+
+The existing deterministic/mock provider must remain for CI.
+
+Add a separate real-provider qualification suite.
+
+Detect Ollama safely.
+
+Support:
+
+- provider present
+- provider absent
+- model present
+- model absent
+- Ollama unreachable
+- inference timeout
+- Ollama process death
+- model unloaded
+- model list change during runtime
+
+Create commands such as:
+
+`porch models scan`
+
+`porch models refresh`
+
+`porch models verify`
+
+or equivalent.
+
+Do not claim a model is usable merely because its name appeared once.
+
+Track:
+
+- advertised
+- last verified
+- currently reachable
+- invocation permitted
+- invocation successful
+
+as separate states.
+
+---
+
+# 6. PRIVACY QUALIFICATION
+
+Explicitly verify the privacy routing classes.
+
+At minimum:
+
+`LOCAL_ONLY`
+
+`TRUSTED_PEERS`
+
+`PORCH_ALLOWED`
+
+`FEDERATED_ALLOWED`
+
+For 0.1.1 federation may remain unavailable.
+
+If so, FEDERATED_ALLOWED should behave honestly rather than inventing federation.
+
+Create tests proving:
+
+## LOCAL_ONLY
+
+The request never creates an outbound remote job.
+
+Even if a better remote model exists.
+
+## TRUSTED_PEERS
+
+Only eligible trusted peers are candidates.
+
+## Unauthorized peer
+
+Must not receive prompt contents.
+
+## Refused route
+
+Must not leak request contents into shared logs.
+
+Ledger entries should use digests where sensitive data is unnecessary.
+
+---
+
+# 7. INTERNET-OFF TEST
+
+Create a qualification scenario proving LAN independence.
+
+Expected procedure:
+
+1. Two physical machines are joined to a Porch.
+2. Establish direct/local connectivity.
+3. Verify messaging.
+4. Verify model/service discovery.
+5. Verify authorized remote request.
+6. Remove outside Internet connectivity while preserving local LAN.
+7. Repeat messaging.
+8. Repeat remote job.
+9. Repeat receipt verification.
+10. Restore Internet.
+11. Verify clean recovery.
+
+The qualification tooling should make it clear whether a path is:
+
+LAN direct
+
+WAN direct
+
+relay
+
+loopback
+
+simulated
+
+unknown
+
+Do not claim Internet independence unless the active path is demonstrably local.
+
+---
+
+# 8. FAILURE-INJECTION MODE
+
+Add controlled failure testing.
+
+Create commands or development hooks capable of deliberately simulating or provoking:
+
+- peer process death
+- network interruption
+- job timeout
+- dropped response
+- duplicate response
+- duplicate request
+- delayed packet
+- corrupted payload
+- corrupted stored blob
+- expired grant
+- revoked grant
+- quota exhaustion
+- executor disappears mid-job
+- requester disappears mid-job
+- Ollama stops during inference
+- node restart
+- stale resource advertisement
+- stale service advertisement
+
+Do not introduce dangerous machine-level chaos tooling.
+
+Prefer test-controlled application-layer faults.
+
+---
+
+# 9. RESTART AND RECOVERY
+
+A physical node must survive restart without losing security semantics.
+
+Verify persistence of:
+
+- identity
+- trust relationships
+- Porch membership
+- authorization state
+- revocation state
+- storage metadata
+- ledger continuity
+- jobs requiring reconciliation
+
+After restart:
+
+- expired grants remain expired
+- revoked grants remain revoked
+- identity must not silently regenerate
+- duplicate jobs must not execute twice
+- ledger chain must remain valid
+- resource advertisements should refresh
+- stale presence must eventually disappear
+
+---
+
+# 10. NETWORK PATH EVIDENCE
+
+Add inspectable path diagnostics.
+
+For every peer connection expose where practical:
+
+- local peer ID
+- remote peer ID
+- local socket
+- remote socket
+- transport
+- negotiated protocol
+- direct vs relayed
+- observed RTT
+- connection age
+- authentication state
+- trust state
+
+Avoid exposing sensitive information unnecessarily in ordinary UI.
+
+Detailed diagnostics may live behind an explicit advanced/debug view.
+
+---
+
+# 11. PAIRING UX
+
+Make first-time physical pairing extremely clear.
+
+Target:
+
+A normal technical user should be able to set up two PCs without reading protocol internals.
+
+Build either:
+
+- pairing code
+- invitation file
+- QR-compatible invitation payload
+- local discovery + confirmation phrase
+
+or a combination.
+
+Pairing must protect against accidentally trusting the wrong nearby device.
+
+Provide a human-verifiable fingerprint or short authentication string.
+
+Example concept:
+
+A displays:
+
+`PORCH: OAK-STREET`
+
+`PEER: MIKEY-PC`
+
+`VERIFY: amber-seven-lamp-42`
+
+B displays the same confirmation phrase.
+
+Do not use that literal scheme if a better established method fits.
+
+---
+
+# 12. WINDOWS READINESS
+
+Production qualification is blocked partly by lack of Windows verification.
+
+Do as much as the current environment permits.
+
+Create and validate:
+
+- Windows build configuration
+- Windows path handling
+- storage locations
+- key permissions strategy
+- firewall guidance
+- node launch scripts
+- PowerShell install helper
+- PowerShell qualification helper
+- Ollama detection
+- desktop packaging configuration
+
+Do not claim Windows qualification unless actually run on Windows.
+
+Create a document:
+
+`docs/WINDOWS_QUALIFICATION.md`
+
+including exact commands for Michael to run on two Windows PCs.
+
+Keep the procedure concise and copy/paste friendly.
+
+---
+
+# 13. MACOS READINESS
+
+Do the same for macOS as reasonably possible.
+
+Create:
+
+`docs/MACOS_QUALIFICATION.md`
+
+Cover:
+
+- installation
+- permissions
+- firewall prompts
+- Ollama
+- app/package state
+- signing/notarization limitations
+
+Do not claim macOS production support without physical evidence.
+
+---
+
+# 14. LINUX QUALIFICATION
+
+Linux is currently the strongest packaged platform.
+
+Strengthen it.
+
+Create a complete Linux qualification path including:
+
+- install
+- init
+- create Porch
+- pair
+- model sharing
+- storage sharing
+- remote inference
+- revoke
+- refusal
+- restart
+- offline LAN
+- logs
+- receipt collection
+
+Where appropriate support:
+
+systemd user service
+
+without requiring root operation for ordinary use.
+
+---
+
+# 15. RECEIPT BUNDLE
+
+Create a standardized qualification evidence bundle.
+
+Example:
+
+`porch qualify export ./qualification-run`
+
+It should gather non-secret evidence such as:
+
+- node metadata
+- software version
+- protocol version
+- peer IDs
+- test timestamps
+- route observations
+- signed receipts
+- ledger verification output
+- qualification results
+- failures
+- relevant sanitized logs
+- hashes
+
+Never export:
+
+- private keys
+- raw auth tokens
+- private prompt contents by default
+- unredacted secrets
+
+Include a manifest and hashes.
+
+---
+
+# 16. QUALIFICATION RESULT STATES
+
+Do not use a single vague PASS.
+
+Use explicit results such as:
+
+PASS
+
+FAIL
+
+REFUSED_EXPECTED
+
+SKIPPED_ENVIRONMENT
+
+UNVERIFIED
+
+PARTIAL
+
+For each scenario record:
+
+- expectation
+- observation
+- result
+- evidence file
+- timestamp
+- involved peers
+
+A skipped test must not count as a pass.
+
+---
+
+# 17. SECURITY HARDENING
+
+Review the real physical-network attack surface.
+
+Specifically inspect:
+
+- invitation replay
+- forged invites
+- stolen invite use
+- pairing race
+- peer-ID spoofing
+- message replay
+- signed-record canonicalization
+- stale grant replay
+- revocation races
+- TOCTOU between route and execution
+- unauthorized prompt forwarding
+- unauthorized model invocation
+- excessive resource advertisement
+- storage quota bypass
+- request-size bypass
+- log injection
+- malicious aliases
+- path traversal
+- localhost API exposure
+- CORS
+- CSRF
+- DNS rebinding
+- websocket/event-stream authorization if applicable
+- UI injection/XSS
+- CLI secret leakage
+
+Repair issues found.
+
+Add regression tests.
+
+---
+
+# 18. CROSS-ORIGIN / LOCAL API HARDENING
+
+The control plane is extremely important.
+
+Verify that privileged API endpoints are not accidentally reachable through:
+
+- malicious websites
+- rebinding
+- permissive CORS
+- unauthenticated localhost requests
+- wildcard binds
+- predictable weak tokens
+
+The node should bind privileged control interfaces to loopback by default unless explicitly configured otherwise.
+
+Peer networking and control-plane networking are different trust surfaces.
+
+Keep them separate.
+
+---
+
+# 19. RESOURCE LIMITS
+
+Add or verify hard limits on:
+
+- max request body
+- max response body
+- max queued jobs
+- max concurrent jobs
+- max storage item
+- max storage total
+- max message size
+- max active connections
+- max advertised services
+- max grants
+- model execution timeout
+- idle peer timeout
+
+All limits should be configurable within safe bounds.
+
+Remote peers must not be able to override local operator caps.
+
+---
+
+# 20. ROUTE DECISION EXPLANATION
+
+For every remote job provide an inspectable route decision.
+
+Example:
+
+Candidate A:
+eligible = true
+trust = allowed
+model = qwen3
+privacy = TRUSTED_PEERS
+load = 0.31
+latency = 8 ms
+
+Candidate B:
+eligible = false
+reason = NO_ACTIVE_GRANT
+
+Selected:
+A
+
+Do not expose hidden chain-of-thought or LLM reasoning.
+
+Expose deterministic routing facts and policy outcomes.
+
+---
+
+# 21. UI QUALIFICATION PANEL
+
+Add a dedicated **Qualification** page or panel.
+
+Show:
+
+- build/version
+- node identity
+- transport readiness
+- provider readiness
+- physical peer status
+- last physical qualification
+- passed scenarios
+- failed scenarios
+- skipped/unverified scenarios
+- export evidence bundle
+
+Do not display an overall "production ready" badge unless every required production gate is actually satisfied.
+
+Prefer honest statuses like:
+
+DEVELOPMENT
+
+CANDIDATE
+
+PHYSICAL QUALIFIED
+
+PLATFORM PARTIAL
+
+SECURITY REVIEW PENDING
+
+---
+
+# 22. CLI PHYSICAL WORKFLOW
+
+A clean physical setup should resemble:
+
+Machine A:
+
+`porch init`
+
+`porch create "Oak Street"`
+
+`porch invite create`
+
+Machine B:
+
+`porch init`
+
+`porch join <invite>`
+
+Then:
+
+`porch peers`
+
+`porch models`
+
+`porch grants create ...`
+
+`porch model run ...`
+
+`porch grants revoke ...`
+
+`porch qualify run`
+
+Exact syntax may differ.
+
+The experience must be obvious enough that docs do not have to compensate for confusing commands.
+
+---
+
+# 23. NETWORK DOCTOR
+
+Expand `porch doctor`.
+
+It should distinguish:
+
+IDENTITY
+
+DATABASE
+
+LEDGER
+
+CONTROL API
+
+NETWORK LISTEN
+
+LAN DISCOVERY
+
+PEER CONNECTIVITY
+
+NAT STATUS
+
+OLLAMA
+
+MODEL INVENTORY
+
+STORAGE
+
+AUTHORITY
+
+CLOCK
+
+PACKAGING
+
+For each:
+
+PASS
+
+FAIL
+
+UNVERIFIED
+
+SKIPPED
+
+and concise remediation.
+
+---
+
+# 24. CLOCK SAFETY
+
+Distributed systems cannot assume perfect clocks.
+
+Review all security decisions involving wall clock time.
+
+Prefer monotonic time where appropriate for local durations.
+
+For signed expiry:
+
+- tolerate only explicitly bounded skew
+- fail safely on suspicious backward movement
+- record clock anomalies
+- do not silently extend authorization
+
+Document this behavior.
+
+---
+
+# 25. DATA MIGRATION
+
+Because 0.1.1 may change schemas, ensure 0.1.0 state does not silently corrupt.
+
+Add:
+
+- schema version
+- migration path
+- migration tests
+- safe backup where appropriate
+- clear failure behavior for unsupported future schemas
+
+Never silently discard identity or trust state because a migration failed.
+
+---
+
+# 26. PACKAGE INTEGRITY
+
+Strengthen release packaging.
+
+Include:
+
+- SHA-256 manifest
+- build metadata
+- commit
+- branch/tag
+- protocol version
+- dependency lockfiles
+- platform
+- architecture
+- build timestamp where reproducibility permits
+
+Where feasible document reproducible-build limitations.
+
+Do not sign binaries using invented/local identities and imply public trust.
+
+If official release signing is unavailable, state that clearly.
+
+---
+
+# 27. SUPPLY-CHAIN REVIEW
+
+Run available dependency/security tooling.
+
+Rust:
+
+- cargo audit or equivalent where available
+- lockfile review
+
+Node/desktop:
+
+- npm audit or appropriate package audit
+
+Do not blindly upgrade major dependencies merely to get zero warnings.
+
+Classify findings:
+
+- exploitable in Infinite Porch
+- unreachable/not applicable
+- development-only
+- requires upgrade
+- accepted temporary risk
+
+Document reasoning.
+
+---
+
+# 28. PERFORMANCE BASELINE
+
+Do not optimize prematurely, but establish honest baseline numbers.
+
+Using the deterministic harness and, where possible, actual loopback/network runs measure:
+
+- node startup
+- peer discovery time
+- pairing time
+- message latency
+- job dispatch overhead
+- storage hashing throughput
+- receipt overhead
+- idle memory
+- idle CPU
+
+Separate:
+
+SIMULATED
+
+LOOPBACK
+
+PHYSICAL
+
+Do not present loopback results as LAN results.
+
+---
+
+# 29. DO NOT BUILD THESE YET
+
+Do NOT spend this qualification cycle implementing:
+
+- public federation
+- cryptocurrency
+- payment systems
+- blockchain consensus
+- anonymous proxying
+- Tor replacement
+- distributed arbitrary shell
+- WASM marketplace
+- model tensor sharding
+- GPU pooling across heterogeneous devices
+- public relay infrastructure
+- global username registry
+- mobile apps
+- browser extension
+- social network
+- AI autonomous administration
+
+Document them as future work only where relevant.
+
+---
+
+# 30. CI
+
+Update CI to validate as much of 0.1.1 as can run deterministically.
+
+CI should NOT pretend to prove physical networking.
+
+Separate:
+
+CI VERIFIED
+
+from:
+
+PHYSICAL QUALIFICATION REQUIRED
+
+Run:
+
+- format
+- lint
+- builds
+- Rust tests
+- SDK tests
+- CLI tests
+- UI tests
+- protocol tests
+- migration tests
+- security regression tests
+- mock provider tests
+- package checks
+
+Add qualification-schema validation so malformed evidence bundles fail.
+
+---
+
+# 31. DOCUMENTATION
+
+Update or create:
+
+`START_HERE.txt`
+
+`README.md`
+
+`docs/PHYSICAL_QUALIFICATION.md`
+
+`docs/WINDOWS_QUALIFICATION.md`
+
+`docs/LINUX_QUALIFICATION.md`
+
+`docs/MACOS_QUALIFICATION.md`
+
+`docs/OLLAMA_QUALIFICATION.md`
+
+`docs/OFFLINE_LAN_TEST.md`
+
+`docs/FAILURE_INJECTION.md`
+
+`docs/QUALIFICATION_RECEIPTS.md`
+
+`docs/SECURITY.md`
+
+`docs/THREAT_MODEL.md`
+
+`docs/TROUBLESHOOTING.md`
+
+`docs/RELEASE_GATES.md`
+
+`docs/ROADMAP.md`
+
+README should make a strong distinction between:
+
+implemented
+
+tested in CI
+
+tested locally
+
+physically verified
+
+not yet verified
+
+planned
+
+---
+
+# 32. REQUIRED RELEASE GATES FOR 0.1.1
+
+Do not mark 0.1.1 complete merely because code builds.
+
+The engineering deliverable is complete when the repository contains the implementation and tooling required for these physical tests.
+
+Actual production qualification remains pending until external physical evidence exists.
+
+Required software gates:
+
+- clean build
+- test suite green
+- security regression suite green
+- migration suite green
+- packaging green
+- deterministic three-node test green
+- qualification tooling operational
+- qualification export operational
+- physical instructions complete
+- real Ollama path implemented
+- real-network diagnostics implemented
+
+External evidence gates:
+
+- two physical nodes
+- real LAN
+- real pairing
+- real model advertisement
+- real bounded grant
+- real remote Ollama inference
+- signed receipt
+- revocation refusal
+- node restart
+- Internet-off LAN operation
+- Windows verification
+- macOS verification if release claims macOS
+- independent security review
+
+Label all external gates honestly as pending until evidence exists.
+
+---
+
+# 33. DELIVERABLE
+
+At the end produce an updated package:
+
+`InfinitePorch-v0.1.1-physical-qualification-candidate.zip`
+
+Include:
+
+- complete source
+- git history or bundle
+- Linux binaries
+- Windows artifacts if successfully built
+- desktop artifacts
+- qualification tooling
+- updated guides
+- test results
+- security audit results
+- example sanitized qualification bundle
+- REQUIRED/FUTURE roadmap
+
+Also provide:
+
+1. branch
+2. exact commit
+3. changed architecture
+4. bugs fixed
+5. tests added
+6. test totals
+7. package hashes
+8. supported platforms
+9. unverified platforms
+10. exact two-PC Windows procedure
+11. exact two-PC Linux procedure
+12. exact Ollama sharing procedure
+13. exact Internet-off procedure
+14. exact revocation test
+15. exact evidence-export procedure
+16. remaining blockers to production qualification
+
+---
+
+# 34. WORK STYLE
+
+Do not stop after reporting what needs to be done.
+
+Inspect.
+
+Implement.
+
+Test.
+
+Fix.
+
+Retest.
+
+Package.
+
+Continue until the remaining environment-dependent work genuinely requires physical machines or platform access you do not have.
+
+If something is impossible in the current environment:
+
+build everything required around it
+
+create deterministic substitutes where valid
+
+write the exact physical procedure
+
+mark it UNVERIFIED
+
+and continue with everything else.
+
+Do not ask for permission between ordinary implementation steps.
+
+Do not fabricate successful physical testing.
+
+Do not claim external verification you did not perform.
+
+---
+
+# 35. SUCCESS CRITERION
+
+The purpose of this rung is not more features.
+
+It is to make this statement testable:
+
+> Two independently owned physical computers can form an Infinite Porch, establish cryptographic trust, voluntarily expose resources, authorize a bounded remote AI job, execute that job on a real model, return cryptographic evidence, revoke permission, refuse the next request, survive restart and network interruption, and continue communicating locally when the outside Internet is unavailable.
+
+Build everything necessary to make that statement either **provably true or precisely falsifiable**.
+
+That is Infinite Porch 0.1.1.

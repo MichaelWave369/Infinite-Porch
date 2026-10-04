@@ -135,7 +135,7 @@ async fn uncertain_jobs_never_reexecute_after_restart() -> Result<()> {
             .contains("DUPLICATE_JOB_UNCERTAIN")
     );
     n.db.transaction(|tx| {
-        tx.execute_batch("PRAGMA user_version=2")?;
+        tx.execute_batch("PRAGMA user_version=3")?;
         Ok(())
     })?;
     drop(n);

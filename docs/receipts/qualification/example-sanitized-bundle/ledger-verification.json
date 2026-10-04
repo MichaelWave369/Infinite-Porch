@@ -1,0 +1,15 @@
+{
+  "domain": "porch.qualification.ledger.v1",
+  "payload": {
+    "entire_chain_exported": false,
+    "record_count": 25,
+    "tip_hash": "02703a11a10e8413f1985f6b323abe6f224404bcceff73c29dfaef062c93c7cd",
+    "verified": true,
+    "verified_at": 1791070993,
+    "verifier_peer": "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr"
+  },
+  "public_key": "0801122055f58df951ce0727fdd5cc6f94fa25613226f5339b8c561ff9dd5cccd0eebd1b",
+  "signature": "8d2412f9f9f13f0b032c137ca2288147242804989277e1b1d6ac44cae5a9e00ac0576652cdb3ea8dc0e0a46a2bb7621eb4c34bf5c816f8678bf922e40f38760c",
+  "signer": "12D3KooWFbuzYAinLeHg4E4Ath1xSJCNsTHReB3SDYbLtJUmvncr",
+  "version": 1
+}

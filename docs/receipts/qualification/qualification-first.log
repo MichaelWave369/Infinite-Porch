@@ -1,0 +1,18 @@
+PASS three independent persisted identities
+PASS wrong fingerprint refuses before trust
+PASS stolen recipient-bound invitation refused
+PASS CLI host and fingerprint-confirmed join
+PASS invite replay refused
+PASS advertisement conveys no invocation authority
+PASS granted messaging returns receipt
+Traceback (most recent call last):
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/qualification_acceptance.py", line 77, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/qualification_acceptance.py", line 37, in main
+    start=time.perf_counter();r=b.call('job.run',{'resource':'qual-mock','input':'public performance probe','privacy':'TRUSTED_PEERS','max_output_tokens':16});elapsed=(time.perf_counter()-start)*1000
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/acceptance.py", line 45, in call
+    if not allow_refusal:assert code==200,(self.name,op,code,data)
+                                ^^^^^^^^^
+AssertionError: ('B', 'job.run', 400, {'reason': 'PEER_REQUEST_TIMEOUT', 'status': 'REFUSED'})

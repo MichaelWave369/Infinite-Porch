@@ -1,0 +1,10 @@
+{
+  "passed": 5,
+  "checks": [
+    "active daemon refuses offline configuration",
+    "offline caps persisted",
+    "restart applies input cap",
+    "HTTP request byte cap enforced",
+    "unsafe caps refuse without overwriting last safe config"
+  ]
+}

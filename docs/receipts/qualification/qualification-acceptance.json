@@ -1,0 +1,150 @@
+{
+  "candidate": "0.1.1",
+  "environment": "LOOPBACK",
+  "model_provider": "explicit mock",
+  "physical_evidence": "UNVERIFIED",
+  "passed": 32,
+  "checks": [
+    {
+      "name": "three independent persisted identities",
+      "result": "PASS"
+    },
+    {
+      "name": "wrong fingerprint refuses before trust",
+      "result": "PASS"
+    },
+    {
+      "name": "stolen recipient-bound invitation refused",
+      "result": "PASS"
+    },
+    {
+      "name": "CLI host and fingerprint-confirmed join",
+      "result": "PASS"
+    },
+    {
+      "name": "invite replay refused",
+      "result": "PASS"
+    },
+    {
+      "name": "advertisement conveys no invocation authority",
+      "result": "PASS"
+    },
+    {
+      "name": "granted messaging returns receipt",
+      "result": "PASS"
+    },
+    {
+      "name": "remote model mock rehearsal",
+      "result": "PASS"
+    },
+    {
+      "name": "PORCH_ALLOWED honors joined trusted grant",
+      "result": "PASS"
+    },
+    {
+      "name": "FEDERATED_ALLOWED honors joined trusted grant",
+      "result": "PASS"
+    },
+    {
+      "name": "untrusted node cannot transmit unauthorized prompt",
+      "result": "PASS"
+    },
+    {
+      "name": "mock inference is PARTIAL, never live-provider PASS",
+      "result": "PASS"
+    },
+    {
+      "name": "local privacy qualification PASS",
+      "result": "PASS"
+    },
+    {
+      "name": "loopback never claims two physical nodes",
+      "result": "PASS"
+    },
+    {
+      "name": "authenticated negotiated network path",
+      "result": "PASS"
+    },
+    {
+      "name": "CLI sanitized export hashes/signatures/schema valid",
+      "result": "PASS"
+    },
+    {
+      "name": "evidence excludes unrelated private prompts and operator tokens",
+      "result": "PASS"
+    },
+    {
+      "name": "malformed or modified evidence is rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "cross-origin refused null",
+      "result": "PASS"
+    },
+    {
+      "name": "cross-origin refused file://",
+      "result": "PASS"
+    },
+    {
+      "name": "cross-origin refused https://hostile.example",
+      "result": "PASS"
+    },
+    {
+      "name": "cross-origin refused http://127.0.0.1:1",
+      "result": "PASS"
+    },
+    {
+      "name": "SSE requires operator authority",
+      "result": "PASS"
+    },
+    {
+      "name": "localhost alias rebinding refused",
+      "result": "PASS"
+    },
+    {
+      "name": "physical label requires explicit attestation",
+      "result": "PASS"
+    },
+    {
+      "name": "LOCAL_ONLY pinned remote candidate cannot receive input",
+      "result": "PASS"
+    },
+    {
+      "name": "refused route ledger contains no prompt contents",
+      "result": "PASS"
+    },
+    {
+      "name": "revocation qualification records expected refusal",
+      "result": "PASS"
+    },
+    {
+      "name": "restart preserves identity membership and revoked grant",
+      "result": "PASS"
+    },
+    {
+      "name": "restart preserves entire ledger chain",
+      "result": "PASS"
+    },
+    {
+      "name": "absent live provider is explicit, no fallback",
+      "result": "PASS"
+    },
+    {
+      "name": "offline message qualification records bounded failure",
+      "result": "PASS"
+    }
+  ],
+  "performance": {
+    "startup_A_ms": 118.4074459997646,
+    "startup_B_ms": 115.9568049988593,
+    "startup_C_ms": 115.96370000006573,
+    "pairing_ms": 188.91160399834916,
+    "manual_discovery_ms": 41.19987299964123,
+    "message_round_trip_ms": 39.32547000113118,
+    "job_round_trip_ms": 117.84426300073392,
+    "dispatch_and_receipt_overhead_ms": 94.84426300073392,
+    "idle_process_metrics": "UNVERIFIED: native /proc metrics missing or incompatible in this managed runtime",
+    "storage_hash_mib_per_second": 1685.62396673273
+  },
+  "performance_limitations": "Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim."
+}

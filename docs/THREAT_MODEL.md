@@ -21,7 +21,7 @@ the stated environment; they do not prove absence of every attack.
 | Corrupted stored content | Silent bad retrieval | SHA-256 and AEAD; corrupted remote/local fixture tests | Loss if all copies and keys disappear | Tested backup and key recovery procedure |
 | Malicious AI provider | Leakage and harmful output | Explicit remote privacy/grant; provider-specific receipt | Provider sees plaintext and can lie | Provider trust policy; application output validation |
 | Prompt/data leakage | Accidental remote routing | LOCAL_ONLY default and outbound guard; no-forward test | Explicit remote consent allows provider retention | Per-data classification and stronger local secrets |
-| Dependency compromise | Supply-chain execution | Committed Cargo/npm locks and independent install | No advisory audit or signed SBOM completed | Release audit, SBOM and signed provenance |
+| Dependency compromise | Supply-chain execution | Committed Cargo/npm locks and independent install | Cargo/npm advisory audits reviewed in SUPPLY_CHAIN_REVIEW.md; no signed SBOM | Continue applicability gate, upstream upgrades, SBOM and signed provenance |
 | Bootstrap outage | Service loss | No required bootstrap; actual local peer path test | No route survives if all physical paths fail | Multiple independently operated optional rendezvous paths |
 | Clock rollback | Extend authority | Persisted lower bound; backward-clock negative test | Device clock rollback of whole DB or forward jump | Trusted clock policy and durable checkpoint |
 | Ambiguous execution after crash | Duplicate external effect | UNCERTAIN refusal; pinned original route and cached result | Cannot prove provider stopped before crash | Recovery inspection and provider idempotency contracts |
@@ -30,3 +30,11 @@ the stated environment; they do not prove absence of every attack.
 Private channels use independent pairwise grants and encrypted sessions. This is
 not a group forward-secrecy protocol or anonymous messaging network. Device
 revocation is local to each resource owner; no global revocation oracle exists.
+
+0.1.1 regression coverage adds recipient-bound fingerprint pairing, invitation
+replay/forgery/race tests, controlled transport faults, provider digest changes,
+separate availability/authority states, unsafe aliases and sanitized parser
+errors. Cross-origin/SSE/rebinding tests and browser alias-injection checks run
+against real local daemons. Schema migration, backup collisions, state locks and
+missing-key refusals preserve authority. These are local software tests; physical
+attack-surface review and native ACL behavior remain UNVERIFIED.

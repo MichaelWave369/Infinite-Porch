@@ -1,0 +1,33 @@
+PASS three independent persisted identities
+PASS wrong fingerprint refuses before trust
+PASS stolen recipient-bound invitation refused
+PASS CLI host and fingerprint-confirmed join
+PASS invite replay refused
+PASS advertisement conveys no invocation authority
+PASS granted messaging returns receipt
+PASS remote model mock rehearsal
+PASS PORCH_ALLOWED honors joined trusted grant
+PASS FEDERATED_ALLOWED honors joined trusted grant
+PASS untrusted node cannot transmit unauthorized prompt
+PASS mock inference is PARTIAL, never live-provider PASS
+PASS local privacy qualification PASS
+PASS loopback never claims two physical nodes
+PASS authenticated negotiated network path
+PASS CLI sanitized export hashes/signatures/schema valid
+PASS evidence excludes unrelated private prompts and operator tokens
+PASS malformed or modified evidence is rejected
+PASS cross-origin refused null
+PASS cross-origin refused file://
+PASS cross-origin refused https://hostile.example
+PASS cross-origin refused http://127.0.0.1:1
+PASS SSE requires operator authority
+PASS localhost alias rebinding refused
+PASS physical label requires explicit attestation
+PASS LOCAL_ONLY pinned remote candidate cannot receive input
+PASS refused route ledger contains no prompt contents
+PASS revocation qualification records expected refusal
+PASS restart preserves identity membership and revoked grant
+PASS restart preserves entire ledger chain
+PASS absent live provider is explicit, no fallback
+PASS offline message qualification records bounded failure
+Qualification acceptance passed: 32 checks.

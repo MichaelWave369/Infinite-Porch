@@ -29,7 +29,7 @@ async fn fixture() -> Result<(String, Arc<Fixture>, tokio::task::JoinHandle<()>)
         calls: AtomicUsize::new(0),
         inputs: Mutex::new(vec![]),
     });
-    let app=Router::new().route("/api/tags",get(||async{Json(json!({"models":[{"name":"fixture","digest":"fixture-digest"}]}))})).route("/api/generate",post(|State(s):State<Arc<Fixture>>,Json(v):Json<Value>|async move {
+    let app=Router::new().route("/api/tags",get(||async{Json(json!({"models":[{"name":"fixture","digest":"fixture-digest"},{"name":"invalid","digest":"fixture-digest"},{"name":"large","digest":"fixture-digest"},{"name":"slow","digest":"fixture-digest"}]}))})).route("/api/generate",post(|State(s):State<Arc<Fixture>>,Json(v):Json<Value>|async move {
         s.calls.fetch_add(1,Ordering::SeqCst);s.inputs.lock().unwrap().push(v.clone());
         match v["model"].as_str().unwrap_or("") {
             "invalid"=>Json(json!({"done":false,"error":"fixture failure"})),

@@ -35,7 +35,8 @@ and API credential files remain local. Database ownership binds state to one
 device ID. An unsupported future schema is refused rather than rewritten.
 
 Remote job admission atomically consumes quota and reserves `(requester,id)`.
-Only two execution slots exist; overload refuses. A duplicate receives the
+Two execution slots are the default; safely bounded operator configuration can
+select 1–16. Overload refuses. A duplicate receives the
 original receipt or a pending/uncertain refusal. Restart marks unfinished jobs
 UNCERTAIN. The origin pins the first chosen executor and exact manifest before
 sending: retries cannot silently switch providers and duplicate an effect.
@@ -50,3 +51,19 @@ pairwise operator trust controls direct effects. This candidate does not solve
 distributed membership consensus or multi-community federation. Disconnection
 does not erase durable authority. Expiring claims and effect-time checks bound
 stale routing information; the provider is the final quota authority.
+
+0.1.1 keeps protocol version 1 and the JSON/EOF peer format. BoundedJsonCodec
+reads one byte beyond the allowed frame size before parsing, so a valid prefix
+cannot conceal oversized padding. Dialing batches addresses into one attempt
+pinned to the confirmed peer ID, with fallback to other addresses of that same
+peer. Diagnostics select the actual connection used by RPC and bind RTT to its
+connection ID. Signed addresses persist for trusted reconnection; expired
+presence and closed connections remain separate from durable trust.
+
+Qualification is an operator layer over existing effects, not a new authority
+or transport. It signs fixed public probe evidence and a whitelist manifest;
+the offline validator checks domains, file hashes, schema and receipt/run
+bindings. Export never includes the database, private keys, tokens, arbitrary
+prompts or arbitrary ledger text. Schema 2 migrates schema 1 only after a private
+backup; future schemas and database-owner mismatches fail before migration.
+Physical separation and WAN conditions remain corroboration requirements.

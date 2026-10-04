@@ -1,0 +1,12 @@
+[Unit]
+Description=Infinite Porch user node (candidate)
+After=network.target
+[Service]
+Type=simple
+ExecStart=%h/.local/share/infinite-porch/0.1.1/bin/porch-node --data %h/.local/state/infinite-porch --ui %h/.local/share/infinite-porch/0.1.1/ui
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+[Install]
+WantedBy=default.target

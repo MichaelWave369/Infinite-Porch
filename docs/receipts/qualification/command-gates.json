@@ -1,0 +1,355 @@
+{
+  "candidate": "0.1.1",
+  "protocol_version": 1,
+  "baseline_commit": "3a3ace51979110afc76fa2dda7a35108c41af15b",
+  "source_stage": "working qualification branch before final source commit; debug build metadata correctly records baseline commit and dirty source",
+  "environment": {
+    "rust": "1.89.0",
+    "node": "24.19.0",
+    "npm": "11.9.0",
+    "python": "3.12.14",
+    "os": "Linux",
+    "architecture": "x86_64",
+    "kernel": "6.18.44",
+    "browser": "Chromium headless 153.0.8010.0"
+  },
+  "gates": [
+    {
+      "name": "toolchain",
+      "command": "python3 scripts/check_toolchain.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/toolchain-consistency.log",
+          "sha256": "a1d1dc569c424217bd28dde0ad871dbbc3ab41b805f47ebee41a1490325f4cd7"
+        }
+      ]
+    },
+    {
+      "name": "format",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/format-release-gate.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "rust",
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 29,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/rust-release-gate.log",
+          "sha256": "8be1af9da620114a5af11d8daaa1b2f30505e373af25098f1b1cce32fe130908"
+        }
+      ]
+    },
+    {
+      "name": "build",
+      "command": "cargo build --workspace --locked",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/build-release-gate.log",
+          "sha256": "86f48c08785588e5591528eab1413af691a960be34f8110a120a164035df6a09"
+        }
+      ]
+    },
+    {
+      "name": "clippy",
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/clippy-release-gate.log",
+          "sha256": "b7c7a8cae5ec54578fa2c3081fba54576f664b78a7d97e24670fe84d0e951524"
+        }
+      ]
+    },
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/typecheck-final.log",
+          "sha256": "728439e31dc459f5d1a738fdb7d76fdf8e756746e4492055e291e53c02890ab3"
+        }
+      ]
+    },
+    {
+      "name": "frontend",
+      "command": "npm run build",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/frontend-final.log",
+          "sha256": "8a3e80d0dae7d76fae7f6e5ea95ec6aa1b92d0263059068f54e7f64e2b58e042"
+        }
+      ]
+    },
+    {
+      "name": "sdk",
+      "command": "npm test",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 2,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/sdk-final.log",
+          "sha256": "40140303c93a468a5ae273495d966bfa585e0157c6c170f853fd52ae332f1a0b"
+        }
+      ]
+    },
+    {
+      "name": "cli",
+      "command": "python3 tests/cli_smoke.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 8,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/cli-complete.log",
+          "sha256": "3f2c693332eb413ce4c903a3fcd946cc8efc2960e8698463184f3085eabae3b7"
+        },
+        {
+          "path": "docs/receipts/cli-smoke.json",
+          "sha256": "ebd0c005d3490b70a7364e672fd38e8084d534b5e12e44b00bf8e3eabb0cc11b"
+        }
+      ]
+    },
+    {
+      "name": "peer",
+      "command": "python3 tests/acceptance.py --out docs/receipts/qualification/peer-acceptance.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 33,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/peer-release-gate.log",
+          "sha256": "64028e42034fb5307475503fa6f0a98fd8e669667e8c22e30ac3ec0b61aa2921"
+        },
+        {
+          "path": "docs/receipts/qualification/peer-acceptance.json",
+          "sha256": "dcfa81ffa60d018c0209f999bd79d7c69cc9726921478ac488202f7403cb01d6"
+        }
+      ]
+    },
+    {
+      "name": "qualification",
+      "command": "python3 tests/qualification_acceptance.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 32,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/qualification-release-gate.log",
+          "sha256": "abc628ade8ccd7a117acff23c60e385e74e08a6b4dc6d08aa48ec0fbe4abe61d"
+        },
+        {
+          "path": "docs/receipts/qualification/qualification-acceptance.json",
+          "sha256": "5f2cf5330ce0b8826ac6ae2917deb629fa8905a245089f980ee3f93202634637"
+        }
+      ]
+    },
+    {
+      "name": "process_both",
+      "command": "python3 tests/process_failures.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 10,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/process-both-green.log",
+          "sha256": "41745c908ee536b4a3513eabfdba7437a399a2c307f4427f687e19ab11633c12"
+        },
+        {
+          "path": "docs/receipts/qualification/process-failures.json",
+          "sha256": "1bcf524dd3801c32c38b609cb65a28a15b0c6650bfae34a59c12686fefb187a1"
+        }
+      ]
+    },
+    {
+      "name": "process_quic",
+      "command": "python3 tests/process_failures.py --transport quic",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 10,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/process-quic-green.log",
+          "sha256": "41745c908ee536b4a3513eabfdba7437a399a2c307f4427f687e19ab11633c12"
+        },
+        {
+          "path": "docs/receipts/qualification/process-failures-quic.json",
+          "sha256": "8348d804df8acdfa8c176f264a94d95e15299b3fccef82246aa5a4efbafb6fa4"
+        }
+      ]
+    },
+    {
+      "name": "transport",
+      "command": "python3 tests/transport_acceptance.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 12,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/transport-complete.log",
+          "sha256": "cd48f145b4967ace6a448e6001cd5f6f807538d7552a1c383742c954f2b5390e"
+        },
+        {
+          "path": "docs/receipts/qualification/transports.json",
+          "sha256": "b802c06339bbbce06c8ac5d9347441e73528226085bf76235313288dcf484285"
+        }
+      ]
+    },
+    {
+      "name": "limits",
+      "command": "python3 tests/limit_cli.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 5,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/limits-complete.log",
+          "sha256": "425a89e334af0d7e399bce267d61b74ba65c9261bf6e293a90949d210e49e2f5"
+        },
+        {
+          "path": "docs/receipts/qualification/limit-cli.json",
+          "sha256": "dbd321074097a5a63fffde44e85edb0a7647c3b16e50a81c0802dfd497804e74"
+        }
+      ]
+    },
+    {
+      "name": "platform_contracts",
+      "command": "python3 scripts/check_platform.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 6,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/platform-release-gate.log",
+          "sha256": "9e367cecdb18a15803f727244c1a307f3d94892ef1bcb4302217ff58b5f2418b"
+        },
+        {
+          "path": "docs/receipts/qualification/platform-contracts.json",
+          "sha256": "9e367cecdb18a15803f727244c1a307f3d94892ef1bcb4302217ff58b5f2418b"
+        }
+      ]
+    },
+    {
+      "name": "ui",
+      "command": "PORCH_BROWSER_PATH=<separate Chromium 153 path> python3 tests/ui_acceptance.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 11,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/ui-complete.log",
+          "sha256": "74b8fa52392430d734ec6659399c379b969d00e2ef7d35212bb658342587d00f"
+        },
+        {
+          "path": "docs/evidence/ui-receipt.json",
+          "sha256": "e7ad544db7f9bb65aefab9cd1f1ba9fac7209a4f81cee698395712f0153322c4"
+        }
+      ]
+    },
+    {
+      "name": "audit",
+      "command": "python3 scripts/audit_gate.py --offline",
+      "exit_code": 0,
+      "result": "PASS_WITH_REVIEWED_FINDINGS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/audit-complete.log",
+          "sha256": "2d3a971f2b58910cea8aac6f2723ade01456f903f15150c4fdb0ae4f9370873c"
+        },
+        {
+          "path": "docs/receipts/qualification/supply-chain-review.json",
+          "sha256": "2d3a971f2b58910cea8aac6f2723ade01456f903f15150c4fdb0ae4f9370873c"
+        }
+      ]
+    },
+    {
+      "name": "npm_audit",
+      "command": "npm audit --json",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/npm-audit.json",
+          "sha256": "db8cc5ec218c0933522378999bbf7b5bff6f7cd6972fc9577666797794f5a21d"
+        }
+      ]
+    },
+    {
+      "name": "example_validator",
+      "command": "target/debug/porch qualify validate docs/receipts/qualification/example-sanitized-bundle",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/example-validation.json",
+          "sha256": "2741bf446d6b56e36488311b00495f6b7b32a4b32f44053531312e6d9b3a0953"
+        }
+      ]
+    },
+    {
+      "name": "ui_validator",
+      "command": "target/debug/porch qualify validate docs/evidence/ui-qualification-bundle.json",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/ui-bundle-validation.json",
+          "sha256": "682dbe1f35ef23efd77fdcaafdf43ed200698ceca697156a7422f40505df1f33"
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "rust": 29,
+    "peer": 33,
+    "qualification": 32,
+    "process_both": 10,
+    "process_quic": 10,
+    "transport": 12,
+    "cli": 8,
+    "limits": 5,
+    "platform_contracts": 6,
+    "ui": 11,
+    "sdk": 2
+  },
+  "heterogeneous_local_checks_before_package": 158,
+  "counting_note": "Rust tests and Python/SDK/UI assertions are heterogeneous. Process checks repeat ten assertions under BOTH and QUIC-only configurations. No skipped live or physical scenario is counted as a pass.",
+  "release_package_gate": "Collected after final source commit; see outer release-evidence/package.json and DELIVERY_REPORT.md. Not asserted by this source-stage receipt.",
+  "remote_ci": "CONFIGURED_NOT_EXECUTED",
+  "physical_qualification": "UNVERIFIED",
+  "live_provider_results": {
+    "SKIPPED_ENVIRONMENT": 2,
+    "UNVERIFIED": 3
+  },
+  "independent_security_review": "UNVERIFIED",
+  "earlier_failures": "Preserved raw attempt logs are not selected as current passing gates."
+}

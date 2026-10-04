@@ -13,8 +13,31 @@ impl Db {
     pub fn open(path: &Path, owner: &str) -> Result<Self> {
         let connection = Connection::open(path)?;
         let schema: u32 = connection.query_row("PRAGMA user_version", [], |r| r.get(0))?;
-        ensure!(schema <= 1, "DATABASE_SCHEMA_UNSUPPORTED");
-        connection.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000; PRAGMA max_page_count=32768;
+        ensure!(schema <= 2, "DATABASE_SCHEMA_UNSUPPORTED");
+        // Check ownership before creating a backup or changing a known schema.
+        if schema > 0 {
+            let stored: Option<String> = connection
+                .query_row("SELECT value FROM meta WHERE key='owner'", [], |r| r.get(0))
+                .optional()?;
+            ensure!(
+                stored.as_deref() == Some(owner),
+                "DATABASE_IDENTITY_MISMATCH"
+            );
+        }
+        if schema == 1 {
+            let backup = path.with_extension("v1-backup.sqlite");
+            ensure!(
+                !backup.exists(),
+                "MIGRATION_BACKUP_ALREADY_EXISTS_REVIEW_REQUIRED"
+            );
+            connection.execute("VACUUM INTO ?1", [backup.to_string_lossy().as_ref()])?;
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                std::fs::set_permissions(&backup, std::fs::Permissions::from_mode(0o600))?;
+            }
+        }
+        connection.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=3000; PRAGMA max_page_count=32768; BEGIN IMMEDIATE;
           CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY,value TEXT NOT NULL);
           CREATE TABLE IF NOT EXISTS trust (peer TEXT PRIMARY KEY,alias TEXT NOT NULL,porch TEXT,active INTEGER NOT NULL,record TEXT NOT NULL);
           CREATE UNIQUE INDEX IF NOT EXISTS trust_alias ON trust(alias) WHERE active=1;
@@ -31,7 +54,8 @@ impl Db {
           CREATE TABLE IF NOT EXISTS outbox(id TEXT PRIMARY KEY,peer TEXT NOT NULL,record TEXT NOT NULL,status TEXT NOT NULL,attempts INTEGER NOT NULL DEFAULT 0);
           CREATE TABLE IF NOT EXISTS outbound_jobs(id TEXT PRIMARY KEY,intent_hash TEXT NOT NULL,job TEXT NOT NULL,route TEXT NOT NULL,result TEXT);
           CREATE TABLE IF NOT EXISTS clients(nonce TEXT PRIMARY KEY,token_digest TEXT UNIQUE NOT NULL,record TEXT NOT NULL,revoked INTEGER NOT NULL DEFAULT 0,calls INTEGER NOT NULL DEFAULT 0);
-          PRAGMA user_version=1;")?;
+          CREATE TABLE IF NOT EXISTS qualification(id TEXT PRIMARY KEY,record TEXT NOT NULL);
+          PRAGMA user_version=2; COMMIT;")?;
         let old: Option<String> = connection
             .query_row("SELECT value FROM meta WHERE key='owner'", [], |r| r.get(0))
             .optional()?;
@@ -134,6 +158,7 @@ impl Db {
             }
             "messages" => "SELECT record FROM messages ORDER BY rowid DESC LIMIT 200",
             "advertisements" => "SELECT record FROM advertisements ORDER BY peer LIMIT 128",
+            "qualification" => "SELECT record FROM qualification ORDER BY rowid DESC LIMIT 64",
             _ => anyhow::bail!("UNKNOWN_RECORD_TYPE"),
         };
         let conn = self
@@ -212,11 +237,21 @@ impl Db {
     /// Persist a lower wall-clock bound; backward jumps cannot extend old grants.
     pub fn time(&self) -> Result<u64> {
         let time = now();
-        self.transaction(|tx|{
+        let result = self.transaction(|tx|{
             let old:Option<String>=tx.query_row("SELECT value FROM meta WHERE key='clock'",[],|r|r.get(0)).optional()?;
             let old:u64=old.and_then(|s|s.parse().ok()).unwrap_or(0);
             ensure!(time+2>=old,"CLOCK_UNCERTAIN_BACKWARD_JUMP");
             tx.execute("INSERT INTO meta(key,value) VALUES('clock',?1) ON CONFLICT(key) DO UPDATE SET value=excluded.value",[time.max(old).to_string()])?;Ok(time.max(old))
+        });
+        if result.is_err() {
+            self.set("clock_anomaly", &json!({"observed_at":time,"reason":"CLOCK_UNCERTAIN_BACKWARD_JUMP","action":"refuse time-dependent authority; correct clock, never extend grants"}))?;
+        }
+        result
+    }
+    pub fn active_jobs(&self) -> Result<Vec<Value>> {
+        self.transaction(|tx| {
+            let mut s=tx.prepare("SELECT requester,id,hash,status FROM jobs WHERE status IN ('RUNNING','UNCERTAIN') ORDER BY rowid DESC LIMIT 200")?;
+            Ok(s.query_map([],|r|Ok(json!({"requester":r.get::<_,String>(0)?,"id":r.get::<_,String>(1)?,"request_digest":r.get::<_,String>(2)?,"status":r.get::<_,String>(3)?})))?.collect::<rusqlite::Result<_>>()?)
         })
     }
     pub fn replay(&self, peer: &str, nonce: &str, expires: u64) -> Result<()> {

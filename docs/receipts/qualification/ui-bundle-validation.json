@@ -1,0 +1,13 @@
+{
+  "environment": "LOOPBACK",
+  "official_release_signature": false,
+  "production_qualified": false,
+  "scenario_counts": {
+    "PARTIAL": 1,
+    "PASS": 5,
+    "SKIPPED_ENVIRONMENT": 2,
+    "UNVERIFIED": 5
+  },
+  "skip_counts_as_pass": false,
+  "valid": true
+}

@@ -2,9 +2,11 @@
 name = "porch-node"
 version.workspace = true
 edition.workspace = true
+rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+async-trait.workspace = true
 porch-core = { path = "../porch-core" }
 anyhow.workspace = true
 serde.workspace = true

@@ -1,11 +1,31 @@
 {
   "version": 1,
   "alias": "My Porch Node",
-  "listen": ["/ip4/0.0.0.0/tcp/7332", "/ip4/0.0.0.0/udp/7332/quic-v1"],
+  "listen": [
+    "/ip4/0.0.0.0/tcp/7332",
+    "/ip4/0.0.0.0/udp/7332/quic-v1"
+  ],
   "mdns": true,
   "api": "127.0.0.1:7331",
   "ollama_url": "http://127.0.0.1:11434",
   "models": [],
   "compute_hash": false,
-  "storage_quota": 0
+  "storage_quota": 0,
+  "limits": {
+    "request_body_bytes": 16781312,
+    "response_body_bytes": 16781312,
+    "peer_frame_bytes": 262144,
+    "input_bytes": 65536,
+    "blob_bytes": 8388608,
+    "storage_total_bytes": 134217728,
+    "message_bytes": 4096,
+    "concurrent_jobs": 2,
+    "queued_jobs": 64,
+    "ingress_requests": 32,
+    "connections": 64,
+    "services": 128,
+    "grants": 1000,
+    "model_timeout_ms": 30000,
+    "idle_peer_seconds": 120
+  }
 }

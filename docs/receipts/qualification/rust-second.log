@@ -1,0 +1,60 @@
+   Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+   Compiling porch-cli v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.90s
+     Running unittests src/main.rs (target/debug/deps/porch-1e71599f061a7ee8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/porch_core-1da66d8fd8c3aa7b)
+
+running 5 tests
+test tests::router_cannot_trade_privacy_or_authority_for_speed ... ok
+test tests::expired_grant_is_not_permission ... ok
+test tests::version_and_future_engine_boundaries_refuse_instead_of_fallback ... ok
+test tests::ciphertext_is_private_integrity_bound_and_owner_bound ... ok
+test tests::signatures_reject_tamper_and_cross_protocol_replay ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/lib.rs (target/debug/deps/porch_node-52a1dad2f7b9c03b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/porch_node-a696a4ac0e2f2bc0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/providers.rs (target/debug/deps/providers-e10aa3aa7d7f7d9d)
+
+running 2 tests
+test ollama_http_contract_and_failure_behavior ... ok
+test slow_provider_duplicate_timeout_and_revocation_are_bounded ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.75s
+
+     Running tests/qualification.rs (target/debug/deps/qualification-4f653db08ada8482)
+
+running 6 tests
+test observed_path_classification_never_labels_loopback_as_physical ... ok
+test state_lock_missing_identity_and_unsafe_limits_fail_closed ... ok
+test malformed_private_peer_data_never_enters_shared_refusal_evidence ... ok
+test fingerprint_mismatch_is_refused_before_connecting ... ok
+test schema_one_migration_backs_up_and_preserves_authority_and_identity ... ok
+test evidence_is_signed_sanitized_and_schema_validated ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s
+
+     Running tests/recovery.rs (target/debug/deps/recovery-950208700cb82f9b)
+error: test failed, to rerun pass `-p porch-node --test recovery`
+
+Caused by:
+  could not execute process `/workspace/scratch/99d40d4d7098/InfinitePorch/target/debug/deps/recovery-950208700cb82f9b` (never executed)
+
+Caused by:
+  Permission denied (os error 13)

@@ -1,0 +1,52 @@
+   Compiling porch-core v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-core)
+   Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+   Compiling porch-cli v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.31s
+     Running unittests src/main.rs (target/debug/deps/porch-1e71599f061a7ee8)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/porch_core-1da66d8fd8c3aa7b)
+
+running 5 tests
+test tests::expired_grant_is_not_permission ... ok
+test tests::router_cannot_trade_privacy_or_authority_for_speed ... ok
+test tests::version_and_future_engine_boundaries_refuse_instead_of_fallback ... ok
+test tests::ciphertext_is_private_integrity_bound_and_owner_bound ... ok
+test tests::signatures_reject_tamper_and_cross_protocol_replay ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running unittests src/lib.rs (target/debug/deps/porch_node-52a1dad2f7b9c03b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/porch_node-a696a4ac0e2f2bc0)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/caps.rs (target/debug/deps/caps-60579fb25aa433bc)
+
+running 3 tests
+test migration_collision_and_oversized_evidence_preserve_source_state ... ok
+test operator_caps_refuse_before_effect_and_keep_revocations ... FAILED
+test stale_advertisements_cannot_route_or_authorize_a_prompt ... ok
+
+failures:
+
+---- operator_caps_refuse_before_effect_and_keep_revocations stdout ----
+Error: GRANT_IDENTITY_MISMATCH
+
+
+failures:
+    operator_caps_refuse_before_effect_and_keep_revocations
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+error: test failed, to rerun pass `-p porch-node --test caps`

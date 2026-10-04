@@ -1,0 +1,21 @@
+   Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
+   Compiling porch-core v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-core)
+   Compiling porch-cli v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
+warning: unused import: `porch_core::*`
+ --> crates/porch-node/tests/provider_runtime.rs:9:5
+  |
+9 | use porch_core::*;
+  |     ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: `porch-node` (test "provider_runtime") generated 1 warning (run `cargo fix --test "provider_runtime"` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 21.74s
+     Running unittests src/main.rs (target/debug/deps/porch-1e71599f061a7ee8)
+error: test failed, to rerun pass `-p porch-cli --bin porch`
+
+Caused by:
+  could not execute process `/workspace/scratch/99d40d4d7098/InfinitePorch/target/debug/deps/porch-1e71599f061a7ee8` (never executed)
+
+Caused by:
+  Permission denied (os error 13)
