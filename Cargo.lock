@@ -2430,7 +2430,7 @@ dependencies = [
 
 [[package]]
 name = "porch-cli"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "clap",
@@ -2445,7 +2445,7 @@ dependencies = [
 
 [[package]]
 name = "porch-core"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "argon2",
@@ -2461,7 +2461,7 @@ dependencies = [
 
 [[package]]
 name = "porch-node"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "anyhow",
  "async-trait",

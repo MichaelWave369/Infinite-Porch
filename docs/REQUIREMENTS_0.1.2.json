@@ -1,0 +1,231 @@
+{
+  "baseline": "58d79264f3cb21d4a9dbc5dda474602c726e9d27",
+  "controlling_sha256": "8b2ee91368a1ba64bb8238a4f356d0672cf5523cf4c78b6495f4971ea328b55f",
+  "protocol_version": 1,
+  "requirements": [
+    {
+      "id": "V012-01",
+      "title": "PRESERVE 0.1.1",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-02",
+      "title": "PRIMARY OBJECTIVE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-03",
+      "title": "GITHUB ACTIONS NATIVE MATRIX",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-04",
+      "title": "NATIVE NODE SMOKE TEST",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-05",
+      "title": "NATIVE MULTI-NODE TEST",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-06",
+      "title": "WINDOWS QUALIFICATION",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-07",
+      "title": "WINDOWS FIREWALL TOOLING",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-08",
+      "title": "WINDOWS PORTABLE PACKAGE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-09",
+      "title": "MACOS QUALIFICATION",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-10",
+      "title": "LINUX REGRESSION",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-11",
+      "title": "LIVE OLLAMA CI EXPERIMENT",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-12",
+      "title": "CI EVIDENCE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-13",
+      "title": "EVIDENCE CLASSIFICATION",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-14",
+      "title": "PHYSICAL FIELD KIT",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-15",
+      "title": "WINDOWS FIELD SETUP",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-16",
+      "title": "PHYSICAL PAIRING WIZARD",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-17",
+      "title": "PHYSICAL MODEL-SHARING WIZARD",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-18",
+      "title": "PHYSICAL RUNNER",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-19",
+      "title": "WAN-OFF FIELD PHASE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-20",
+      "title": "RESTART PHASE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-21",
+      "title": "FAILURE FIELD CHECKS",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-22",
+      "title": "FIELD EVIDENCE MERGE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-23",
+      "title": "PHYSICAL CERTIFICATE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-24",
+      "title": "PRODUCTION GATE DASHBOARD",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-25",
+      "title": "SECURITY REVIEW PREP KIT",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-26",
+      "title": "FUZZ / PROPERTY TESTING",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-27",
+      "title": "ARTIFACT RETENTION",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-28",
+      "title": "RELEASE CANDIDATE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-29",
+      "title": "DELIVERY REPORT",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-30",
+      "title": "DO NOT LIE TO THE LEDGER",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-31",
+      "title": "WORK STYLE",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    },
+    {
+      "id": "V012-32",
+      "title": "FINAL SUCCESS CONDITION",
+      "status": "IMPLEMENTED_PENDING_VERIFICATION",
+      "evidence": "DELIVERY_REPORT_0.1.2.md / release-evidence",
+      "authority": "controlling brief"
+    }
+  ]
+}

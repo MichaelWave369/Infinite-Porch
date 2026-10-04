@@ -44,6 +44,10 @@ try {
   await page.getByRole('button',{name:'Qualification',exact:true}).click();
   await page.getByRole('heading',{name:'Qualification',exact:true,level:1}).waitFor();
   assert.equal(await page.getByRole('button',{name:'Export qualification evidence'}).isDisabled(),true);
+  for(const gate of ['SOFTWARE','NETWORK','MODEL','SECURITY','PACKAGING'])await page.getByRole('heading',{name:gate,exact:true}).waitFor();
+  assert.equal(await page.locator('.gate-row').count(),16);
+  assert.equal(await page.locator('.gate-row .badge.green').count(),0);
+
   await page.getByLabel('Evidence environment').selectOption('PHYSICAL');
   await page.getByRole('button',{name:'Run qualification',exact:true}).click();
   await page.getByRole('alert').filter({hasText:'PHYSICAL_REQUIRES_OPERATOR_ATTESTATION'}).waitFor();
@@ -78,6 +82,6 @@ try {
   await page.getByRole('button',{name:'End operator session',exact:true}).filter({visible:true}).click();
   await page.getByLabel('Local operator token').waitFor();
   assert.deepEqual(faults,[]);
-  await fs.writeFile(path.join(output,'ui-receipt.json'),JSON.stringify({passed:true,browser:`Chromium headless ${browser.version()}`,scope:'real daemon UI, explicit deterministic mock model',checks:['operator refusal and login','actual remote job through UI','ten working navigation surfaces','ledger export','credentials remain in memory','390px responsive layout','logout','no page exceptions','qualification environment/attestation enforcement','qualification counts and sanitized export','untrusted alias rendered as text'],screenshots:['home.png','models.png','qualification.png','mobile.png']},null,2)+'\n');
+  await fs.writeFile(path.join(output,'ui-receipt.json'),JSON.stringify({passed:true,browser:`Chromium headless ${browser.version()}`,scope:'real daemon UI, explicit deterministic mock model',checks:['operator refusal and login','actual remote job through UI','ten working navigation surfaces','ledger export','credentials remain in memory','390px responsive layout','logout','no page exceptions','qualification environment/attestation enforcement','qualification counts and sanitized export','untrusted alias rendered as text','sixteen independent qualification gates preserve unknown status'],screenshots:['home.png','models.png','qualification.png','mobile.png']},null,2)+'\n');
   process.stdout.write('UI acceptance passed: 11 checks, 4 screenshots.\n');
 } finally {await browser.close();}

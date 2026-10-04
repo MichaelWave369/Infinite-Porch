@@ -1,0 +1,965 @@
+You are continuing ownership of **Infinite Porch**.
+
+Current engineering candidate:
+
+- Version: `0.1.1 physical qualification candidate`
+- Branch: `feat/porch-v0.1.1-physical-qualification`
+- Commit: `58d79264f3cb21d4a9dbc5dda474602c726e9d27`
+- Protocol version: `1`
+- Current local assertions: `168`
+- Current production status: **NOT PRODUCTION QUALIFIED**
+
+Do not restart architecture.
+
+Do not add federation, relays, sharding, arbitrary remote shell, cryptocurrency, GPU pooling, WASM marketplaces, or unrelated new capabilities.
+
+This rung is:
+
+# INFINITE PORCH 0.1.2
+## NATIVE CROSS-PLATFORM QUALIFICATION + PHYSICAL FIELD LAB AUTOMATION
+
+The purpose is to exhaust everything we can honestly verify using native hosted operating-system runners and then make the upcoming two-physical-PC qualification as close to one-command reproducible as possible.
+
+The governing principle remains:
+
+**Evidence over expansion.**
+
+---
+
+# 1. PRESERVE 0.1.1
+
+Treat commit:
+
+`58d79264f3cb21d4a9dbc5dda474602c726e9d27`
+
+as the qualification baseline.
+
+Create a new branch:
+
+`feat/porch-v0.1.2-native-qualification`
+
+Do not rewrite the 0.1.1 history.
+
+Confirm repository state and existing tags before modifying anything.
+
+---
+
+# 2. PRIMARY OBJECTIVE
+
+Close as many of these current UNVERIFIED items as can truthfully be closed without pretending hosted CI is a physical home LAN:
+
+- Windows compile
+- Windows tests
+- Windows CLI behavior
+- Windows filesystem/path behavior
+- Windows state persistence
+- Windows migration
+- Windows PowerShell helpers
+- Windows packaging
+- Windows control API behavior
+- Windows process restart
+- Windows loopback peer execution
+
+- macOS compile
+- macOS tests
+- macOS filesystem behavior
+- macOS state persistence
+- macOS migration
+- macOS packaging
+- macOS loopback peer execution
+
+- Linux regression qualification
+
+Do NOT relabel any of the following as physically proven:
+
+- two separate household PCs
+- physical Ethernet/Wi-Fi LAN
+- real router mDNS
+- NAT traversal across actual residential networks
+- Internet-off household operation
+- GPU use
+- hardware VRAM accounting
+- live remote model weights
+- sustained hardware load
+- firewall behavior on Michael's machines
+
+Hosted runner evidence must be labelled **NATIVE_HOSTED**, not PHYSICAL.
+
+---
+
+# 3. GITHUB ACTIONS NATIVE MATRIX
+
+Create or strengthen a GitHub Actions qualification workflow using native runners:
+
+- `ubuntu-latest`
+- `windows-latest`
+- `macos-latest`
+
+Do not merely cross-compile.
+
+Actually execute binaries/tests on each native runner.
+
+The matrix should run relevant:
+
+- Rust formatting/checks
+- Clippy
+- Rust tests
+- CLI checks
+- SDK tests
+- TypeScript checks
+- UI tests
+- migration tests
+- authority/security tests
+- qualification schema tests
+- package tests
+- runtime smoke tests
+
+Use platform-specific exclusions only where genuinely required.
+
+Every exclusion must be explained.
+
+---
+
+# 4. NATIVE NODE SMOKE TEST
+
+On every supported CI OS:
+
+1. build `porch`
+2. build `porch-node`
+3. initialize a clean state directory
+4. generate identity
+5. start node
+6. verify control API authentication
+7. run `porch doctor`
+8. inspect status
+9. verify ledger
+10. stop node
+11. restart same state
+12. verify identity continuity
+13. verify ledger continuity
+
+Capture sanitized evidence.
+
+A successful compilation without execution does not count as runtime qualification.
+
+---
+
+# 5. NATIVE MULTI-NODE TEST
+
+Where the hosted OS permits it, launch at least three independent local node processes:
+
+ALPHA
+
+BETA
+
+GAMMA
+
+Use distinct:
+
+- state directories
+- identities
+- ports
+- aliases
+
+Prove:
+
+- separate identities
+- peer connection
+- trust/pairing
+- signed advertisement
+- authority grant
+- governed job
+- signed result
+- revocation
+- refusal after revocation
+- restart/reconciliation
+
+Label this topology:
+
+`NATIVE_HOSTED_LOOPBACK`
+
+Do not call it physical LAN evidence.
+
+---
+
+# 6. WINDOWS QUALIFICATION
+
+The Windows runner is especially important.
+
+Actually execute:
+
+- PowerShell installation helper
+- path handling
+- state directory setup
+- alias handling
+- invitation generation
+- invitation import
+- grant export/import
+- evidence export
+- evidence validation
+- CLI executable naming
+- restart
+- migration
+- control-token protection strategy
+
+Inspect Windows ACL behavior.
+
+If ACL permissions cannot be fully validated in CI, distinguish:
+
+`PASS`
+
+from:
+
+`PARTIAL`
+
+from:
+
+`UNVERIFIED`
+
+Do not translate Unix permission expectations into fake Windows claims.
+
+---
+
+# 7. WINDOWS FIREWALL TOOLING
+
+Create safe firewall helpers for the future physical test.
+
+The script must:
+
+- apply only to Infinite Porch
+- apply only to Private network profiles by default
+- expose only the peer networking port(s)
+- NOT expose the privileged control API
+- NOT expose Ollama's control API
+- support removal/rollback
+- display what it intends to change
+- require appropriate privilege
+- refuse overly broad dangerous rules
+
+Provide:
+
+`firewall-enable-private.ps1`
+
+`firewall-status.ps1`
+
+`firewall-remove.ps1`
+
+or equivalent.
+
+Do not execute privileged firewall changes in CI unless the runner environment safely supports them.
+
+Test the scripts structurally and syntactically.
+
+---
+
+# 8. WINDOWS PORTABLE PACKAGE
+
+Produce an actual native Windows x86_64 package from the native Windows runner if successful.
+
+Target package:
+
+`infinite-porch-0.1.2-windows-x86_64.zip`
+
+Include:
+
+- porch.exe
+- porch-node.exe
+- UI
+- SDK where appropriate
+- startup helpers
+- PowerShell qualification helpers
+- hashes
+- build metadata
+- README / START_HERE
+
+Do not claim Authenticode signing unless legitimately signed.
+
+Unsigned should be stated plainly.
+
+---
+
+# 9. MACOS QUALIFICATION
+
+Perform comparable native execution on macOS.
+
+Test:
+
+- build
+- init
+- node launch
+- CLI
+- persistence
+- migration
+- loopback multi-node
+- grants
+- revocation
+- evidence
+- packaging
+
+Produce native macOS package if successful.
+
+Do not claim:
+
+- notarization
+- Gatekeeper trust
+- universal binary support
+- Apple Silicon validation
+
+unless actually demonstrated.
+
+Record runner CPU architecture.
+
+---
+
+# 10. LINUX REGRESSION
+
+Run the same core native qualification on Linux.
+
+Ensure 0.1.2 changes do not break the existing Linux portable build.
+
+Preserve existing 0.1.1 evidence and compare.
+
+---
+
+# 11. LIVE OLLAMA CI EXPERIMENT
+
+Attempt a separate optional native-hosted Ollama qualification job where environment/time permits.
+
+Requirements:
+
+1. install or launch an authentic Ollama runtime using its supported distribution path
+2. select the smallest practical legitimate model available at execution time
+3. pull actual model weights
+4. verify model inventory
+5. run real inference
+6. advertise the model to another local Porch node
+7. issue a bounded grant
+8. execute governed remote inference through Infinite Porch
+9. verify signed result receipt
+10. revoke
+11. verify REFUSED_EXPECTED
+
+Important:
+
+If external download restrictions, service startup, execution time, architecture, runner policy, or other environmental conditions prevent this:
+
+record:
+
+`SKIPPED_ENVIRONMENT`
+
+or:
+
+`UNVERIFIED`
+
+Do not substitute the deterministic mock and call it live Ollama.
+
+The existing mock provider remains CI infrastructure.
+
+---
+
+# 12. CI EVIDENCE
+
+Every native runner should export a qualification bundle.
+
+Suggested organization:
+
+`release-evidence/native/ubuntu/`
+
+`release-evidence/native/windows/`
+
+`release-evidence/native/macos/`
+
+Include:
+
+- runner OS
+- architecture
+- runtime versions
+- compiler version
+- commit
+- branch
+- protocol version
+- scenario results
+- node IDs
+- sanitized receipts
+- ledger verification
+- test output
+- packaging hashes
+- failure details
+
+Never include:
+
+- private keys
+- auth tokens
+- secrets
+- raw private prompts
+
+---
+
+# 13. EVIDENCE CLASSIFICATION
+
+Expand the qualification taxonomy if necessary.
+
+Evidence must state one of:
+
+`SIMULATED`
+
+`LOOPBACK`
+
+`NATIVE_HOSTED`
+
+`PHYSICAL_LAN`
+
+`PHYSICAL_WAN`
+
+Never automatically promote one class into another.
+
+For example:
+
+Windows hosted runner execution can prove:
+
+`NATIVE_HOSTED`
+
+It cannot prove:
+
+`PHYSICAL_LAN`
+
+---
+
+# 14. PHYSICAL FIELD KIT
+
+Now create the package we will use on Michael's two real Windows PCs.
+
+Target machines will be referred to generically as:
+
+PC-A
+
+PC-B
+
+Do not hard-code assumptions about IP addresses.
+
+Create:
+
+`field-kit/windows/`
+
+The field kit should contain everything needed to perform the physical qualification with minimal manual command construction.
+
+---
+
+# 15. WINDOWS FIELD SETUP
+
+Create an operator helper such as:
+
+`Porch-FieldLab.ps1`
+
+or several smaller scripts.
+
+Target flow:
+
+On PC-A:
+
+`.\Porch-FieldLab.ps1 setup -Alias PC-A`
+
+On PC-B:
+
+`.\Porch-FieldLab.ps1 setup -Alias PC-B`
+
+The script should:
+
+- validate package integrity
+- locate porch binaries
+- create state path
+- initialize if needed
+- preserve existing identity
+- report peer ID
+- start/check node
+- inspect firewall prerequisites
+- scan local models
+- run doctor
+- print concise next steps
+
+It must NOT overwrite an existing identity.
+
+---
+
+# 16. PHYSICAL PAIRING WIZARD
+
+Create a guided physical pairing command/script.
+
+Desired experience:
+
+PC-A:
+
+`field pair host`
+
+PC-B:
+
+`field pair join`
+
+or equivalent.
+
+Display on both systems:
+
+- aliases
+- peer IDs
+- Porch ID
+- human-verifiable fingerprint phrase
+- expected remote identity
+
+Require explicit operator confirmation.
+
+Do not silently trust first nearby discovery.
+
+---
+
+# 17. PHYSICAL MODEL-SHARING WIZARD
+
+Create a guided model-sharing workflow.
+
+PC-A:
+
+1. scan Ollama
+2. choose exact installed model
+3. verify model
+4. expose model
+5. issue bounded grant for PC-B
+
+PC-B:
+
+1. import grant
+2. refresh remote services
+3. confirm model is visible
+4. confirm execution is permitted separately
+
+Preserve the distinction between:
+
+VISIBLE
+
+REACHABLE
+
+AUTHORIZED
+
+VERIFIED
+
+SUCCESSFULLY_EXECUTED
+
+---
+
+# 18. PHYSICAL RUNNER
+
+Create one qualification orchestrator for the operator.
+
+Example:
+
+`porch field qualify --peer <peer> --model <model>`
+
+or a PowerShell wrapper.
+
+Run sequential tests:
+
+1. identity
+2. physical peer path
+3. signed discovery
+4. trust
+5. messaging
+6. model advertisement
+7. bounded authorization
+8. actual remote inference
+9. receipt
+10. encrypted storage transfer
+11. integrity retrieval
+12. revocation
+13. refused inference
+14. restart persistence
+15. ledger verification
+
+Do not hide failures by continuing as PASS.
+
+Continue gathering independent evidence when safe, but retain each failure.
+
+---
+
+# 19. WAN-OFF FIELD PHASE
+
+Create an explicit guided mode:
+
+`field offline`
+
+Instructions should require a human to remove only upstream Internet while keeping both machines on the same LAN.
+
+The software should record:
+
+- pre-offline peer path
+- offline peer path
+- external reachability observation
+- local socket facts
+- messaging result
+- remote inference result
+- receipt result
+
+Do not automatically disconnect network adapters.
+
+Do not modify router configuration.
+
+This remains human-controlled.
+
+Require affirmative operator attestation such as:
+
+`--wan-condition-confirmed`
+
+but do NOT treat that flag alone as proof.
+
+Combine it with observable path/network evidence.
+
+---
+
+# 20. RESTART PHASE
+
+Provide:
+
+`field restart-check`
+
+or equivalent.
+
+Verify after restart:
+
+- same node identity
+- same Porch membership
+- same trust
+- revocation persists
+- ledger chain valid
+- stale provider observations refresh
+- no duplicate job execution
+
+---
+
+# 21. FAILURE FIELD CHECKS
+
+Create safe optional failure checks that do not damage the machines.
+
+Examples:
+
+- stop remote Porch node
+- restart remote node
+- stop Ollama
+- restore Ollama
+- request nonexistent model
+- exceed quota
+- use expired grant
+- reuse revoked grant
+- corrupt a test copy of a blob
+- cancel network job
+
+Never manipulate unrelated operating-system services.
+
+---
+
+# 22. FIELD EVIDENCE MERGE
+
+Create a command/tool to combine evidence exported independently from PC-A and PC-B.
+
+Example:
+
+`porch qualify correlate evidence-A evidence-B`
+
+It must NOT merely concatenate files.
+
+Correlate:
+
+- Porch ID
+- peer identities
+- request IDs
+- grant nonces
+- job IDs
+- input digests
+- output digests
+- timestamps
+- route facts
+- receipt signatures
+
+Flag contradictions.
+
+Example:
+
+A says job completed.
+
+B has no matching request.
+
+Result:
+
+`EVIDENCE_MISMATCH`
+
+not PASS.
+
+---
+
+# 23. PHYSICAL CERTIFICATE
+
+Create a machine-readable and human-readable qualification report.
+
+Example:
+
+`PHYSICAL_QUALIFICATION_REPORT.md`
+
+Possible states:
+
+`NOT_RUN`
+
+`PARTIAL`
+
+`FAILED`
+
+`PHYSICAL_LAN_QUALIFIED`
+
+`PHYSICAL_LAN_AND_LIVE_MODEL_QUALIFIED`
+
+Do not invent a production-ready state.
+
+Production security review remains independent.
+
+---
+
+# 24. PRODUCTION GATE DASHBOARD
+
+Update the UI Qualification panel to show separate gates:
+
+SOFTWARE
+
+- Linux native
+- Windows native
+- macOS native
+
+NETWORK
+
+- hosted loopback
+- physical LAN
+- WAN-off LAN
+- WAN traversal
+
+MODEL
+
+- mock provider
+- hosted live Ollama
+- physical remote Ollama
+
+SECURITY
+
+- internal regression
+- dependency audit
+- independent review
+
+PACKAGING
+
+- Linux
+- Windows
+- macOS
+
+Do not reduce these to one misleading green badge.
+
+---
+
+# 25. SECURITY REVIEW PREP KIT
+
+Prepare the repository for an independent reviewer.
+
+Create:
+
+`security-review/`
+
+Include:
+
+- architecture map
+- trust boundaries
+- protocol summary
+- cryptographic primitives/libraries
+- attack surfaces
+- threat model
+- known findings
+- audit commands
+- sensitive modules
+- fuzz/property-test targets
+- reproduction commands
+- expected refusal cases
+
+Create:
+
+`docs/INDEPENDENT_SECURITY_REVIEW_BRIEF.md`
+
+Make no claim that preparing this equals an external review.
+
+---
+
+# 26. FUZZ / PROPERTY TESTING
+
+Use remaining engineering time for security-oriented automated checks where practical.
+
+Prioritize parsers and authority boundaries:
+
+- invitations
+- grants
+- network frames
+- service advertisements
+- evidence manifests
+- canonical signatures
+- stored metadata
+
+Use Rust-native fuzz/property tooling when practical.
+
+Do not introduce massive CI time or unstable tests into ordinary PR runs.
+
+Provide separate scheduled/manual security jobs if appropriate.
+
+---
+
+# 27. ARTIFACT RETENTION
+
+Configure CI artifacts so native packages and evidence can be retrieved from completed qualification runs.
+
+Upload:
+
+- Linux package
+- Windows package
+- macOS package if built
+- native evidence bundles
+- test summaries
+- package hashes
+
+Do not upload secrets or state databases containing private credentials.
+
+---
+
+# 28. RELEASE CANDIDATE
+
+If all deterministic and native-hosted gates pass, package:
+
+`InfinitePorch-v0.1.2-native-qualification-candidate.zip`
+
+Include:
+
+- full source
+- git bundle/history
+- native Linux package
+- native Windows package if successful
+- native macOS package if successful
+- SDK/UI
+- field kit
+- CI evidence
+- security-review prep
+- updated documentation
+- exact hashes
+- delivery report
+
+Do not call it production 1.0.
+
+---
+
+# 29. DELIVERY REPORT
+
+Produce:
+
+`DELIVERY_REPORT_0.1.2.md`
+
+Include:
+
+1. exact branch
+2. exact commit
+3. tests/checks totals
+4. Linux native result
+5. Windows native result
+6. macOS native result
+7. live Ollama hosted result
+8. packages produced
+9. artifact SHA-256 values
+10. remaining physical blockers
+11. field kit commands
+12. pairing procedure
+13. live-model procedure
+14. WAN-off procedure
+15. restart procedure
+16. revocation procedure
+17. evidence-correlation procedure
+18. independent-security-review status
+19. all SKIPPED/UNVERIFIED items
+20. exact next physical action for Michael
+
+---
+
+# 30. DO NOT LIE TO THE LEDGER
+
+If Windows native tests fail:
+
+fix them.
+
+If macOS fails:
+
+fix what is within project control.
+
+If Ollama cannot run:
+
+preserve the failure.
+
+If GitHub runner networking does not represent a real LAN:
+
+say so.
+
+If a packaging step fails:
+
+do not publish that package as passing.
+
+If environment restrictions block qualification:
+
+mark the result accurately and keep going.
+
+Raw failure evidence is valuable.
+
+Never transform an absent test into a PASS.
+
+---
+
+# 31. WORK STYLE
+
+Do not return after writing a plan.
+
+Inspect.
+
+Branch.
+
+Implement.
+
+Push.
+
+Run native CI.
+
+Read the actual workflow results.
+
+Fix failures.
+
+Re-run.
+
+Build artifacts.
+
+Validate fresh artifacts.
+
+Package.
+
+Continue until:
+
+- all fixable native-hosted failures are repaired
+- CI evidence is captured
+- physical field tooling is complete
+- remaining blockers genuinely require the external physical machines or independent reviewer
+
+---
+
+# 32. FINAL SUCCESS CONDITION
+
+At the end of this rung we should be able to say truthfully:
+
+> Infinite Porch has executed and passed its applicable qualification suite natively on the operating systems for which evidence exists, and a reproducible field kit is ready to test two separately owned physical Windows PCs without modifying the architecture or improvising manual internal API calls.
+
+We must NOT yet say:
+
+> Infinite Porch is production qualified.
+
+That statement remains gated on physical network/model evidence and independent security review.
+
+Build the evidence path.

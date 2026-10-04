@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import json,os,pathlib,subprocess,tempfile,urllib.request,urllib.error
 from acceptance import ROOT,TestNode,HTTP
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 
 def main():
     checks=[];ext='.exe' if os.name=='nt' else '';cli=ROOT/'target/debug'/('porch'+ext)
@@ -21,5 +24,5 @@ def main():
             assert json.loads((node.root/'config.json').read_text())['limits']['concurrent_jobs']==2
         finally:
             node.stop()
-    (ROOT/'docs/receipts/qualification/limit-cli.json').write_text(json.dumps({'passed':len(checks),'checks':checks},indent=2)+'\n');print(f'Limit CLI passed: {len(checks)} checks.')
+    (EVIDENCE/'receipts/qualification/limit-cli.json').write_text(json.dumps({'passed':len(checks),'checks':checks},indent=2)+'\n');print(f'Limit CLI passed: {len(checks)} checks.')
 if __name__=='__main__':main()

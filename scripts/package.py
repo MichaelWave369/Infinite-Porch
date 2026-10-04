@@ -2,19 +2,27 @@
 """Build a portable, foreground-only node bundle for the current OS."""
 import argparse,datetime,hashlib,json,os,pathlib,platform,shutil,subprocess,tomllib,zipfile
 ROOT=pathlib.Path(__file__).resolve().parents[1]
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 def main():
     p=argparse.ArgumentParser();p.add_argument('--skip-build',action='store_true');p.add_argument('--out',type=pathlib.Path,default=ROOT/'dist');a=p.parse_args()
     if not a.skip_build:
         subprocess.run(['cargo','build','--release','--workspace','--locked'],cwd=ROOT,check=True)
         subprocess.run(['npm.cmd' if os.name=='nt' else 'npm','run','build'],cwd=ROOT,check=True)
     version=tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version']
-    label=f'infinite-porch-{version}-{platform.system().lower()}-{platform.machine().lower()}'
+    arch={'amd64':'x86_64','aarch64':'arm64'}.get(platform.machine().lower(),platform.machine().lower())
+    label=f'infinite-porch-{version}-{platform.system().lower()}-{arch}'
     destination=a.out/label
     if destination.exists():raise SystemExit('Package destination already exists; choose a fresh --out directory')
     destination.mkdir(parents=True)
     (destination/'bin').mkdir(exist_ok=True);extension='.exe' if os.name=='nt' else ''
     for name in ['porch','porch-node']:shutil.copy2(ROOT/'target/release'/(name+extension),destination/'bin'/(name+extension))
     shutil.copytree(ROOT/'apps/desktop/dist',destination/'ui',dirs_exist_ok=True)
+    shutil.copytree(ROOT/'packages/sdk/dist',destination/'sdk/dist')
+    shutil.copy2(ROOT/'packages/sdk/package.json',destination/'sdk/package.json')
+    shutil.copytree(ROOT/'field-kit',destination/'field-kit',ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+    if os.environ.get('PORCH_GATE_REPORT'):shutil.copy2(os.environ['PORCH_GATE_REPORT'],destination/'qualification-gates.json')
     for name in ['README.md','LICENSE','START_HERE.txt','Cargo.lock','package-lock.json','rust-toolchain.toml']:shutil.copy2(ROOT/name,destination/name)
     shutil.copytree(ROOT/'docs',destination/'docs',dirs_exist_ok=True)
     shutil.copy2(ROOT/'config.example.json',destination/'config.example.json')

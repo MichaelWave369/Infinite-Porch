@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([string]$Destination = "$env:LOCALAPPDATA\InfinitePorch\0.1.1", [switch]$BuildFromSource)
+param([string]$Destination = "$env:LOCALAPPDATA\InfinitePorch\0.1.2", [switch]$BuildFromSource, [string]$State = "$env:LOCALAPPDATA\InfinitePorch\state")
 $ErrorActionPreference = 'Stop'
 if (Test-Path $Destination) { throw 'Destination already exists; choose a new -Destination or review the existing installation.' }
 $PorchSource = (Resolve-Path "$PSScriptRoot\..\..").Path
@@ -22,11 +22,10 @@ if ($BuildFromSource) {
     Copy-Item "$PorchSource\bin" "$Destination\bin" -Recurse
     Copy-Item "$PorchSource\ui" "$Destination\ui" -Recurse
 }
-$PorchState = "$env:LOCALAPPDATA\InfinitePorch\state"
+$PorchState = $State
 New-Item -ItemType Directory -Force $PorchState | Out-Null
-$PorchUser = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-& icacls.exe $PorchState /inheritance:r /grant:r "${PorchUser}:(OI)(CI)F" | Out-Null
-if ($LASTEXITCODE -ne 0) { throw 'State ACL setup failed; inspect before creating keys' }
+. "$PorchSource\field-kit\windows\Field-Common.ps1"
+Protect-PorchState $PorchState | ConvertTo-Json | Write-Output
 Write-Host "Installed to $Destination"
 Write-Host "State: $PorchState (current-user ACL; physical Windows verification remains required)"
 Write-Host "Initialize: & '$Destination\bin\porch.exe' --data '$PorchState' init --alias 'MIKEY-PC'"

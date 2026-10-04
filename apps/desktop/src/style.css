@@ -3,3 +3,5 @@
 .mobile-session-end{display:none}@media(max-width:850px){.mobile-session-end{display:inline-flex}}
 
 .qualification-check{display:flex;align-items:center;gap:10px}.qualification-check input{width:18px;flex:none}.qualification-counts{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.qualification-counts .badge{white-space:normal}
+
+.gate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:20px}.gate-grid h3{font-size:13px;letter-spacing:.07em}.gate-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #e8e8e3}.gate-row small{flex-basis:100%;overflow-wrap:anywhere}

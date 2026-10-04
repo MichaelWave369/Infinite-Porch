@@ -2,6 +2,9 @@
 """Optional real UI acceptance. Install Chromium: npx playwright install chromium."""
 import argparse,os,pathlib,subprocess,tempfile
 from acceptance import ROOT,TestNode
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--binary',type=pathlib.Path,default=ROOT/'target/debug'/('porch-node.exe' if os.name=='nt' else 'porch-node'));a=p.parse_args()
@@ -15,7 +18,7 @@ def main():
             xss=TestNode('XSS',state,a.binary);nodes.append(xss)
             gamma.call('peer.approve',{'peer':xss.id,'alias':'<img src=x onerror=alert(1)>','porch':alpha.read('status')['porch']['id']})
             grant=alpha.call('grant.issue',{'recipient':gamma.id,'capability':'model.inference','resource':'porch-mock','action':'run','limits':{'max_calls':5,'calls_per_hour':5}});gamma.call('grant.import',{'grant':grant});gamma.call('resources.refresh')
-            subprocess.run(['node',str(ROOT/'scripts/ui-smoke.mjs'),gamma.api,str(gamma.root/'api.token'),str(ROOT/'docs/evidence')],cwd=ROOT,check=True)
+            subprocess.run(['node',str(ROOT/'scripts/ui-smoke.mjs'),gamma.api,str(gamma.root/'api.token'),str(EVIDENCE/'evidence')],cwd=ROOT,check=True)
         finally:
             for n in nodes:n.stop()
 if __name__=='__main__':main()

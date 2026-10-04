@@ -103,6 +103,9 @@ enum Command {
 }
 #[derive(Subcommand)]
 enum QualifyCommand {
+    ImportGates {
+        file: PathBuf,
+    },
     Host {
         name: String,
         #[arg(long)]
@@ -121,7 +124,7 @@ enum QualifyCommand {
         peer: Option<String>,
         #[arg(long)]
         model: Option<String>,
-        #[arg(long,default_value="LOOPBACK",value_parser=["SIMULATED","LOOPBACK","PHYSICAL"])]
+        #[arg(long,default_value="LOOPBACK",value_parser=["SIMULATED","LOOPBACK","NATIVE_HOSTED","PHYSICAL","PHYSICAL_LAN","PHYSICAL_WAN"])]
         environment: String,
         #[arg(long,default_value="baseline",value_parser=["baseline","revoked","offline","restored","restart"])]
         phase: String,
@@ -131,6 +134,26 @@ enum QualifyCommand {
         wan_condition_confirmed: bool,
         #[arg(long)]
         message: bool,
+        #[arg(long)]
+        storage: bool,
+        #[arg(long)]
+        session: Option<String>,
+    },
+    Snapshot {
+        #[arg(long)]
+        session: String,
+        #[arg(long, default_value = "LOOPBACK")]
+        environment: String,
+        #[arg(long)]
+        separate_machines_confirmed: bool,
+        #[arg(long)]
+        out: PathBuf,
+    },
+    Correlate {
+        evidence_a: PathBuf,
+        evidence_b: PathBuf,
+        #[arg(long)]
+        out: PathBuf,
     },
     Export {
         directory: PathBuf,
@@ -395,6 +418,10 @@ async fn main() -> Result<()> {
             return Ok(());
         }
         Command::Qualify { command } => match command {
+            QualifyCommand::ImportGates { file } => {
+                op = "qualification.gates.import".into();
+                args = read_json(file)?;
+            }
             QualifyCommand::Status => read = Some("qualification"),
             QualifyCommand::Host {
                 name,
@@ -420,9 +447,34 @@ async fn main() -> Result<()> {
                 separate_machines_confirmed,
                 wan_condition_confirmed,
                 message,
+                storage,
+                session,
             } => {
                 op = "qualification.run".into();
-                args = json!({"peer":peer,"model":model,"environment":environment,"phase":phase,"separate_machines_confirmed":separate_machines_confirmed,"wan_condition_confirmed":wan_condition_confirmed,"message":message});
+                args = json!({"peer":peer,"model":model,"environment":environment,"phase":phase,"separate_machines_confirmed":separate_machines_confirmed,"wan_condition_confirmed":wan_condition_confirmed,"message":message,"storage":storage,"session":session});
+            }
+            QualifyCommand::Snapshot {
+                session,
+                environment,
+                separate_machines_confirmed,
+                out,
+            } => {
+                op = "field.snapshot".into();
+                args = json!({"session":session,"environment":environment,"separate_machines_confirmed":separate_machines_confirmed});
+                save = Some(out.clone());
+            }
+            QualifyCommand::Correlate {
+                evidence_a,
+                evidence_b,
+                out,
+            } => {
+                let report = porch_node::field::correlate(
+                    &porch_node::field::read_snapshot(evidence_a)?,
+                    &porch_node::field::read_snapshot(evidence_b)?,
+                )?;
+                porch_node::field::write_report(out, &report)?;
+                println!("{}", serde_json::to_string_pretty(&report)?);
+                return Ok(());
             }
             QualifyCommand::Export { directory } => {
                 op = "qualification.export".into();

@@ -1,0 +1,18 @@
+name: Extended security properties
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '31 7 * * 1'
+permissions:
+  contents: read
+jobs:
+  properties:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.89.0
+      - name: Extended seeded corpus
+        env:
+          PORCH_PROPERTY_CASES: '16384'
+        run: cargo test --locked --test properties

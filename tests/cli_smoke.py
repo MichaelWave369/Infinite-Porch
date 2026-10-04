@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import hashlib,json,os,pathlib,subprocess,tempfile
 from acceptance import ROOT,TestNode
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 def main():
     extension='.exe' if os.name=='nt' else '';binary=ROOT/'target/debug'/('porch'+extension);node_binary=ROOT/'target/debug'/('porch-node'+extension)
     with tempfile.TemporaryDirectory(prefix='porch-cli-') as tmp:
@@ -25,5 +28,5 @@ def main():
             live('model','run','missing-model','abc',expect=2)
             proof=root/'rotation.json';new=root/'rotated';run('identity','rotate','--new-data',str(new),'--out',str(proof));assert json.loads(proof.read_text())['old']['payload']['authority_carried'] is False
         finally:node.stop()
-    out=ROOT/'docs/receipts/cli-smoke.json';out.write_text(json.dumps({'passed':True,'checks':['init','protected identity backup/restore','identity API','doctor','community create','local hash receipt','refusal exit code','explicit rotation proof']},indent=2)+'\n');print('CLI smoke passed: 8 checks.')
+    out=EVIDENCE/'receipts/cli-smoke.json';out.write_text(json.dumps({'passed':True,'checks':['init','protected identity backup/restore','identity API','doctor','community create','local hash receipt','refusal exit code','explicit rotation proof']},indent=2)+'\n');print('CLI smoke passed: 8 checks.')
 if __name__=='__main__':main()

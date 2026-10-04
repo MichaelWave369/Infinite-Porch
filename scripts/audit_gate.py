@@ -7,7 +7,10 @@ dependency upgrades are performed by this gate.
 """
 import argparse,hashlib,json,os,pathlib,subprocess,tomllib
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-OUT=ROOT/'docs/receipts/qualification'
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
+OUT=EVIDENCE/'receipts/qualification'
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--offline',action='store_true');args=parser.parse_args()
     result=subprocess.run(['cargo','audit','--json',*(['--no-fetch'] if args.offline else [])],cwd=ROOT,capture_output=True,text=True,timeout=90)

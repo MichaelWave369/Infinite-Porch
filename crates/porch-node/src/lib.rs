@@ -2,6 +2,7 @@
 pub mod api;
 pub mod clients;
 pub mod db;
+pub mod field;
 pub mod limits;
 pub mod models;
 pub mod network;
@@ -96,6 +97,7 @@ pub struct GrantUse<'a> {
     pub time: u64,
 }
 pub struct Node {
+    pub boot_id: String,
     pub id: String,
     pub key: Keypair,
     pub root: PathBuf,
@@ -168,6 +170,7 @@ impl Node {
         let job_slots = config.limits.concurrent_jobs;
         let ingress_slots = config.limits.ingress_requests;
         let node = Arc::new(Self {
+            boot_id: nonce(),
             id,
             key,
             root: root.into(),

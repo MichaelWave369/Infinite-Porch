@@ -10,7 +10,7 @@ def verify(path):
         manifests=[n for n in names if n.endswith('/manifest.json') and n.count('/')==1]
         assert len(manifests)==1,'Expected one portable package root manifest'
         prefix=manifests[0].rsplit('/',1)[0]+'/'
-        m=json.loads(z.read(manifests[0]));assert m['candidate']=='0.1.1' and m['protocol_version']==1
+        m=json.loads(z.read(manifests[0]));assert m['candidate'] in ['0.1.1','0.1.2'] and m['protocol_version']==1
         actual={n[len(prefix):] for n in names if not n.endswith('/') and n!=manifests[0]}
         assert actual==set(m['files']),'Package manifest file-set mismatch'
         for n,h in m['files'].items():assert hashlib.sha256(z.read(prefix+n)).hexdigest()==h,'Package hash mismatch: '+n

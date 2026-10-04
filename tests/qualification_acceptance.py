@@ -4,6 +4,9 @@ Never qualifies physical computers or model weights.
 """
 import argparse,hashlib,json,os,pathlib,subprocess,tempfile,time
 from acceptance import ROOT,TestNode
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 def main():
     ext='.exe' if os.name=='nt' else '';cli=ROOT/'target/debug'/('porch'+ext);daemon=ROOT/'target/debug'/('porch-node'+ext)
     parser=argparse.ArgumentParser();parser.add_argument('--keep-state',type=pathlib.Path);options=parser.parse_args()
@@ -50,7 +53,7 @@ def main():
             check('authenticated negotiated network path',report['payload']['network']['peers'][a.id]['encrypted'] and report['payload']['network']['peers'][a.id]['negotiated_protocol']=='/infinite-porch/rpc/1')
             export=root/'evidence';command(b,'qualify','export',str(export));v=command(b,'qualify','validate',str(export));check('CLI sanitized export hashes/signatures/schema valid',v['valid'] and not v['skip_counts_as_pass'])
             text=''.join(p.read_text() for p in export.glob('*.json'));check('evidence excludes unrelated private prompts and operator tokens','PRIVATE-NO-AUTHORITY-SENTINEL' not in text and all(n.token not in text for n in nodes))
-            copy=ROOT/'docs/receipts/qualification/example-sanitized-bundle';copy.mkdir(parents=True,exist_ok=True)
+            copy=EVIDENCE/'receipts/qualification/example-sanitized-bundle';copy.mkdir(parents=True,exist_ok=True)
             for p in export.glob('*.json'):(copy/p.name).write_bytes(p.read_bytes())
             corrupt=json.loads((export/'results.json').read_text());corrupt[0]['result']='FORGED_PASS';(export/'results.json').write_text(json.dumps(corrupt));command(b,'qualify','validate',str(export),expected=1);check('malformed or modified evidence is rejected')
             for origin in ['null','file://','https://hostile.example','http://127.0.0.1:1']:
@@ -80,6 +83,6 @@ def main():
             check('offline message qualification records bounded failure',duration<9 and next(s for s in q['payload']['scenarios'] if s['id']=='messaging')['result']=='FAIL')
         finally:
             for n in reversed(nodes):n.stop()
-    receipt={'candidate':'0.1.1','environment':'LOOPBACK','model_provider':'explicit mock','physical_evidence':'UNVERIFIED','passed':len(checks),'checks':checks,'performance':measurements,'performance_limitations':'Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim.'}
-    (ROOT/'docs/receipts/qualification/qualification-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n');print(f'Qualification acceptance passed: {len(checks)} checks.')
+    receipt={'candidate':'0.1.2','environment':'LOOPBACK','model_provider':'explicit mock','physical_evidence':'UNVERIFIED','passed':len(checks),'checks':checks,'performance':measurements,'performance_limitations':'Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim.'}
+    (EVIDENCE/'receipts/qualification/qualification-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n');print(f'Qualification acceptance passed: {len(checks)} checks.')
 if __name__=='__main__':main()

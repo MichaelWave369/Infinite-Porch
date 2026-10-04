@@ -7,6 +7,9 @@ is used by this harness. This proves loopback LAN-like paths, not physical Wi-Fi
 import argparse,hashlib,json,os,pathlib,socket,sqlite3,subprocess,sys,tempfile,time,tomllib,urllib.error,urllib.request
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
+EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+(EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
+(EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 HTTP=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 def port(udp=False):
     with socket.socket(socket.AF_INET,socket.SOCK_DGRAM if udp else socket.SOCK_STREAM) as s:s.bind(('127.0.0.1',0));return s.getsockname()[1]
@@ -56,7 +59,7 @@ class TestNode:
         self.log.close()
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--binary',type=pathlib.Path,default=ROOT/'target/debug'/('porch-node.exe' if os.name=='nt' else 'porch-node'));parser.add_argument('--out',type=pathlib.Path,default=ROOT/'docs/receipts/acceptance.json');parser.add_argument('--keep-state',type=pathlib.Path);a=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--binary',type=pathlib.Path,default=ROOT/'target/debug'/('porch-node.exe' if os.name=='nt' else 'porch-node'));parser.add_argument('--out',type=pathlib.Path,default=EVIDENCE/'receipts/acceptance.json');parser.add_argument('--keep-state',type=pathlib.Path);a=parser.parse_args()
     if not a.binary.exists():raise SystemExit('Build first: cargo build --workspace')
     temp=tempfile.TemporaryDirectory(prefix='infinite-porch-acceptance-');state=a.keep_state or pathlib.Path(temp.name);state.mkdir(parents=True,exist_ok=True)
     nodes=[];checks=[];evidence={};start=time.time()

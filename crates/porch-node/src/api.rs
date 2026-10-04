@@ -221,6 +221,9 @@ pub async fn operate(node: &Arc<Node>, operation: &str, args: &Value) -> Result<
     match operation {
         "qualification.run" => qualification::run(node,args).await,
         "qualification.export" => qualification::export(node),
+        "qualification.gates.import" => qualification::import_gates(node,args),
+        "field.snapshot" => crate::field::snapshot(node,args),
+        "field.restart" => crate::field::restart(node,args).await,
         "qualification.host" => {
             let name=required("name")?;
             if let Some(current)=node.db.get("porch")?.filter(|v|!v.is_null()) { ensure!(current["name"]==name && current["issuer"]==node.id,"EXISTING_PORCH_REQUIRES_EXPLICIT_OPERATOR_CHANGE"); }
