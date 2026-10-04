@@ -22,7 +22,7 @@ def run_captured(command,**options):
             raise
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--archive',type=pathlib.Path);p.add_argument('--out',type=pathlib.Path,default=EVIDENCE/'receipts/qualification/package.json');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--archive',type=pathlib.Path);p.add_argument('--out',type=pathlib.Path,default=EVIDENCE/'receipts/qualification/package.json');p.add_argument('--field-kit-source',type=pathlib.Path,help='Diagnostic only: test a source kit against unchanged prebuilt binaries');a=p.parse_args()
     archive=a.archive or next((ROOT/'dist').glob('infinite-porch-0.1.2-*.zip'))
     checks=[]
     def check(name,condition=True):assert condition,name;checks.append({'name':name,'result':'PASS'});print('PASS '+name,flush=True)
@@ -49,17 +49,18 @@ def main():
             check('native PowerShell installer and isolated state ACL', (install/'bin/porch.exe').exists() and install_state.exists())
             from acceptance import port
             kit_state=temp/'field state';kit_api=port();kit_peer=port()
-            common=['pwsh','-NoProfile','-File',str(package/'field-kit/windows/Porch-FieldLab.ps1')]
+            kit=a.field_kit_source.resolve() if a.field_kit_source else package/'field-kit/windows'
+            common=['pwsh','-NoProfile','-File',str(kit/'Porch-FieldLab.ps1')]
             params=['-PackageRoot',str(package),'-State',str(kit_state),'-ApiPort',str(kit_api),'-PeerPort',str(kit_peer),'-Environment','NATIVE_HOSTED','-NoMdns']
             try:
                 run_captured([*common,'setup','-Alias','HOSTED WINDOWS',*params],timeout=60)
                 key=(kit_state/'identity.key').read_bytes()
                 run_captured([*common,'setup','-Alias','HOSTED WINDOWS',*params],timeout=60)
                 check('native field setup with spaces preserves identity and protects token',key==(kit_state/'identity.key').read_bytes())
-                run_captured(['pwsh','-NoProfile','-File',str(package/'field-kit/windows/firewall-enable-private.ps1'),'-PackageRoot',str(package),'-PeerPort',str(kit_peer),'-DryRun'],timeout=60)
+                run_captured(['pwsh','-NoProfile','-File',str(kit/'firewall-enable-private.ps1'),'-PackageRoot',str(package),'-PeerPort',str(kit_peer),'-DryRun'],timeout=60)
                 check('firewall plan executes without privileged mutation')
             finally:
-                subprocess.run([*common,'stop',*params],capture_output=True,text=True,timeout=20)
+                run_captured([*common,'stop',*params],timeout=20)
         node=TestNode('state',temp,binary,ui=str(package/'ui'))
         try:
             q=node.read('qualification');check('bundled node metadata matches package commit',q['build']['software_version']=='0.1.2' and q['build']['protocol_version']==1 and q['build']['commit']==m['commit'] and q['build']['branch']==m['branch'] and q['build']['source_tree_dirty_at_build']==m['source_tree_dirty_at_packaging'])
@@ -72,6 +73,6 @@ def main():
             v=json.loads(subprocess.check_output([str(cli),'qualify','validate',str(export)],text=True));check('packaged evidence export and offline validator',v['valid'] and not v['skip_counts_as_pass'])
             check('packaged doctor verifies ledger',node.read('doctor')['ledger_chain']=='VERIFIED')
         finally:node.stop()
-    a.out.parent.mkdir(parents=True,exist_ok=True);a.out.write_text(json.dumps({'passed':len(checks),'checks':checks,'integrity':integrity,'environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'native_platform':os.name,'physical_qualification':'UNVERIFIED'},indent=2)+'\n')
+    a.out.parent.mkdir(parents=True,exist_ok=True);a.out.write_text(json.dumps({'passed':len(checks),'checks':checks,'integrity':integrity,'environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'native_platform':os.name,'field_kit_scope':'DIAGNOSTIC_SOURCE_KIT_WITH_PREBUILT_BINARIES' if a.field_kit_source else 'EXACT_PACKAGED_FIELD_KIT','physical_qualification':'UNVERIFIED'},indent=2)+'\n')
     print(f'Package acceptance passed: {len(checks)} checks.')
 if __name__=='__main__':main()

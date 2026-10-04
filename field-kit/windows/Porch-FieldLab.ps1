@@ -41,7 +41,8 @@ function Start-FieldNode {
     $args=@('--data',('"'+$State+'"'),'--api',"127.0.0.1:$ApiPort",'--listen',"$listen/tcp/$PeerPort",'--listen',"$listen/udp/$PeerPort/quic-v1",'--ui',('"'+(Join-Path $PackageRoot 'ui')+'"'))
     if ($NoMdns) { $args+='--no-mdns' }
     $process=Start-Process -FilePath $daemon -ArgumentList $args -PassThru -RedirectStandardOutput (Join-Path $State 'field-node.stdout.log') -RedirectStandardError (Join-Path $State 'field-node.stderr.log')
-    @{pid=$process.Id;path=$daemon;started=$process.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json | Set-Content (Join-Path $State 'field-owned-process.json')
+    # Record the actual image path: Windows can expand an 8.3 launch path.
+    @{pid=$process.Id;path=$process.MainModule.FileName;started=$process.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json | Set-Content (Join-Path $State 'field-owned-process.json')
     for ($i=0;$i -lt 100;$i++) { Start-Sleep -Milliseconds 150; try { return Invoke-Porch @('status') } catch { if ($process.HasExited) { throw 'Owned Porch node exited; preserve local logs' } } }
     throw 'Node did not become ready'
 }
@@ -52,7 +53,7 @@ function Stop-FieldNode {
     $p=Get-Process -Id $owned.pid -ErrorAction Stop
     if ($p.Path -ne $owned.path -or $p.StartTime.ToUniversalTime().ToString('o') -ne $owned.started) { throw 'PID no longer identifies the field-owned node' }
     Stop-Process -Id $p.Id
-    $p.WaitForExit(8000) | Out-Null
+    if (!$p.WaitForExit(8000)) { throw 'Owned node did not stop; process record preserved' }
     Remove-Item $file
 }
 function Confirm-Identity([string]$Description) {

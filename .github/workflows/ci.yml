@@ -20,10 +20,10 @@ jobs:
           run-id: 37168990358
           name: porch-0.1.2-windows-native
           path: prior-native
-      - name: Diagnose extracted package using file-backed wrapper logs
+      - name: Diagnose source field kit against unchanged prebuilt binaries
         env:
           PORCH_EVIDENCE_ROOT: diagnostic
-        run: python tests/package_acceptance.py --archive (Get-ChildItem prior-native/packages/*.zip).FullName --out diagnostic/package.json
+        run: python tests/package_acceptance.py --archive (Get-ChildItem prior-native/packages/*.zip).FullName --field-kit-source field-kit/windows --out diagnostic/package.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
