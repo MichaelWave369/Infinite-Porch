@@ -8,6 +8,8 @@ import argparse,hashlib,json,os,pathlib,socket,sqlite3,subprocess,sys,tempfile,t
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
+EVIDENCE_CLASS='NATIVE_HOSTED' if os.environ.get('GITHUB_ACTIONS')=='true' else 'LOOPBACK'
+EVIDENCE_TOPOLOGY='NATIVE_HOSTED_LOOPBACK' if EVIDENCE_CLASS=='NATIVE_HOSTED' else 'LOOPBACK'
 (EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
 (EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
 HTTP=urllib.request.build_opener(urllib.request.ProxyHandler({}))
@@ -162,9 +164,9 @@ def main():
         passed('durable signed ledger chains verify after the scenario')
         evidence['node_ids']={n.name:n.id for n in nodes};evidence['transport_scope']='three OS processes; verified loopback TCP/Noise path and QUIC listeners; no external Internet dependencies; LAN-like simulation'
         evidence['unverified']=['physical LAN and mDNS','WAN NAT traversal','live Ollama','Windows/macOS native packages','production security review']
-        result={'version':1,'candidate':tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version'],'passed':True,'checks':checks,'duration_seconds':round(time.time()-start,3),'evidence':evidence}
+        result={'version':1,'candidate':tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version'],'environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'passed':True,'checks':checks,'duration_seconds':round(time.time()-start,3),'evidence':evidence}
     except Exception as exc:
-        result={'version':1,'candidate':tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version'],'passed':False,'checks':checks,'failure':repr(exc),'duration_seconds':round(time.time()-start,3)}
+        result={'version':1,'candidate':tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version'],'environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'passed':False,'checks':checks,'failure':repr(exc),'duration_seconds':round(time.time()-start,3)}
         raise
     finally:
         for n in nodes:n.stop()

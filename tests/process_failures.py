@@ -3,7 +3,7 @@
 No host network, real Ollama service, firewall or unrelated process is changed.
 """
 import argparse,concurrent.futures,http.server,http.client,urllib.error,json,os,pathlib,sqlite3,tempfile,threading,time
-from acceptance import ROOT,TestNode
+from acceptance import EVIDENCE_CLASS,EVIDENCE_TOPOLOGY,ROOT,TestNode
 EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
 (EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
 class Provider(http.server.BaseHTTPRequestHandler):
@@ -74,6 +74,6 @@ def main():
         finally:
             for n in reversed(nodes):n.stop()
             server.shutdown();server.server_close()
-    receipt={'candidate':'0.1.2','environment':'LOOPBACK','provider':'owned HTTP contract fixture; no weights','passed':len(checks),'checks':checks,'physical_qualification':'UNVERIFIED','transport':options.transport,'bounded_reconnection_observations':reconnection}
+    receipt={'candidate':'0.1.2','environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'provider':'owned HTTP contract fixture; no weights','passed':len(checks),'checks':checks,'physical_qualification':'UNVERIFIED','transport':options.transport,'bounded_reconnection_observations':reconnection}
     (EVIDENCE/('receipts/qualification/process-failures'+('' if options.transport=='both' else '-'+options.transport)+'.json')).write_text(json.dumps(receipt,indent=2)+'\n');print(f'Process failure suite passed: {len(checks)} checks.')
 if __name__=='__main__':main()

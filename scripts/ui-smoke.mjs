@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 const [api, tokenFile, output = 'docs/evidence'] = process.argv.slice(2);
 if (!api || !tokenFile) throw new Error('Usage: node scripts/ui-smoke.mjs <loopback-api> <token-file> [output-dir]');
 const token = (await fs.readFile(tokenFile, 'utf8')).trim();
+const evidenceClass = process.env.GITHUB_ACTIONS === 'true' ? 'NATIVE_HOSTED' : 'LOOPBACK';
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch({headless:true,executablePath:process.env.PORCH_BROWSER_PATH||undefined,args:['--no-sandbox']});
 const page = await browser.newPage({viewport:{width:1600,height:1120}});
@@ -51,7 +52,7 @@ try {
   await page.getByLabel('Evidence environment').selectOption('PHYSICAL_LAN');
   await page.getByRole('button',{name:'Run qualification',exact:true}).click();
   await page.getByRole('alert').filter({hasText:/PHYSICAL_REQUIRES_OPERATOR_ATTESTATION|HOSTED_RUNNER_CANNOT_CLAIM_PHYSICAL_CLASS/}).waitFor();
-  await page.getByLabel('Evidence environment').selectOption('LOOPBACK');
+  await page.getByLabel('Evidence environment').selectOption(evidenceClass);
   await page.getByLabel('Qualification peer').selectOption({label:'ALPHA'});
   await page.getByLabel('Qualification model').fill('porch-mock');
   await page.getByRole('button',{name:'Run qualification',exact:true}).click();
@@ -64,7 +65,7 @@ try {
   assert.equal(evidence.suggestedFilename(),'porch-qualification-bundle.json');
   const evidencePath=path.join(output,'ui-qualification-bundle.json');await evidence.saveAs(evidencePath);
   const bundle=JSON.parse(await fs.readFile(evidencePath,'utf8'));
-  assert.equal(bundle.manifest.payload.environment,'LOOPBACK');
+  assert.equal(bundle.manifest.payload.environment,evidenceClass);
   assert.equal(bundle.manifest.payload.production_qualified,false);
   assert.equal(JSON.stringify(bundle).includes(token),false);
   assert.equal(JSON.stringify(bundle).includes('UI acceptance request'),false);

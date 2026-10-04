@@ -26,11 +26,17 @@ def main():
             if name=='browser-install' and env.get('PORCH_BROWSER_PATH'):
                 results.append({'gate':name,'result':'PARTIAL','reason':'Existing explicitly selected browser; UI execution gate still required'});continue
             with (out/(name+'.log')).open('w',encoding='utf-8') as log:
-                result=subprocess.run(cmd,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,text=True)
-            record={'gate':name,'result':'PASS' if result.returncode==0 else 'FAIL','exit_code':result.returncode,'duration_seconds':round(time.monotonic()-t,3),'log':name+'.log'};results.append(record);print(record,flush=True)
+                limit=1200 if name in ['clippy','rust-tests','debug-build','cargo-audit-install','portable-build'] else 300
+                try:
+                    result=subprocess.run(cmd,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,text=True,timeout=limit)
+                    exit_code=result.returncode
+                except subprocess.TimeoutExpired:
+                    log.write(f'\nQUALIFICATION_TIMEOUT: {name} exceeded {limit} seconds; no PASS claim\n')
+                    exit_code=124
+            record={'gate':name,'result':'PASS' if exit_code==0 else 'FAIL','exit_code':exit_code,'timeout_seconds':limit,'duration_seconds':round(time.monotonic()-t,3),'log':name+'.log'};results.append(record);print(record,flush=True)
             (out/'summary.json').write_text(json.dumps({'metadata':metadata,'gates':results},indent=2)+'\n')
             # Preserve failed gates and collect independent checks; avoid packaging failed builds.
-            if name in ['debug-build','npm-ci','desktop-sdk-build'] and result.returncode:break
+            if name in ['debug-build','npm-ci','desktop-sdk-build'] and exit_code:break
     finally:
         metadata['source_tree_end']=version(['git','write-tree'])
         metadata['tracked_changes_at_end']=version(['git','status','--porcelain','--untracked-files=no'])

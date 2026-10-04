@@ -44,7 +44,8 @@ def main():
         for item in items:
             assert category=='unmaintained' and item['package']['name']=='paste','Unreviewed audit warning'
             findings.append({'id':item['advisory']['id'],'package':'paste 1.0.15','classification':'build_time_maintenance_risk','reason':'Transitive macro dependency. Retained for this bounded candidate; replace through upstream dependency update.'})
-    report={'candidate':'0.1.1','audit_tool':'cargo audit','database_mode':'existing snapshot; no freshness claim' if args.offline else 'fetched for this run','raw_vulnerabilities':audit.get('vulnerabilities',{}).get('count'),
+    version=tomllib.loads((ROOT/'Cargo.toml').read_text())['workspace']['package']['version']
+    report={'candidate':version,'audit_tool':'cargo audit','database_mode':'existing snapshot; no freshness claim' if args.offline else 'fetched for this run','raw_vulnerabilities':audit.get('vulnerabilities',{}).get('count'),
             'gate':'PASS_WITH_REVIEWED_FINDINGS','findings':findings,'independent_security_review':'UNVERIFIED',
             'mdns_source_hashes':{name:hashlib.sha256((sources[0]/name).read_bytes()).hexdigest() for name in ['dns.rs','query.rs']}}
     (OUT/'supply-chain-review.json').write_text(json.dumps(report,indent=2)+'\n')

@@ -3,7 +3,7 @@
 Never qualifies physical computers or model weights.
 """
 import argparse,hashlib,json,os,pathlib,subprocess,tempfile,time
-from acceptance import ROOT,TestNode
+from acceptance import EVIDENCE_CLASS,EVIDENCE_TOPOLOGY,ROOT,TestNode
 EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
 (EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
 (EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
@@ -45,7 +45,7 @@ def main():
                 check(privacy+' honors joined trusted grant',result['status']=='COMPLETED' and result['receipt']['payload']['executor']==a.id and result['route']['federation']=='NOT_INSTALLED')
             before=c.read('network')['outbound_job_requests'];r=c.call('job.run',{'resource':'qual-mock','input':'PRIVATE-UNTRUSTED-SENTINEL','privacy':'TRUSTED_PEERS','max_output_tokens':16})
             check('untrusted node cannot transmit unauthorized prompt',r['status']=='REFUSED' and before==c.read('network')['outbound_job_requests'])
-            report=command(b,'qualify','run','--peer',a.id,'--model','qual-mock','--message','--environment','LOOPBACK')
+            report=command(b,'qualify','run','--peer',a.id,'--model','qual-mock','--message','--environment',EVIDENCE_CLASS)
             statuses={s['id']:s['result'] for s in report['payload']['scenarios']}
             check('mock inference is PARTIAL, never live-provider PASS',statuses['remote_inference']=='PARTIAL')
             check('local privacy qualification PASS',statuses['local_only']=='PASS')
@@ -63,7 +63,7 @@ def main():
             command(b,'qualify','run','--environment','PHYSICAL',expected=1);check('physical label requires explicit attestation')
             before=b.read('network')['outbound_job_requests'];r=b.call('job.run',{'resource':'qual-mock','input':'PRIVATE-LOCAL-SENTINEL','privacy':'LOCAL_ONLY','preferred_peer':a.id});check('LOCAL_ONLY pinned remote candidate cannot receive input',r['status']=='REFUSED' and before==b.read('network')['outbound_job_requests'])
             ledger=json.dumps(b.read('ledger'));check('refused route ledger contains no prompt contents','PRIVATE-LOCAL-SENTINEL' not in ledger and 'PRIVATE-NO-AUTHORITY-SENTINEL' not in ledger)
-            a.call('grant.revoke',{'nonce':g['payload']['nonce']});r=command(b,'qualify','run','--peer',a.id,'--model','qual-mock','--phase','revoked');check('revocation qualification records expected refusal',next(x for x in r['payload']['scenarios'] if x['id']=='remote_inference')['result']=='REFUSED_EXPECTED')
+            a.call('grant.revoke',{'nonce':g['payload']['nonce']});r=command(b,'qualify','run','--peer',a.id,'--model','qual-mock','--phase','revoked','--environment',EVIDENCE_CLASS);check('revocation qualification records expected refusal',next(x for x in r['payload']['scenarios'] if x['id']=='remote_inference')['result']=='REFUSED_EXPECTED')
             old_id=a.id;old_porch=a.read('status')['porch']['id'];a.stop();a.start();check('restart preserves identity membership and revoked grant',a.id==old_id and a.read('status')['porch']['id']==old_porch and any(x['revoked'] for x in a.read('grants')))
             check('restart preserves entire ledger chain',a.read('doctor')['ledger_chain']=='VERIFIED')
             scan=command(b,'models','scan');check('absent live provider is explicit, no fallback',scan['currently_reachable'] is False)
@@ -79,10 +79,10 @@ def main():
                     measurements[f'idle_rss_{n.name}_bytes']=int(rss.split()[1])*1024
             except (OSError,StopIteration,ValueError):measurements['idle_process_metrics']='UNVERIFIED: native /proc metrics missing or incompatible in this managed runtime'
             data=b'x'*(8*1024*1024);start=time.perf_counter();hashlib.sha256(data).digest();measurements['storage_hash_mib_per_second']=8/(time.perf_counter()-start)
-            a.stop();start=time.perf_counter();q=command(b,'qualify','run','--peer',a.id,'--message');duration=time.perf_counter()-start
+            a.stop();start=time.perf_counter();q=command(b,'qualify','run','--peer',a.id,'--message','--environment',EVIDENCE_CLASS);duration=time.perf_counter()-start
             check('offline message qualification records bounded failure',duration<9 and next(s for s in q['payload']['scenarios'] if s['id']=='messaging')['result']=='FAIL')
         finally:
             for n in reversed(nodes):n.stop()
-    receipt={'candidate':'0.1.2','environment':'LOOPBACK','model_provider':'explicit mock','physical_evidence':'UNVERIFIED','passed':len(checks),'checks':checks,'performance':measurements,'performance_limitations':'Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim.'}
+    receipt={'candidate':'0.1.2','environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'model_provider':'explicit mock','physical_evidence':'UNVERIFIED','passed':len(checks),'checks':checks,'performance':measurements,'performance_limitations':'Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim.'}
     (EVIDENCE/'receipts/qualification/qualification-acceptance.json').write_text(json.dumps(receipt,indent=2)+'\n');print(f'Qualification acceptance passed: {len(checks)} checks.')
 if __name__=='__main__':main()

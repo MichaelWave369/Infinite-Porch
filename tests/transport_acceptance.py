@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Actual local TCP and QUIC processes, including repeat pairing attempts."""
 import json,os,pathlib,tempfile
-from acceptance import ROOT,TestNode
+from acceptance import EVIDENCE_CLASS,EVIDENCE_TOPOLOGY,ROOT,TestNode
 EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
 (EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
 (EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
@@ -25,6 +25,6 @@ def main():
                 p=b.read('network')['peers'][a.id];check(transport+' encrypted authenticated protocol evidence',p['connections'] and all(x['encrypted'] and x['authenticated'] for x in p['connections']) and p['encrypted'] and p['authenticated'] and p['negotiated_protocol']=='/infinite-porch/rpc/1' and (transport=='both' or p['transport']==('QUIC' if transport=='quic' else 'TCP/Noise')))
             finally:
                 for n in nodes:n.stop()
-    (EVIDENCE/'receipts/qualification/transports.json').write_text(json.dumps({'environment':'LOOPBACK','physical_network':'UNVERIFIED','passed':len(checks),'checks':checks},indent=2)+'\n')
+    (EVIDENCE/'receipts/qualification/transports.json').write_text(json.dumps({'environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'physical_network':'UNVERIFIED','passed':len(checks),'checks':checks},indent=2)+'\n')
     print(f'Transport suite passed: {len(checks)} checks.')
 if __name__=='__main__':main()

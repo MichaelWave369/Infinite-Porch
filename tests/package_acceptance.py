@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify extracted native portable package with fresh disposable state."""
 import argparse,hashlib,json,os,pathlib,subprocess,tempfile,zipfile
-from acceptance import ROOT,TestNode,HTTP
+from acceptance import EVIDENCE_CLASS,EVIDENCE_TOPOLOGY,ROOT,TestNode,HTTP
 EVIDENCE=pathlib.Path(os.environ.get('PORCH_EVIDENCE_ROOT',str(ROOT/'docs')))
 (EVIDENCE/'receipts/qualification').mkdir(parents=True,exist_ok=True)
 (EVIDENCE/'evidence').mkdir(parents=True,exist_ok=True)
@@ -55,11 +55,11 @@ def main():
             asset=next((package/'ui/assets').glob('*.js'));check('bundled desktop served', '<div id="root">' in html and 'qualification.run' in asset.read_text())
             r=node.call('job.run',{'capability':'compute.hash','resource':'sha256','input':'package probe','privacy':'LOCAL_ONLY'});check('native builtin job and signed receipt',r['status']=='COMPLETED' and r['receipt']['payload']['output']['sha256']==hashlib.sha256(b'package probe').hexdigest())
             command=[str(cli),'--data',str(node.root),'--api',node.api]
-            subprocess.run([*command,'qualify','run','--environment','LOOPBACK'],capture_output=True,text=True,check=True)
+            subprocess.run([*command,'qualify','run','--environment',EVIDENCE_CLASS],capture_output=True,text=True,check=True)
             export=temp/'evidence';subprocess.run([*command,'qualify','export',str(export)],capture_output=True,text=True,check=True)
             v=json.loads(subprocess.check_output([str(cli),'qualify','validate',str(export)],text=True));check('packaged evidence export and offline validator',v['valid'] and not v['skip_counts_as_pass'])
             check('packaged doctor verifies ledger',node.read('doctor')['ledger_chain']=='VERIFIED')
         finally:node.stop()
-    a.out.parent.mkdir(parents=True,exist_ok=True);a.out.write_text(json.dumps({'passed':len(checks),'checks':checks,'integrity':integrity,'native_platform':os.name,'physical_qualification':'UNVERIFIED'},indent=2)+'\n')
+    a.out.parent.mkdir(parents=True,exist_ok=True);a.out.write_text(json.dumps({'passed':len(checks),'checks':checks,'integrity':integrity,'environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'native_platform':os.name,'physical_qualification':'UNVERIFIED'},indent=2)+'\n')
     print(f'Package acceptance passed: {len(checks)} checks.')
 if __name__=='__main__':main()
