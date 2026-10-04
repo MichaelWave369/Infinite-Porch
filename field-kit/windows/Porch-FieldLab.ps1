@@ -102,6 +102,8 @@ switch ($Command) {
     'pair-host' {
         if (!$Peer -or !$File) { throw '-Peer and -File invitation path required' }
         $id=Invoke-Porch @('identity','show');$id | ConvertTo-Json | Write-Host
+        Write-Host ('Local fingerprint phrase: '+(Get-PorchFingerprintPhrase $id.fingerprint_sha256))
+        Write-Host 'Phrase is a 96-bit comparison aid; full SHA-256 remains mandatory for joining.'
         Confirm-Identity "Expected recipient: $Peer; local alias: $((Invoke-Porch @('status')).node.alias)"
         Invoke-Porch @('qualify','host',$PorchName,'--recipient',$Peer,'--out',$File) | ConvertTo-Json -Depth 16 | Write-Output
         Write-Host "Invitation: $File. Compare full host SHA-256 fingerprint with PC-B; invitation expires in ten minutes."
@@ -111,6 +113,9 @@ switch ($Command) {
         $invite=Get-Content $File -Raw | ConvertFrom-Json
         Write-Host "Host $($invite.signer) | Porch $($invite.payload.porch) | Expected recipient $($invite.payload.recipient)"
         Invoke-Porch @('identity','show') | ConvertTo-Json | Write-Host
+        Write-Host ('Host fingerprint phrase: '+(Get-PorchFingerprintPhrase $Fingerprint))
+        Write-Host ('Local alias: '+(Invoke-Porch @('status')).node.alias)
+        $local=Invoke-Porch @('identity','show');Write-Host ('Local fingerprint phrase: '+(Get-PorchFingerprintPhrase $local.fingerprint_sha256))
         Confirm-Identity "Host fingerprint: $Fingerprint"
         Invoke-Porch @('qualify','join',$File,'--fingerprint',$Fingerprint) | ConvertTo-Json -Depth 16 | Write-Output
     }

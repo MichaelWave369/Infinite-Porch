@@ -1,9 +1,11 @@
+0.1.2 field operators: start with `field-kit/windows/START_HERE.md`; its helpers validate hashes, protect state, guide pairing and correlate independent evidence. Native runner results are recorded per commit in the delivery report. The detailed manual procedure below remains available.
+
 # Two Windows PCs — Mikey's physical procedure
 
 Status: native Windows execution, MSVC build, ACLs, firewall behavior and this
 PowerShell flow are UNVERIFIED here. No Windows binaries are claimed or included
 by a Linux build. The web desktop UI is served by the native node; there is no
-signed Windows installer or Electron/Tauri executable in 0.1.1.
+signed Windows installer or Electron/Tauri executable in 0.1.2.
 
 On BOTH PCs install Git, Rust 1.89.0 through rustup, Node 22.12+, and Visual Studio
 Build Tools with Desktop development with C++ and a Windows SDK. Confirm with
@@ -26,7 +28,7 @@ state directory. Do not place it in a shared Downloads or network folder.
 In a control terminal on each PC set these variables (repeat them in a new terminal):
 
 ```powershell
-$PorchDir = "$env:LOCALAPPDATA\InfinitePorch\0.1.1"
+$PorchDir = "$env:LOCALAPPDATA\InfinitePorch\0.1.2"
 $State = "$env:LOCALAPPDATA\InfinitePorch\state"
 $Porch = "$PorchDir\bin\porch.exe"
 $Node = "$PorchDir\bin\porch-node.exe"
@@ -47,7 +49,7 @@ B / RTX 3060 PC:
 On each PC launch in a separate ordinary terminal and leave it running:
 
 ```powershell
-& "$env:LOCALAPPDATA\InfinitePorch\0.1.1\bin\porch-node.exe" --data "$env:LOCALAPPDATA\InfinitePorch\state" --ui "$env:LOCALAPPDATA\InfinitePorch\0.1.1\ui"
+& "$env:LOCALAPPDATA\InfinitePorch\0.1.2\bin\porch-node.exe" --data "$env:LOCALAPPDATA\InfinitePorch\state" --ui "$env:LOCALAPPDATA\InfinitePorch\0.1.2\ui"
 ```
 
 Open http://127.0.0.1:7331 locally. Use its own state/api.token for its own UI.
@@ -58,7 +60,7 @@ Ensure Windows classifies your trusted LAN as Private. If firewall prompts do
 not permit the node, an administrator can allow only the peer surface:
 
 ```powershell
-$Program = "$env:LOCALAPPDATA\InfinitePorch\0.1.1\bin\porch-node.exe"
+$Program = "$env:LOCALAPPDATA\InfinitePorch\0.1.2\bin\porch-node.exe"
 New-NetFirewallRule -DisplayName 'Infinite Porch TCP private LAN' -Direction Inbound -Program $Program -Protocol TCP -LocalPort 7332 -Profile Private -RemoteAddress LocalSubnet -Action Allow
 New-NetFirewallRule -DisplayName 'Infinite Porch UDP private LAN' -Direction Inbound -Program $Program -Protocol UDP -LocalPort 7332,5353 -Profile Private -RemoteAddress LocalSubnet -Action Allow
 ```
@@ -109,7 +111,7 @@ $Model = 'qwen3:4b'
 & $Porch --data $State grant import .\model-grant.json
 & $Porch --data $State share refresh
 & $Porch --data $State models list
-& $Porch --data $State qualify run --peer $APeer --model $Model --environment PHYSICAL --separate-machines-confirmed
+& $Porch --data $State qualify run --peer $APeer --model $Model --environment PHYSICAL_LAN --separate-machines-confirmed
 & $Porch --data $State qualify export .\evidence-baseline-B
 & $Porch qualify validate .\evidence-baseline-B
 ```
@@ -117,7 +119,7 @@ $Model = 'qwen3:4b'
 Confirm provider=ollama, executor=A, COMPLETED, signed receipt, grant nonce and
 input/output digests. Model names, outputs and timings come from actual execution.
 If the 30-second operator limit is insufficient, use a smaller installed model;
-0.1.1 intentionally does not relax the hard ceiling.
+0.1.2 intentionally does not relax the hard ceiling.
 
 On A revoke, then on B prove refusal:
 
@@ -126,7 +128,7 @@ On A revoke, then on B prove refusal:
 $Grant = Get-Content .\model-grant.json -Raw | ConvertFrom-Json
 & $Porch --data $State grant revoke $Grant.payload.nonce
 # B:
-& $Porch --data $State qualify run --peer $APeer --model $Model --phase revoked --environment PHYSICAL --separate-machines-confirmed
+& $Porch --data $State qualify run --peer $APeer --model $Model --phase revoked --environment PHYSICAL_LAN --separate-machines-confirmed
 & $Porch --data $State qualify export .\evidence-revoked-B
 ```
 

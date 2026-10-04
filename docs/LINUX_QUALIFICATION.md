@@ -8,10 +8,10 @@ On EACH machine extract its native portable archive. From that archive root:
 ```sh
 chmod +x bin/porch bin/porch-node start.sh scripts/platform/install-user.sh
 ./scripts/platform/install-user.sh
-PORCH="$HOME/.local/share/infinite-porch/0.1.1/bin/porch"
+PORCH="$HOME/.local/share/infinite-porch/0.1.2/bin/porch"
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}/infinite-porch"
 "$PORCH" --data "$STATE" init --alias PC-A  # use PC-B on the other machine
-"$HOME/.local/share/infinite-porch/0.1.1/bin/porch-node" --data "$STATE" --ui "$HOME/.local/share/infinite-porch/0.1.1/ui"
+"$HOME/.local/share/infinite-porch/0.1.2/bin/porch-node" --data "$STATE" --ui "$HOME/.local/share/infinite-porch/0.1.2/ui"
 ```
 
 Leave the daemon running; define PORCH and STATE in a second control terminal.
@@ -62,7 +62,7 @@ MODEL='qwen3:4b'
 "$PORCH" --data "$STATE" grant import message-grant.json
 "$PORCH" --data "$STATE" share refresh
 "$PORCH" --data "$STATE" models list
-"$PORCH" --data "$STATE" qualify run --peer "$A_PEER" --model "$MODEL" --message --environment PHYSICAL --separate-machines-confirmed
+"$PORCH" --data "$STATE" qualify run --peer "$A_PEER" --model "$MODEL" --message --environment PHYSICAL_LAN --separate-machines-confirmed
 "$PORCH" --data "$STATE" qualify export evidence-baseline-B
 "$PORCH" qualify validate evidence-baseline-B
 ```
@@ -78,7 +78,7 @@ Revoke on A using the nonce from model-grant.json, then prove a new refusal on B
 GRANT_NONCE=$(python3 -c "import json;print(json.load(open('model-grant.json'))['payload']['nonce'])")
 "$PORCH" --data "$STATE" grant revoke "$GRANT_NONCE"
 # B:
-"$PORCH" --data "$STATE" qualify run --peer "$A_PEER" --model "$MODEL" --phase revoked --environment PHYSICAL --separate-machines-confirmed
+"$PORCH" --data "$STATE" qualify run --peer "$A_PEER" --model "$MODEL" --phase revoked --environment PHYSICAL_LAN --separate-machines-confirmed
 "$PORCH" --data "$STATE" qualify export evidence-revoked-B
 ```
 

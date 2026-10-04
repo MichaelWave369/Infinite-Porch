@@ -176,13 +176,23 @@ pub fn validate_snapshot(value: &Value) -> Result<Signed<Value>> {
             ensure!(origin, "EXECUTOR_RECEIPT_REQUIRED");
         }
     }
-    for run in p["runs"].as_array().context("FIELD_RUNS_REQUIRED")? {
+    let runs = p["runs"].as_array().context("FIELD_RUNS_REQUIRED")?;
+    ensure!(runs.len() <= 16, "FIELD_RUN_EXPORT_LIMIT");
+    for run in runs {
         let r: Signed<Value> = serde_json::from_value(run.clone())?;
         r.verify("porch.qualification.v1")?;
         ensure!(
             r.signer == signed.signer
                 && r.payload["session"] == session
-                && r.payload["production_qualified"] == false,
+                && r.payload["production_qualified"] == false
+                && r.payload["schema_version"] == 1
+                && r.payload["environment"] == class
+                && r.payload["timestamp"]
+                    .as_u64()
+                    .is_some_and(|t| t <= p["timestamp"].as_u64().unwrap().saturating_add(2))
+                && r.payload["scenarios"]
+                    .as_array()
+                    .is_some_and(|s| !s.is_empty() && s.len() <= 64),
             "FIELD_RUN_BINDING_MISMATCH"
         );
     }

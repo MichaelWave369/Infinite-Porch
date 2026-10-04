@@ -18,10 +18,14 @@ fn main() {
         "cargo:rustc-env=PORCH_BUILD_COMMIT={}",
         git(&["rev-parse", "HEAD"])
     );
-    println!(
-        "cargo:rustc-env=PORCH_BUILD_BRANCH={}",
-        git(&["branch", "--show-current"])
-    );
+    println!("cargo:rustc-env=PORCH_BUILD_BRANCH={}", {
+        let name = git(&["branch", "--show-current"]);
+        if name.is_empty() {
+            "DETACHED_HEAD".into()
+        } else {
+            name
+        }
+    });
     println!(
         "cargo:rustc-env=PORCH_BUILD_TREE_DIRTY={}",
         !git(&["status", "--porcelain", "--untracked-files=no"]).is_empty()

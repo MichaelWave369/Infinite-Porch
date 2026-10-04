@@ -6,7 +6,7 @@ file; it never asks for a cloud account. Privileged API URLs must be literal
 loopback HTTP addresses. JSON stdout is usable by scripts. Refused result status
 exits 2; transport/validation errors exit nonzero.
 
-`porch --version` identifies the executable as `porch 0.1.1`; the Rust crate's
+`porch --version` identifies the executable as `porch 0.1.2`; the Rust crate's
 internal name is porch-cli.
 
 | Need | Command |
@@ -48,7 +48,7 @@ Identity backup/restore/rotation work offline. Output file writes fail if a file
 already exists, so backup, invitation, grant and retrieval outputs do not silently
 overwrite prior artifacts. See IDENTITY.md for secret handling and rotation.
 
-0.1.1 physical workflow:
+0.1.2 physical workflow:
 
 ```sh
 porch qualify host "Oak Street" --recipient PEER_ID --out invite.json
@@ -57,7 +57,7 @@ porch qualify status
 porch models scan
 porch models refresh
 porch models verify EXACT_INSTALLED_MODEL
-porch qualify run --peer PEER_ID --model EXACT_MODEL --environment PHYSICAL --separate-machines-confirmed
+porch qualify run --peer PEER_ID --model EXACT_MODEL --environment PHYSICAL_LAN --separate-machines-confirmed
 porch qualify export fresh-evidence-directory
 porch qualify validate fresh-evidence-directory
 ```

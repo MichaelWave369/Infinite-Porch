@@ -16,7 +16,7 @@ If a previous phase revoked the model grant, issue/import a NEW grant first.
 On B, baseline:
 
 ```sh
-porch qualify run --peer A_PEER_ID --model EXACT_MODEL --message --environment PHYSICAL --separate-machines-confirmed
+porch qualify run --peer A_PEER_ID --model EXACT_MODEL --message --environment PHYSICAL_LAN --separate-machines-confirmed
 porch qualify export evidence-online-B
 porch qualify validate evidence-online-B
 ```
@@ -32,7 +32,7 @@ on both PCs and local addresses unchanged. Keep nodes running. On B:
 
 ```sh
 porch share refresh
-porch qualify run --peer A_PEER_ID --model EXACT_MODEL --message --phase offline --environment PHYSICAL --separate-machines-confirmed --wan-condition-confirmed
+porch qualify run --peer A_PEER_ID --model EXACT_MODEL --message --phase offline --environment PHYSICAL_LAN --separate-machines-confirmed --wan-condition-confirmed
 porch qualify export evidence-offline-B
 porch qualify validate evidence-offline-B
 ```
@@ -46,7 +46,7 @@ alongside the signed node bundles; this operator attestation is PARTIAL by itsel
 Reconnect upstream WAN without changing the LAN. On B:
 
 ```sh
-porch qualify run --peer A_PEER_ID --model EXACT_MODEL --message --phase restored --environment PHYSICAL --separate-machines-confirmed --wan-condition-confirmed
+porch qualify run --peer A_PEER_ID --model EXACT_MODEL --message --phase restored --environment PHYSICAL_LAN --separate-machines-confirmed --wan-condition-confirmed
 porch qualify export evidence-restored-B
 porch qualify validate evidence-restored-B
 ```

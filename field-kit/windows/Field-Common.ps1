@@ -47,3 +47,11 @@ function Assert-PorchAdministrator {
     if (!$p.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run this firewall action in an elevated PowerShell session' }
 }
 function Get-PorchFirewallGroup { return "Infinite Porch Field Lab $([Security.Principal.WindowsIdentity]::GetCurrent().User.Value)" }
+
+function Get-PorchFingerprintPhrase([string]$Fingerprint) {
+    $hex=($Fingerprint -replace '[ :\-]','').ToLowerInvariant()
+    if ($hex -notmatch '^[0-9a-f]{64}$') { throw 'Full SHA-256 fingerprint required' }
+    $words=@('amber','birch','cedar','dawn','elm','fern','grove','hearth','island','jade','kite','lake','moss','north','oak','pine')
+    $phrase=@();for($i=0;$i -lt 24;$i++){ $phrase+=$words[[Convert]::ToInt32($hex.Substring($i,1),16)] }
+    return ($phrase -join ' ')
+}

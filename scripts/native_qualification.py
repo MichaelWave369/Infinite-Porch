@@ -15,7 +15,7 @@ def main():
     def version(cmd):
         try:return subprocess.check_output(cmd,cwd=ROOT,text=True,stderr=subprocess.STDOUT).strip()
         except Exception:return 'UNVERIFIED'
-    metadata={'evidence_class':'NATIVE_HOSTED' if env.get('GITHUB_ACTIONS')=='true' else 'LOOPBACK','topology':'NATIVE_HOSTED_LOOPBACK' if env.get('GITHUB_ACTIONS')=='true' else 'LOOPBACK','os':platform.platform(),'architecture':platform.machine(),'runner_os':env.get('RUNNER_OS','managed workspace'),'runner_name':env.get('RUNNER_NAME','UNVERIFIED'),'rust':version(['rustc','--version']), 'node':version(['node','--version']),'python':platform.python_version(),'commit':version(['git','rev-parse','HEAD']),'branch':version(['git','branch','--show-current']),'workflow_commit':env.get('GITHUB_SHA'),'workflow_run_id':env.get('GITHUB_RUN_ID'),'protocol_version':1,'physical_lan':'UNVERIFIED','independent_security_review':'UNVERIFIED','production_qualified':False,'timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+    metadata={'evidence_class':'NATIVE_HOSTED' if env.get('GITHUB_ACTIONS')=='true' else 'LOOPBACK','topology':'NATIVE_HOSTED_LOOPBACK' if env.get('GITHUB_ACTIONS')=='true' else 'LOOPBACK','os':platform.platform(),'architecture':platform.machine(),'runner_os':env.get('RUNNER_OS','managed workspace'),'runner_name':env.get('RUNNER_NAME','UNVERIFIED'),'rust':version(['rustc','--version']), 'node':version(['node','--version']),'python':platform.python_version(),'commit':version(['git','rev-parse','HEAD']),'branch':version(['git','branch','--show-current']),'workflow_commit':env.get('GITHUB_SHA'),'workflow_run_id':env.get('GITHUB_RUN_ID'),'protocol_version':1,'physical_lan':'UNVERIFIED','independent_security_review':'UNVERIFIED','production_qualified':False,'timestamp':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_tree_start':version(['git','write-tree']),'tracked_changes_at_start':version(['git','status','--porcelain','--untracked-files=no'])}
     try:
         for name,cmd in commands:
             if name=='portable-execution':
@@ -32,6 +32,10 @@ def main():
             # Preserve failed gates and collect independent checks; avoid packaging failed builds.
             if name in ['debug-build','npm-ci','desktop-sdk-build'] and result.returncode:break
     finally:
+        metadata['source_tree_end']=version(['git','write-tree'])
+        metadata['tracked_changes_at_end']=version(['git','status','--porcelain','--untracked-files=no'])
+        if metadata['source_tree_start']!=metadata['source_tree_end'] or metadata['tracked_changes_at_start'] or metadata['tracked_changes_at_end']:
+            results.append({'gate':'source-stability','result':'FAIL','reason':'Qualification requires a clean, immutable tracked checkout'})
         metadata['overall']='FAIL' if any(r['result']=='FAIL' for r in results) else 'PASS'
         (out/'summary.json').write_text(json.dumps({'metadata':metadata,'gates':results},indent=2)+'\n')
         hashes={p.relative_to(out).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(out.rglob('*')) if p.is_file() and p.name!='SHA256SUMS.json'}

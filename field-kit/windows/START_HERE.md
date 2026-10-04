@@ -2,6 +2,8 @@
 
 Use the **native Windows 0.1.2 portable ZIP**. Compare its SHA-256 with the separately obtained delivery report, extract it into a directory you own, and run PowerShell 7 from `field-kit/windows`. The binaries and manifest are unsigned. Hashes detect altered bytes; an unsigned manifest alone does not establish publisher authenticity.
 
+If Windows blocks downloaded scripts after you verify the ZIP hash, review the scripts and remove their download marker with `Get-ChildItem -LiteralPath . -Filter *.ps1 | Unblock-File`. Do not change a managed or machine-wide execution policy.
+
 Both PCs use a Private Windows network profile. Inspect `firewall-status.ps1`. Preview changes with `firewall-enable-private.ps1 -DryRun`; if needed run it in an elevated shell. It permits only the package's porch-node executable, TCP/UDP peer port 7332, Private profile and LocalSubnet. It never exposes control port 7331 or Ollama 11434. Remove only the kit's rules with `firewall-remove.ps1`. Do not change a Public network to Private without understanding the network.
 
 Run this on each PC, using PC-A / PC-B respectively:
@@ -12,7 +14,7 @@ Run this on each PC, using PC-A / PC-B respectively:
 
 Setup preserves identity, checks credential ACLs, starts only its owned node, scans models and runs doctor. The default state is `%LOCALAPPDATA%\InfinitePorch\field-state`; `-State` supports a separate directory. Reuse the same `-Session`, state and any custom ports on all later commands. Repeated setup does not overwrite keys. A missing key next to an existing database refuses and requires recovery. Installation is per-user; no automatic login, OS service or router changes occur.
 
-On both PCs display peer identity and full SHA-256 fingerprint, and compare through a channel you already trust. A host invitation displays its recipient and Porch; joining displays the host, Porch and intended local recipient. The CLI fingerprint pinning refuses a different host before trust. Invitations expire in ten minutes and are one-use.
+On both PCs display peer identity and full SHA-256 fingerprint, and compare through a channel you already trust. The pairing wizard also displays a 96-bit word phrase as a comparison aid; joining still requires the complete SHA-256 fingerprint. A host invitation displays its recipient and Porch; joining displays the host, Porch and intended local recipient. The CLI fingerprint pinning refuses a different host before trust. Invitations expire in ten minutes and are one-use.
 
 ```powershell
 # PC-A: paste the actual PC-B peer ID, then type CONFIRM after comparison.

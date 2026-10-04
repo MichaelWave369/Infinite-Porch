@@ -25,7 +25,7 @@ needed. The control API stays on 127.0.0.1:7331. The peer port is TCP/UDP 7332.
 8. A issues an exact-resource grant to B, with at least 16 output tokens and
    enough duration for the diagnostic. Import its JSON on B. Use the precise
    commands in the platform guides; do not copy A's api.token or identity.key.
-9. B runs `porch qualify run --peer A_PEER_ID --model EXACT_MODEL --environment PHYSICAL --separate-machines-confirmed`.
+9. B runs `porch qualify run --peer A_PEER_ID --model EXACT_MODEL --environment PHYSICAL_LAN --separate-machines-confirmed`.
 10. Inspect the route, executor, provider `ollama`, input/output digests, duration,
     grant nonce and signed execution receipt. The mock provider yields PARTIAL,
     never a real-model PASS. A failed job yields FAIL; unavailable environments

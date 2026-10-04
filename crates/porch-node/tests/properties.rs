@@ -146,6 +146,21 @@ async fn evidence_mutations_and_class_promotion_are_rejected() -> Result<()> {
     let signed = serde_json::to_value(Signed::new(&node.key, "porch.field.participant.v1", p)?)?;
     assert!(field::validate_snapshot(&signed).is_err());
     assert_eq!(field::correlate(&snapshot, &snapshot)?["state"], "FAILED");
+    let mut mixed = snapshot["payload"].clone();
+    mixed["runs"] = json!([Signed::new(
+        &node.key,
+        "porch.qualification.v1",
+        json!({"schema_version":1,"session":"property","environment":"LOOPBACK","timestamp":now(),"scenarios":[{"result":"PASS"}],"production_qualified":false})
+    )?]);
+    assert!(
+        field::validate_snapshot(&serde_json::to_value(Signed::new(
+            &node.key,
+            "porch.field.participant.v1",
+            mixed
+        )?)?)
+        .is_err()
+    );
+
     let mut v = bundle.clone();
     v["manifest"]["payload"]["files"]["../../identity.key"] = json!("x");
     assert!(qualification::validate_export(&v).is_err());
