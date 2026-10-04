@@ -1,22 +1,106 @@
-name: CI
-
+name: Native qualification 0.1.2
 on:
   push:
   pull_request:
-
+  workflow_dispatch:
+    inputs:
+      live_ollama:
+        type: boolean
+        default: false
+        description: Attempt real CPU Ollama weights on Ubuntu
+permissions:
+  contents: read
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            evidence: ubuntu
+          - os: windows-latest
+            evidence: windows
+          - os: macos-latest
+            evidence: macos
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore exact candidate history when transported by API
+        shell: bash
+        run: |
+          if test -f .ci/candidate.bundle; then
+            expected=$(cat .ci/candidate-commit.txt)
+            git fetch .ci/candidate.bundle feat/porch-v0.1.2-native-qualification
+            git checkout -B feat/porch-v0.1.2-native-qualification FETCH_HEAD
+            test "$(git rev-parse HEAD)" = "$expected"
+          fi
+      - uses: dtolnay/rust-toolchain@1.89.0
+        with:
+          components: rustfmt, clippy
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Install
+          python-version: '3.12'
+      - name: Execute all applicable native gates
+        run: python scripts/native_qualification.py --out release-evidence/native/${{ matrix.evidence }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: porch-0.1.2-${{ matrix.evidence }}-native
+          retention-days: 30
+          if-no-files-found: error
+          path: release-evidence/native/${{ matrix.evidence }}/
+  live-ollama:
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.live_ollama)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore candidate source
+        shell: bash
         run: |
-          python -m pip install --upgrade pip
-          pip install -e .[dev]
-      - name: Ruff
-        run: ruff check .
-      - name: Pytest
-        run: pytest
+          if test -f .ci/candidate.bundle; then
+            git fetch .ci/candidate.bundle feat/porch-v0.1.2-native-qualification
+            git checkout -B feat/porch-v0.1.2-native-qualification FETCH_HEAD
+          fi
+      - uses: dtolnay/rust-toolchain@1.89.0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: cargo build --workspace --locked
+      - run: python scripts/live_ollama_ci.py --out release-evidence/live-ollama
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: porch-0.1.2-hosted-live-ollama
+          retention-days: 30
+          path: release-evidence/live-ollama/
+
+  publish-history:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Publish preserved source history to new qualification branch
+        shell: bash
+        run: |
+          if test -f .ci/candidate.bundle; then
+            git fetch .ci/candidate.bundle 'refs/heads/*:refs/remotes/candidate/*' 'refs/tags/*:refs/tags/*'
+            candidate=$(cat .ci/candidate-commit.txt)
+            if ! git ls-remote --exit-code origin refs/heads/feat/porch-v0.1.2-native-qualification; then
+              git push origin "$candidate:refs/heads/feat/porch-v0.1.2-native-qualification"
+              git push origin refs/tags/baseline-v0.1.0-candidate refs/tags/v0.1.1-physical-qualification-candidate
+            fi
+          fi

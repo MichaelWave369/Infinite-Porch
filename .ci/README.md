@@ -1,0 +1,1 @@
+This transport branch preserves the existing scaffold. Native qualification restores the exact source commit and full 0.1.1 history from candidate.bundle before execution. No credentials or runtime state are included. Canonical source branch: feat/porch-v0.1.2-native-qualification.
