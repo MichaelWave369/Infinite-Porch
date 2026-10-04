@@ -1,6 +1,6 @@
    Compiling porch-node v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-node)
    Compiling porch-cli v0.1.1 (/workspace/scratch/99d40d4d7098/InfinitePorch/crates/porch-cli)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 12.95s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.78s
      Running unittests src/main.rs (target/debug/deps/porch-8ab29a38d8fd5183)
 
 running 0 tests
@@ -10,8 +10,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running unittests src/lib.rs (target/debug/deps/porch_core-1da66d8fd8c3aa7b)
 
 running 5 tests
-test tests::expired_grant_is_not_permission ... ok
 test tests::router_cannot_trade_privacy_or_authority_for_speed ... ok
+test tests::expired_grant_is_not_permission ... ok
 test tests::version_and_future_engine_boundaries_refuse_instead_of_fallback ... ok
 test tests::ciphertext_is_private_integrity_bound_and_owner_bound ... ok
 test tests::signatures_reject_tamper_and_cross_protocol_replay ... ok
@@ -47,7 +47,7 @@ test stolen_or_replayed_invite_and_pairing_race_have_one_winner ... ok
 test lost_response_retries_original_executor_without_duplicate_effect ... ok
 test duplicate_delayed_and_corrupted_frames_preserve_binding ... ok
 
-test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.70s
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.68s
 
      Running tests/provider_runtime.rs (target/debug/deps/provider_runtime-d1814403a883a5f0)
 
@@ -72,8 +72,8 @@ test observed_path_classification_never_labels_loopback_as_physical ... ok
 test state_lock_missing_identity_and_unsafe_limits_fail_closed ... ok
 test malformed_private_peer_data_never_enters_shared_refusal_evidence ... ok
 test fingerprint_mismatch_is_refused_before_connecting ... ok
-test invitation_address_fallback_stays_pinned_to_the_confirmed_identity ... ok
 test schema_one_migration_backs_up_and_preserves_authority_and_identity ... ok
+test invitation_address_fallback_stays_pinned_to_the_confirmed_identity ... ok
 test evidence_is_signed_sanitized_and_schema_validated ... ok
 
 test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.44s

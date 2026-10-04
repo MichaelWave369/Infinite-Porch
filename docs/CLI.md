@@ -6,6 +6,9 @@ file; it never asks for a cloud account. Privileged API URLs must be literal
 loopback HTTP addresses. JSON stdout is usable by scripts. Refused result status
 exits 2; transport/validation errors exit nonzero.
 
+`porch --version` identifies the executable as `porch 0.1.1`; the Rust crate's
+internal name is porch-cli.
+
 | Need | Command |
 |---|---|
 | Initialize / diagnose | `porch init --alias "Michael"`; `porch status`; `porch doctor` |

@@ -6,7 +6,7 @@ use serde_json::{Value, json};
 use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
-#[command(version, about = "Infinite Porch operator CLI")]
+#[command(name = "porch", version, about = "Infinite Porch operator CLI")]
 struct Args {
     #[arg(long, default_value = "state", global = true)]
     data: PathBuf,

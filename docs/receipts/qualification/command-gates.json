@@ -2,7 +2,7 @@
   "candidate": "0.1.1",
   "protocol_version": 1,
   "baseline_commit": "3a3ace51979110afc76fa2dda7a35108c41af15b",
-  "source_stage": "working qualification branch before final source commit; debug build metadata correctly records baseline commit and dirty source",
+  "source_stage": "Selected local working-branch checks before final source commit. Build metadata reflects the actual commit and dirty state at each run; official candidate binaries are built clean after the final commit.",
   "environment": {
     "rust": "1.89.0",
     "node": "24.19.0",
@@ -49,7 +49,7 @@
       "evidence": [
         {
           "path": "docs/receipts/qualification/rust-release-gate.log",
-          "sha256": "8be1af9da620114a5af11d8daaa1b2f30505e373af25098f1b1cce32fe130908"
+          "sha256": "de7e8902c4482d9a6c7fd071248e94b2c5d4973eeed81107f8e928c4f5958b97"
         }
       ]
     },
@@ -62,7 +62,7 @@
       "evidence": [
         {
           "path": "docs/receipts/qualification/build-release-gate.log",
-          "sha256": "86f48c08785588e5591528eab1413af691a960be34f8110a120a164035df6a09"
+          "sha256": "95056e2ec5a27e8ceb79e4d4baefb1fa6d8a112725b84acf60a842c7df12943d"
         }
       ]
     },
@@ -75,7 +75,7 @@
       "evidence": [
         {
           "path": "docs/receipts/qualification/clippy-release-gate.log",
-          "sha256": "b7c7a8cae5ec54578fa2c3081fba54576f664b78a7d97e24670fe84d0e951524"
+          "sha256": "2d61585f0923067d610778e58374cf52f4afddf761f4e17d733a685df6fca949"
         }
       ]
     },
@@ -324,6 +324,19 @@
         {
           "path": "docs/receipts/qualification/ui-bundle-validation.json",
           "sha256": "682dbe1f35ef23efd77fdcaafdf43ed200698ceca697156a7422f40505df1f33"
+        }
+      ]
+    },
+    {
+      "name": "cli_executable_version",
+      "command": "target/debug/porch --version",
+      "exit_code": 0,
+      "result": "PASS",
+      "checks": 0,
+      "evidence": [
+        {
+          "path": "docs/receipts/qualification/cli-version-final.log",
+          "sha256": "32298e1678cf59ff7e36bf262ff22fcb883e9968b556e631cbfc3d8170fb2d04"
         }
       ]
     }

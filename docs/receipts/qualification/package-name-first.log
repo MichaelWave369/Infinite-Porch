@@ -1,0 +1,11 @@
+PASS safe archive paths exact file hashes and release metadata
+Traceback (most recent call last):
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/package_acceptance.py", line 45, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/package_acceptance.py", line 24, in main
+    check('native CLI version',subprocess.check_output([str(cli),'--version'],text=True).strip()=='porch 0.1.1')
+  File "/workspace/scratch/99d40d4d7098/InfinitePorch/tests/package_acceptance.py", line 13, in check
+    def check(name,condition=True):assert condition,name;checks.append({'name':name,'result':'PASS'});print('PASS '+name,flush=True)
+                                          ^^^^^^^^^
+AssertionError: native CLI version
