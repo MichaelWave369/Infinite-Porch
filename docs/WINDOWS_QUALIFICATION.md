@@ -1,153 +1,78 @@
-0.1.2 field operators: start with `field-kit/windows/START_HERE.md`; its helpers validate hashes, protect state, guide pairing and correlate independent evidence. Native runner results are recorded per commit in the delivery report. The detailed manual procedure below remains available.
+# Two Windows PCs — physical qualification for 0.1.2
 
-# Two Windows PCs — Mikey's physical procedure
+Use the Windows native portable ZIP identified in the delivery report. The
+report and native receipts record qualification on the exact candidate commit.
+Hosted Windows tests cover the software, installer, state ACLs, field setup,
+identity preservation and firewall dry plan. Physical LAN, household firewall
+enforcement, WAN-off LAN, physical remote Ollama and independent review remain
+UNVERIFIED until their own evidence is collected. This candidate is **NOT
+PRODUCTION QUALIFIED**.
 
-Status: native Windows execution, MSVC build, ACLs, firewall behavior and this
-PowerShell flow are UNVERIFIED here. No Windows binaries are claimed or included
-by a Linux build. The web desktop UI is served by the native node; there is no
-signed Windows installer or Electron/Tauri executable in 0.1.2.
+The full operator procedure is [field-kit/windows/START_HERE.md](../field-kit/windows/START_HERE.md).
+Use the copy inside the extracted Windows native package; it validates the
+package manifest and starts its bundled binaries. The outer delivery's field
+kit is a source reference. The portable package requires no Rust, Node, Git or
+Visual Studio installation on the field PCs. Its desktop is served by the
+native node; there is no signed installer or Electron/Tauri executable.
 
-On BOTH PCs install Git, Rust 1.89.0 through rustup, Node 22.12+, and Visual Studio
-Build Tools with Desktop development with C++ and a Windows SDK. Confirm with
-`rustc --version`, `cargo --version`, `node --version`. Extract the candidate ZIP.
-In ordinary PowerShell, from its outer directory:
+On both intended PCs:
 
-```powershell
-git clone .\InfinitePorch.gitbundle .\InfinitePorch-git
-cd .\InfinitePorch-git
-rustup toolchain install 1.89.0 --component rustfmt,clippy
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\platform\install-windows.ps1 -BuildFromSource
-```
-
-The helper creates user-owned state and removes inherited ACLs from it. Review
-`icacls "$env:LOCALAPPDATA\InfinitePorch\state"`; it must not grant access to
-other ordinary users. Administrators with host control are outside this protection.
-All private keys, tokens, SQLite data and migration backups must stay in that
-state directory. Do not place it in a shared Downloads or network folder.
-
-In a control terminal on each PC set these variables (repeat them in a new terminal):
-
-```powershell
-$PorchDir = "$env:LOCALAPPDATA\InfinitePorch\0.1.2"
-$State = "$env:LOCALAPPDATA\InfinitePorch\state"
-$Porch = "$PorchDir\bin\porch.exe"
-$Node = "$PorchDir\bin\porch-node.exe"
-```
-
-A / RTX 5070 PC:
+1. Obtain the Windows ZIP and its checksum from the delivery report, compare
+   SHA-256, and extract into a directory the operator owns. The binaries and
+   manifest are unsigned; hashes alone do not authenticate a publisher.
+2. Open **PowerShell 7.5+** in the package's `field-kit/windows` directory and
+   review the scripts. If downloaded scripts are blocked, remove the download
+   marker only from the reviewed scripts as described in `START_HERE.md`.
+   Do not change a managed or machine-wide execution policy.
+3. Inspect the Windows network profile and `firewall-status.ps1`. Preview the
+   kit's application-bound Private/LocalSubnet peer rules with
+   `firewall-enable-private.ps1 -DryRun`. Actual rule changes require a human
+   decision and an elevated shell. Never expose control port 7331 or Ollama
+   port 11434. The kit's rollback removes only its own rule group.
+4. Run setup with different aliases and the same public session label:
 
 ```powershell
-& $Porch --data $State init --alias MIKEY-5070
+# First PC (for example, the RTX 5070 PC)
+.\Porch-FieldLab.ps1 setup -Alias MIKEY-5070 -Session field-001
+# Second PC (for example, the RTX 3060 PC)
+.\Porch-FieldLab.ps1 setup -Alias MIKEY-3060 -Session field-001
 ```
 
-B / RTX 3060 PC:
+These are alternative aliases for the PC-A / PC-B examples in `START_HERE.md`.
+Reuse the same state, ports and session on every later command. Setup preserves
+the existing identity and checks the private state DACL. Keep state folders,
+keys, operator tokens and private databases on their original PCs.
 
-```powershell
-& $Porch --data $State init --alias MIKEY-3060
-```
+Compare the intended peer identities and full host SHA-256 through a channel
+already trusted, then use `pair-host` and `pair-join`. Discovery establishes
+reachability; membership and resource grants require their own explicit
+decisions. The word phrase is a comparison aid, not a replacement for the full
+fingerprint.
 
-On each PC launch in a separate ordinary terminal and leave it running:
+On the model owner, use an exact already installed Ollama tag. `model-host`
+verifies real local invocation before exposure and issues a bounded model
+grant plus a separate inbox grant. `storage-host` issues a bounded encrypted
+storage grant. Transfer and import only the public invitation and grants.
+On the requester, run `qualify` with `-SeparateMachinesConfirmed`; `-Guided`
+coordinates baseline, owner-mediated revocation, requester restart and
+independently exported owner evidence. The physical kit does not install
+Ollama or change router, adapter or OS-service settings.
 
-```powershell
-& "$env:LOCALAPPDATA\InfinitePorch\0.1.2\bin\porch-node.exe" --data "$env:LOCALAPPDATA\InfinitePorch\state" --ui "$env:LOCALAPPDATA\InfinitePorch\0.1.2\ui"
-```
+Collect any optional WAN-off evidence **before revoking** the model grant;
+see [WAN_OFF.md](../field-kit/windows/WAN_OFF.md). A human removes only the
+upstream Internet connection while retaining the LAN. Router observations,
+bilateral path evidence and actual messaging/inference are needed; failed
+external probes alone are inconclusive.
 
-Open http://127.0.0.1:7331 locally. Use its own state/api.token for its own UI.
-Never copy tokens or private keys to the other PC. The Qualification page shows
-fingerprints, provider observations, paths and evidence results.
+Complete revocation/refused execution and restart on both PCs, then independently
+export each participant snapshot. Correlate the two public exports as described
+in `START_HERE.md`. Preserve failed phases and earlier evidence. Only a matching
+kit-owned PID, executable path and start time may be stopped. Missing or
+contradictory origin/executor records fail correlation. Successful hosted tests
+cannot promote a physical gate, and successful physical records cannot confer
+production qualification or independent security review.
 
-Ensure Windows classifies your trusted LAN as Private. If firewall prompts do
-not permit the node, an administrator can allow only the peer surface:
-
-```powershell
-$Program = "$env:LOCALAPPDATA\InfinitePorch\0.1.2\bin\porch-node.exe"
-New-NetFirewallRule -DisplayName 'Infinite Porch TCP private LAN' -Direction Inbound -Program $Program -Protocol TCP -LocalPort 7332 -Profile Private -RemoteAddress LocalSubnet -Action Allow
-New-NetFirewallRule -DisplayName 'Infinite Porch UDP private LAN' -Direction Inbound -Program $Program -Protocol UDP -LocalPort 7332,5353 -Profile Private -RemoteAddress LocalSubnet -Action Allow
-```
-
-Do not open control port 7331 or Ollama port 11434 on the LAN/WAN. Node execution
-stays in an ordinary user terminal. For guest Wi-Fi/client isolation or virtual
-adapters, use the real LAN address and the pinned manual connection fallback.
-
-On B, get its public identity and transfer only its peer ID to A:
-
-```powershell
-& $Porch --data $State identity show
-```
-
-On A, paste B's exact peer ID and generate the recipient-bound invitation:
-
-```powershell
-$BPeer = 'PASTE_B_PEER_ID'
-& $Porch --data $State qualify host 'Oak Street' --recipient $BPeer --out .\invite.json
-& $Porch --data $State identity show
-```
-
-Compare A's entire fingerprint on its actual screen. Copy invite.json to B.
-On B:
-
-```powershell
-$AFingerprint = 'PASTE_A_FINGERPRINT_SHA256'
-& $Porch --data $State qualify join .\invite.json --fingerprint $AFingerprint
-& $Porch --data $State qualify status
-$APeer = 'PASTE_A_PEER_ID'
-```
-
-On A, start the local Ollama app if needed. Choose an exact installed model from
-scan (qwen3:4b is only an example, not an assumed installation):
-
-```powershell
-& $Porch --data $State models scan
-$Model = 'qwen3:4b'
-& $Porch --data $State share model $Model
-& $Porch --data $State models verify $Model
-& $Porch --data $State grant issue --recipient $BPeer --capability model.inference --resource $Model --action run --ttl 1800 --max-calls 12 --calls-per-hour 12 --max-output-tokens 64 --out .\model-grant.json
-```
-
-Copy only model-grant.json to B. On B:
-
-```powershell
-$Model = 'qwen3:4b'
-& $Porch --data $State grant import .\model-grant.json
-& $Porch --data $State share refresh
-& $Porch --data $State models list
-& $Porch --data $State qualify run --peer $APeer --model $Model --environment PHYSICAL_LAN --separate-machines-confirmed
-& $Porch --data $State qualify export .\evidence-baseline-B
-& $Porch qualify validate .\evidence-baseline-B
-```
-
-Confirm provider=ollama, executor=A, COMPLETED, signed receipt, grant nonce and
-input/output digests. Model names, outputs and timings come from actual execution.
-If the 30-second operator limit is insufficient, use a smaller installed model;
-0.1.2 intentionally does not relax the hard ceiling.
-
-On A revoke, then on B prove refusal:
-
-```powershell
-# A:
-$Grant = Get-Content .\model-grant.json -Raw | ConvertFrom-Json
-& $Porch --data $State grant revoke $Grant.payload.nonce
-# B:
-& $Porch --data $State qualify run --peer $APeer --model $Model --phase revoked --environment PHYSICAL_LAN --separate-machines-confirmed
-& $Porch --data $State qualify export .\evidence-revoked-B
-```
-
-For messaging, A issues a separate grant with `--capability message.direct
---resource inbox --action send`, B imports it, and B adds `--message` to a run.
-To test both directions, B must separately grant A its own inbox.
-
-Stop each daemon with Ctrl+C; rerun the same launch command. Run doctor and
-qualify status on each and compare IDs, trust, Porch, revocation and ledger. Make
-new exports; do not overwrite baseline evidence. Run OFFLINE_LAN_TEST.md after
-A creates a new bounded model grant, because the old one is revoked.
-
-A helper wraps physical run/export/validate from the source tree:
-
-```powershell
-.\scripts\platform\qualify-windows.ps1 -Peer $APeer -Model $Model -SeparateMachinesConfirmed -EvidenceDirectory .\evidence-helper-B
-```
-
-The helpers are statically reviewed and command contracts checked here; their
-native Windows behavior is not claimed. No Authenticode signature or publisher
-trust claim is made. Official references: https://learn.microsoft.com/powershell/
-and https://learn.microsoft.com/powershell/module/netsecurity/new-netfirewallrule.
+Read [FAILURE_CHECKS.md](../field-kit/windows/FAILURE_CHECKS.md) before optional
+failure experiments. GPU use, VRAM and sustained household hardware load require
+their own observations; selecting a GPU-equipped PC does not prove GPU execution.
+The original 0.1.1 manual remains preserved in the baseline source history.
