@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import manifest from './rooms.json';
 import './style.css';
+import { RoomScene } from './RoomScene';
 
 const rooms = manifest.rooms;
 type Room = (typeof rooms)[number];
@@ -10,6 +11,7 @@ type Detail = { title: string; text: string };
 function House() {
   const [roomId, setRoomId] = useState('bedroom');
   const [detail, setDetail] = useState<Detail | null>(null);
+  const [motionOn, setMotionOn] = useState(true);
   const room: Room = rooms.find((item) => item.id === roomId) ?? rooms[0];
   const go = (next: string) => {
     if (!rooms.some((item) => item.id === next)) return;
@@ -60,19 +62,9 @@ function House() {
           </div>
 
           <section className="stage" aria-label={room.name + ' illustrated scene'} data-room={room.id}>
-            <div className="scene" aria-hidden="true">
-              <div className="wall"/>
-              <div className="floor"/>
-              <div className="window"><div className="stars"/><div className="mountain"/><div className="window__glow"/></div>
-              <div className="picture"><span>HOME<br/>SWEET<br/>HOME</span></div>
-              <div className="shelf"><div className="shelf__books">▥ ▥ ▥ ▥</div><div className="shelf__books">▥ ▥ ▥</div></div>
-              <div className="floorlamp"><div className="floorlamp__shade"/><div className="floorlamp__pole"/></div>
-              <div className="cabinet"><div className="tv"><div className="tv__screen">PRESS<br/>START <span className="cursor">▌</span></div></div></div>
-              <div className="desk"><div className="monitor"><div className="monitor__screen">INFINITE<br/>PORCH<span className="cursor">_</span></div></div><div className="keyboard"/></div>
-              <div className="rug"/>
-              <div className="plant"/>
-              <div className="scene__label">{room.name} · 1987</div>
-            </div>
+            <RoomScene roomId={room.id} motionOn={motionOn}/>
+            <div className="scene-controls"><button type="button" aria-pressed={motionOn} onClick={() => setMotionOn((current) => !current)}>{motionOn ? 'Pause ambient motion' : 'Enable ambient motion'}</button></div>
+            <span className="scene-status">{room.name} · illustrated 1987</span>
 
             {room.id === 'hall-of-brothers' && <div className="kingdom-stage" aria-label="Illustrative kingdom doors">
               {manifest.doors.map((door) => (
