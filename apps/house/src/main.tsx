@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import manifest from './rooms.json';
 import './style.css';
 import { RoomScene } from './RoomScene';
+import { HallOfBrothers } from './HallOfBrothers';
 
 const rooms = manifest.rooms;
 type Room = (typeof rooms)[number];
@@ -66,14 +67,9 @@ function House() {
             <div className="scene-controls"><button type="button" aria-pressed={motionOn} onClick={() => setMotionOn((current) => !current)}>{motionOn ? 'Pause ambient motion' : 'Enable ambient motion'}</button></div>
             <span className="scene-status">{room.name} · illustrated 1987</span>
 
-            {room.id === 'hall-of-brothers' && <div className="kingdom-stage" aria-label="Illustrative kingdom doors">
-              {manifest.doors.map((door) => (
-                <button className="kingdom-door" key={door.id} onClick={() => inspect(door.label, door.world + ' This is a decorative preview, not a live AI endpoint.')}>
-                  <span className="kingdom-door__arch" aria-hidden="true">✦</span>
-                  <span>{door.label}</span>
-                  <small>{door.state}</small>
-                </button>
-              ))}
+            {room.id === 'hall-of-brothers' && <div className="hall-threshold-sign">
+              <strong>THE HALL OF BROTHERS</strong>
+              <small>Build your own doors and preview the worlds beyond, below the scene.</small>
             </div>}
 
             {room.id === 'back-porch' && <div className="porch-sign">
@@ -82,6 +78,8 @@ function House() {
               <small>Illustrative gateway · no shared session</small>
             </div>}
           </section>
+
+          {room.id === 'hall-of-brothers' && <HallOfBrothers/>}
 
           <div className="content-grid">
             <section className="panel" aria-labelledby="objects-title">
