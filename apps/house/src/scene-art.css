@@ -1,0 +1,23 @@
+/* P1 illustrations: local original vector art with no remote assets or scripts. */
+.house-scene{display:block;position:absolute;inset:0;width:100%;height:100%;user-select:none;pointer-events:none;overflow:hidden}
+.house-scene .house-stars{animation:house-twinkle 6s ease-in-out infinite alternate}
+.house-scene .house-rain{animation:house-rain 4s ease-in-out infinite alternate}
+.house-scene .house-crt{animation:house-crt 4.6s steps(3) infinite alternate}
+.house-scene .house-led{animation:house-twinkle 1.7s steps(2) infinite alternate}
+.house-scene .house-lamp{animation:house-lamp 8s ease-in-out infinite alternate}
+.house-scene .house-flame{transform-box:fill-box;transform-origin:center bottom;animation:house-flame 4.5s ease-in-out infinite alternate}
+.house-scene .house-dust{animation:house-twinkle 9s ease-in-out infinite alternate}
+.house-scene[data-motion="off"] *{animation:none!important;transition:none!important}
+.house-scene[data-motion="off"] .house-crt{opacity:.14}
+.house-scene[data-motion="off"] .house-rain{opacity:.24}
+.scene-controls{position:absolute;z-index:11;top:12px;right:12px;display:flex;gap:8px;align-items:center}
+.scene-controls button{font:700 12px 'Courier New',monospace;color:#ffe4b5;background:#231c2fdb;border:1px solid #cfab78;border-radius:4px;padding:9px 10px;box-shadow:0 2px 11px #0007}
+.scene-controls button:hover{background:#514159}
+.scene-status{position:absolute;z-index:4;left:17px;bottom:13px;background:#201b2add;color:#f9d2a0;padding:8px 11px;border:1px solid #a87d56;font:700 11px 'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em}
+@keyframes house-twinkle{0%{opacity:.35}100%{opacity:1}}
+@keyframes house-rain{0%{opacity:.2;transform:translateY(-5px)}100%{opacity:.58;transform:translateY(11px)}}
+@keyframes house-crt{0%,100%{opacity:.12}52%{opacity:.32}53%{opacity:.16}}
+@keyframes house-lamp{0%,93%,100%{opacity:.13}95%{opacity:.18}}
+@keyframes house-flame{0%{transform:scale(.94,1)}100%{transform:scale(1.06,.86)}}
+@media(prefers-reduced-motion:reduce){.house-scene *{animation:none!important;transition:none!important}}
+@media(max-width:640px){.scene-controls{top:7px;right:7px}.scene-controls button{font-size:10px;padding:7px}.scene-status{font-size:9px;bottom:8px;left:8px}}
