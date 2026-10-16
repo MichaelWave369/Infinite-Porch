@@ -1,0 +1,62 @@
+name: Deploy Infinite House to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/house/**'
+      - '.github/workflows/deploy-infinite-house-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: infinite-house-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build public-safe Infinite House
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated house dependencies
+        run: npm install --prefix apps/house --no-audit --no-fund
+      - name: Test all house room and Hall contracts
+        run: npm test --prefix apps/house
+      - name: Build the project-path-safe React site
+        env:
+          HOUSE_BASE_PATH: /Infinite-Porch/
+        run: npm run build --prefix apps/house
+      - name: Verify generated site paths and public bundle
+        run: node apps/house/scripts/verify-pages.mjs
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload only the public House dist folder
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: apps/house/dist
+
+  deploy:
+    name: Publish Infinite House
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy approved artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

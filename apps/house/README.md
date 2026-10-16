@@ -28,3 +28,25 @@ The app deliberately has its own package.json **outside the root's existing npm 
 - All room metadata lives in `src/rooms.json`; `tests/manifest.test.mjs` verifies its invariants.
 
 Read [the cross-repository plan](../../docs/INFINITE_HOUSE_INTEGRATION_V0_1.md) before attaching any Porch API.
+
+## Public GitHub Pages preview (proposed)
+
+PR #5 adds a **static public React showcase** at:
+
+`https://michaelwave369.github.io/Infinite-Porch/`
+
+This is a **deployment target, not proof the site is live**. After review and merge, the repository owner must confirm **Settings → Pages → Build and deployment → Source: GitHub Actions** and check the `Deploy Infinite House to GitHub Pages` workflow. The workflow has a `workflow_dispatch` option if a manual retry is required. The only uploaded artifact is `apps/house/dist`. No daemon, `.env`, credential file, private workspace, or Rust binary is published.
+
+```sh
+cd apps/house
+npm install
+npm test
+HOUSE_BASE_PATH=/Infinite-Porch/ npm run build
+node scripts/verify-pages.mjs
+```
+
+On Windows PowerShell, use `$env:HOUSE_BASE_PATH="/Infinite-Porch/"` before running the build. Unset it or use `/` for ordinary localhost development.
+
+**Important storage warning:** GitHub Pages project sites under `michaelwave369.github.io` share a browser origin. Other pages and scripts served from that same origin can access this preview's `localStorage` Hall drafts. These local-only decorative drafts are **not private/encrypted Porch data**, are not synchronized across devices, and are not uploaded by this application. **Never enter passwords, keys, confidential transcripts, personal details or other secrets.** Use the JSON export for a deliberate personal backup only. A real personal Porch will use separately verified scoped access.
+
+Public demo verification and owner setup: [PAGES_PUBLIC_DEMO_V0_1.md](PAGES_PUBLIC_DEMO_V0_1.md).
