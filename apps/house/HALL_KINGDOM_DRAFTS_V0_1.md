@@ -31,3 +31,6 @@ npm run build
 ```
 
 Review create/edit/preview/export/import/delete/reset with keyboard and mobile; disable localStorage, import invalid files, and verify no network traffic from the Hall itself. The canonical inter-repository boundary remains `docs/INFINITE_HOUSE_INTEGRATION_V0_1.md`.
+
+## P2 test follow-up
+The P1 scene contract previously checked `manifest.doors` directly in `main.tsx`. P2 moves the owner Hall to `HallOfBrothers.tsx`; the updated test checks the active component's inclusion plus the strict `UNCONNECTED` validation rather than merely searching for the removed static expression. Ambient/Commons safety checks remain unchanged.

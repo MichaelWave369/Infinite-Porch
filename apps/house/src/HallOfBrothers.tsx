@@ -1,4 +1,5 @@
 import {useRef,useState} from 'react';
+import type {FormEvent,ChangeEvent} from 'react';
 import {
   defaultHall,readHall,writeHall,parseHall,upsertDoor,removeDoor,
   HALL_MAX_BYTES,HALL_MAX_DOORS,HALL_STORAGE_KEY,HALL_THEMES,
@@ -64,7 +65,7 @@ export function HallOfBrothers(){
     else setNotice('No saved raw Hall value exists.');
    }catch(err){setNotice('Could not read stored backup: '+String(err));}
  }
- function saveForm(event:React.FormEvent<HTMLFormElement>){
+ function saveForm(event:FormEvent<HTMLFormElement>){
   event.preventDefault();
   if(state.blocked){setNotice('Back up and reset the invalid saved entry before changing the Hall.');return;}
   try{
@@ -81,7 +82,7 @@ export function HallOfBrothers(){
   if(selectedId===door.id)setSelectedId(null);
   if(editingId===door.id){setEditingId(null);setDraft({...blank});}
  }
- async function importHall(event:React.ChangeEvent<HTMLInputElement>){
+ async function importHall(event:ChangeEvent<HTMLInputElement>){
   const file=event.target.files?.[0]; event.target.value='';
   if(!file)return;
   try{

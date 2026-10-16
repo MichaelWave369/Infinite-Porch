@@ -28,7 +28,13 @@ test('ambient motion is user controllable with reduced-motion fallback',()=>{
  assert.match(motion,/@media\(prefers-reduced-motion:reduce\)/);
 });
 test('Hall doors remain illustrative and Commons remains an external public preview',()=>{
- assert.match(main,/UNCONNECTED EXAMPLE|manifest\.doors/);
+ const hall=readFileSync(path('../src/HallOfBrothers.tsx'),'utf8');
+ const store=readFileSync(path('../src/hallStore.mjs'),'utf8');
+ assert.match(main,/import \{ HallOfBrothers \}/);
+ assert.match(main,/<HallOfBrothers\/>/);
+ assert.match(hall,/UNCONNECTED/);
+ assert.match(store,/connection:'UNCONNECTED'/);
+ assert.doesNotMatch(hall,/\bfetch\s*\(|PorchClient|model\.inference/);
  assert.match(main,/rel="noopener noreferrer"/);
  assert.match(main,/no shared session/);
 });
