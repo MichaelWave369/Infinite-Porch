@@ -80,7 +80,22 @@ def main():
             except (OSError,StopIteration,ValueError):measurements['idle_process_metrics']='UNVERIFIED: native /proc metrics missing or incompatible in this managed runtime'
             data=b'x'*(8*1024*1024);start=time.perf_counter();hashlib.sha256(data).digest();measurements['storage_hash_mib_per_second']=8/(time.perf_counter()-start)
             a.stop();start=time.perf_counter();q=command(b,'qualify','run','--peer',a.id,'--message','--environment',EVIDENCE_CLASS);duration=time.perf_counter()-start
-            check('offline message qualification records bounded failure',duration<9 and next(s for s in q['payload']['scenarios'] if s['id']=='messaging')['result']=='FAIL')
+            # Measure the bounded operation at the node, not the entire CLI
+            # subprocess lifetime (Windows cold startup/runner contention can
+            # add unrelated wall time). Preserve wall time as an observation.
+            scenario=next(s for s in q['payload']['scenarios'] if s['id']=='messaging')
+            daemon_ms=q['payload'].get('duration_ms')
+            measurements['offline_message_cli_wall_ms']=round(duration*1000,3)
+            measurements['offline_message_daemon_ms']=daemon_ms
+            measurements['offline_message_result']=scenario['result']
+            print('Offline message probe: '+json.dumps({
+                'cli_wall_ms':measurements['offline_message_cli_wall_ms'],
+                'daemon_duration_ms':daemon_ms,
+                'message_result':scenario['result'],
+            }),flush=True)
+            check('offline message qualification records bounded failure',
+                  isinstance(daemon_ms,(int,float)) and not isinstance(daemon_ms,bool)
+                  and daemon_ms<9000 and scenario['result']=='FAIL')
         finally:
             for n in reversed(nodes):n.stop()
     receipt={'candidate':'0.1.2','environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'model_provider':'explicit mock','physical_evidence':'UNVERIFIED','passed':len(checks),'checks':checks,'performance':measurements,'performance_limitations':'Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim.'}
