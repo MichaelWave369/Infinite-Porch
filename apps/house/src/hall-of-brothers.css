@@ -1,0 +1,47 @@
+/* Hall of Brothers: local drafts, no remote data or linked CSS assets. */
+.hall-workspace{margin-top:24px;padding:25px;background:linear-gradient(145deg,#292335,#1d2437);border:1px solid #7b6064;border-radius:7px}
+.hall-topline{display:flex;justify-content:space-between;align-items:start;gap:20px}
+.hall-topline h3{font:normal clamp(25px,3vw,36px) Georgia,serif;margin:0 0 8px;color:#ffe4c0}
+.hall-subtitle{max-width:680px;color:#cdb8b8;line-height:1.6;margin:0}
+.hall-counter{white-space:nowrap;color:#ffcb9c;font:700 12px 'Courier New',monospace;padding:9px;background:#392d41;border:1px solid #806559;border-radius:4px}
+.hall-actions{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}
+.hall-actions button,.hall-door-actions button,.hall-kingdom-copy button,.hall-form-actions button,.hall-warning button{background:#4e3e4b;color:#f8dfbf;padding:10px 13px;border:1px solid #aa896b;border-radius:4px;font:700 12px 'Courier New',monospace}
+.hall-actions button:hover,.hall-door-actions button:hover,.hall-kingdom-copy button:hover,.hall-form-actions button:hover{background:#76543f}
+.hall-actions button:disabled,.hall-door-actions button:disabled,.hall-form-actions button:disabled{opacity:.45;cursor:not-allowed}
+.hall-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%)}
+.hall-warning,.hall-error{padding:13px;color:#ffe1ba;border-left:4px solid #dfac64;background:#70442c;font:13px/1.5 'Courier New',monospace}
+.hall-error{background:#6b303b;border-left-color:#fcb0ae}
+.hall-notice{color:#c2e6b6;font:13px/1.5 'Courier New',monospace}
+.hall-doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:17px;margin:25px 0}
+.hall-door-card{min-width:0;background:#211c2a;padding:13px 10px 10px;border:1px solid #786072;border-radius:6px}
+.hall-door-art{--door-light:#d0ad83;--door-dark:#513345;--door-glow:#e6a66f;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:11px;position:relative;width:100%;min-height:245px;padding:35px 13px 20px;border:8px ridge var(--door-light);border-radius:65px 65px 7px 7px/60px 60px 7px 7px;color:#fff0cf;background:linear-gradient(110deg,#261d2c,var(--door-dark),#261d2c);box-shadow:inset 0 0 30px #000c,0 0 17px #0008}
+.hall-door-art:hover{filter:brightness(1.18)}
+.hall-door-art strong{font:normal 20px/1.15 Georgia,serif;overflow-wrap:anywhere;text-shadow:0 3px 6px #000}
+.hall-door-art small{color:#f8d3ac;font:11px/1.4 Georgia,serif;overflow-wrap:anywhere;text-align:center}
+.hall-door-crest{font:40px Georgia,serif;color:var(--door-glow);text-shadow:0 0 18px var(--door-glow)}
+.hall-door-knob{height:12px;width:12px;border-radius:100%;background:#ffdb98;box-shadow:0 0 9px #ffb679;align-self:end}
+.hall-theme-amber{--door-light:#c59e73;--door-dark:#5b3b33;--door-glow:#ecc27c}
+.hall-theme-cobalt{--door-light:#8ab0be;--door-dark:#293d66;--door-glow:#90d7ff}
+.hall-theme-moss{--door-light:#92ad80;--door-dark:#344f45;--door-glow:#b4e9a8}
+.hall-theme-violet{--door-light:#bc9dc6;--door-dark:#493561;--door-glow:#e6b3fa}
+.hall-door-status{text-align:center;margin:10px 0;color:#deb996;font:10px 'Courier New',monospace;letter-spacing:.03em}
+.hall-door-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:4px}
+.hall-door-actions button{padding:7px 8px;font-size:11px}
+.hall-empty{color:#c8afad;grid-column:1/-1;font-style:italic}
+.hall-kingdom-preview{--door-glow:#e6a66f;--door-dark:#513345;position:relative;min-height:235px;overflow:hidden;background:radial-gradient(ellipse at 48% 32%,var(--door-dark),#181b34 75%);border:1px solid var(--door-glow);border-radius:6px;padding:32px 28px;margin:10px 0 25px}
+.hall-kingdom-horizon{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-around;color:var(--door-glow);font-size:66px;opacity:.16;pointer-events:none}
+.hall-kingdom-copy{position:relative;z-index:1;max-width:670px}
+.hall-kingdom-copy h4{font:normal clamp(27px,3.2vw,42px) Georgia,serif;color:#fff2cf;margin:4px 0 14px}
+.hall-kingdom-copy p{font:italic 18px/1.55 Georgia,serif;color:#f1d9c9}
+.hall-kingdom-copy small{display:block;color:#e3c5ab;line-height:1.7}
+.hall-kingdom-copy button{margin-top:17px}
+.hall-studio{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,0.75fr);gap:25px;border-top:1px solid #695763;padding-top:25px}
+.hall-form h4,.hall-covenant h4{font:normal 25px Georgia,serif;color:#ffe0ae;margin:5px 0 18px}
+.hall-form label{display:flex;flex-direction:column;gap:8px;margin:12px 0;color:#f7dfc1;font:14px Georgia,serif}
+.hall-form input,.hall-form textarea,.hall-form select{width:100%;max-width:100%;min-width:0;padding:11px;border:1px solid #9f7c78;border-radius:4px;background:#181a29;color:#fff4e7;font:15px Georgia,serif}
+.hall-form input:focus-visible,.hall-form textarea:focus-visible,.hall-form select:focus-visible{outline:3px solid #ffca84;outline-offset:2px}
+.hall-form-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+.hall-covenant{background:#34283b;padding:20px;border:1px solid #6d5b66;border-radius:5px}
+.hall-covenant p:not(.overline){color:#d8c3b5;line-height:1.65;font-size:15px}
+@media(max-width:800px){.hall-studio{grid-template-columns:1fr}.hall-workspace{padding:18px}.hall-topline{flex-wrap:wrap}}
+@media(max-width:490px){.hall-doors{grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:10px}.hall-door-art{min-height:210px}.hall-door-art strong{font-size:17px}.hall-door-actions button{font-size:10px}}
