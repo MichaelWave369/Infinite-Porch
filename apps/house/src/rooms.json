@@ -1,0 +1,202 @@
+{
+  "version": 1,
+  "status": "ILLUSTRATIVE_ONLY",
+  "commons_preview_url": "https://michaelwave369.github.io/Infinite-Commons/",
+  "rooms": [
+    {
+      "id": "bedroom",
+      "name": "Bedroom",
+      "kicker": "FRIDAY NIGHT • 1987",
+      "mood": "The CRT hums while rain traces the bedroom window.",
+      "hotspots": [
+        {
+          "id": "computer",
+          "label": "Beige computer",
+          "text": "Future doorway for scoped, local AI tools. There is no live model access in this demo."
+        },
+        {
+          "id": "cassette",
+          "label": "Cassette deck",
+          "text": "A future More Bounce radio could play here. The demo never autoplays audio."
+        }
+      ],
+      "exits": [
+        "hallway"
+      ]
+    },
+    {
+      "id": "hallway",
+      "name": "Hallway",
+      "kicker": "HOME IS WHERE THE FUTURE BEGINS",
+      "mood": "Faded wallpaper, family photos, soft light under a mysterious door.",
+      "hotspots": [
+        {
+          "id": "photos",
+          "label": "Photo gallery",
+          "text": "A future place for owner-curated memories and preserved project artifacts."
+        }
+      ],
+      "exits": [
+        "bedroom",
+        "living-room",
+        "den",
+        "attic",
+        "hall-of-brothers"
+      ]
+    },
+    {
+      "id": "living-room",
+      "name": "Living Room",
+      "kicker": "PULL UP A CHAIR",
+      "mood": "Velvet couch, glowing television, and room for good conversation.",
+      "hotspots": [
+        {
+          "id": "tv",
+          "label": "Television",
+          "text": "Future shared stories and guest-approved conversations. No live guests are connected."
+        }
+      ],
+      "exits": [
+        "hallway",
+        "kitchen",
+        "basement",
+        "back-porch"
+      ]
+    },
+    {
+      "id": "kitchen",
+      "name": "Kitchen",
+      "kicker": "EVERYBODY'S WELCOME",
+      "mood": "The refrigerator runs, a recipe card waits, coffee is always imaginary.",
+      "hotspots": [
+        {
+          "id": "fridge",
+          "label": "Refrigerator",
+          "text": "A possible community bulletin board using owner-approved public material only."
+        }
+      ],
+      "exits": [
+        "living-room",
+        "garage",
+        "back-porch"
+      ]
+    },
+    {
+      "id": "den",
+      "name": "Upstairs Den",
+      "kicker": "THE LIBRARY",
+      "mood": "Paperbacks, a green reading lamp, and shelves full of things to discover.",
+      "hotspots": [
+        {
+          "id": "books",
+          "label": "Bookshelf",
+          "text": "Future read-only library of personal, shared and published artifacts. All require separate permissions."
+        }
+      ],
+      "exits": [
+        "hallway"
+      ]
+    },
+    {
+      "id": "basement",
+      "name": "Basement Arcade",
+      "kicker": "ONE MORE GAME",
+      "mood": "CRT pixels, carpet and the glorious sound of quarters that never ran out.",
+      "hotspots": [
+        {
+          "id": "cabinet",
+          "label": "Arcade cabinet",
+          "text": "Future PhiCade and SPARK doorway. These games are not embedded in phase 0."
+        }
+      ],
+      "exits": [
+        "living-room"
+      ]
+    },
+    {
+      "id": "garage",
+      "name": "Garage Workshop",
+      "kicker": "MADE HERE",
+      "mood": "An electronics workbench filled with promising unfinished experiments.",
+      "hotspots": [
+        {
+          "id": "bench",
+          "label": "Workbench",
+          "text": "Future OpenBlue, PixelForge and maker workflows through scoped integration."
+        }
+      ],
+      "exits": [
+        "kitchen"
+      ]
+    },
+    {
+      "id": "attic",
+      "name": "Attic",
+      "kicker": "NOT LOST • PRESERVED",
+      "mood": "Old boxes, photographs, magnetic tape and little rediscoveries.",
+      "hotspots": [
+        {
+          "id": "trunk",
+          "label": "Memory trunk",
+          "text": "Future copy-only archives and provenance ledgers; original files remain untouched."
+        }
+      ],
+      "exits": [
+        "hallway"
+      ]
+    },
+    {
+      "id": "hall-of-brothers",
+      "name": "Hall of Brothers",
+      "kicker": "A WORLD BEHIND EVERY DOOR",
+      "mood": "A corridor that is much bigger inside than the house outside.",
+      "hotspots": [
+        {
+          "id": "crests",
+          "label": "Door crests",
+          "text": "Decorative sample worlds. AI provider authentication, autonomous travel and session continuity are not installed."
+        }
+      ],
+      "exits": [
+        "hallway"
+      ]
+    },
+    {
+      "id": "back-porch",
+      "name": "Back Porch",
+      "kicker": "THE THRESHOLD",
+      "mood": "The porch light glows; beyond the railing waits Midnight Sierra and the Commons.",
+      "hotspots": [
+        {
+          "id": "view",
+          "label": "Mount Shasta view",
+          "text": "A visual metaphor for the separate Infinite Commons and Parallax Shasta world."
+        }
+      ],
+      "exits": [
+        "living-room",
+        "kitchen"
+      ]
+    }
+  ],
+  "doors": [
+    {
+      "id": "sample-library",
+      "label": "Library of Stars",
+      "world": "A private imaginary world of books and constellations.",
+      "state": "UNCONNECTED EXAMPLE"
+    },
+    {
+      "id": "sample-garden",
+      "label": "Garden of What-If",
+      "world": "An illustrated garden where stories and ideas could grow.",
+      "state": "UNCONNECTED EXAMPLE"
+    },
+    {
+      "id": "sample-workshop",
+      "label": "The Endless Workshop",
+      "world": "A future personalized place to sketch and collaborate.",
+      "state": "UNCONNECTED EXAMPLE"
+    }
+  ]
+}
