@@ -161,6 +161,7 @@ export function HallOfBrothers(){
     <p className="overline">THE COVENANT OF THE THRESHOLD</p><h4>Your door, your invitation.</h4>
     <p>A nameplate is a personal design, not proof that the named AI is present. No model tokens, API addresses, passwords, or private files are stored in this format.</p>
     <p>Drafts live in this browser's local storage. They may be lost when browsing data is cleared and can be read by others who use the same browser profile. Export to a private backup if you want to keep your work.</p>
+    <p>On GitHub Pages, other projects served from the same <code>michaelwave369.github.io</code> browser origin may also read local storage. These are public-safe decorative drafts, never a place for secrets or private AI transcripts.</p>
     <p>Actual AI connections, visiting permission, and the shared Infinite Commons remain governed future integration work.</p>
    </aside>
   </div>

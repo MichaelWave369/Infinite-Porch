@@ -34,6 +34,11 @@ function House() {
         <span className="badge">LOCAL ART DEMO · NO LIVE CONNECTIONS</span>
       </header>
 
+      <aside className="public-demo-banner" aria-label="Public demonstration safety notice">
+        <strong>OPEN HOUSE · PUBLIC PREVIEW</strong>
+        <span>Explore ten illustrated rooms and design sample Hall doors. This site does not connect to an AI or a private Porch. Hall drafts stay in this browser, not in a private or encrypted vault. Please don't enter confidential information.</span>
+      </aside>
+
       <div className="house-grid">
         <nav className="directory" aria-label="House room directory">
           <p className="overline directory__heading">FLOOR PLAN / EXPLORE</p>
