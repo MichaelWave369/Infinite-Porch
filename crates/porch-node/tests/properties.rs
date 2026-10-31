@@ -34,10 +34,10 @@ fn canonical_signatures_and_parser_mutations_fail_closed() -> Result<()> {
                 && mutated.domain == signed.domain
                 && mutated.signer == signed.signer
                 && canonical(&mutated.payload).ok() == canonical(&v).ok();
-            let same_signature = hex::decode(&mutated.signature).ok()
-                == hex::decode(&signed.signature).ok();
-            let same_public_key = hex::decode(&mutated.public_key).ok()
-                == hex::decode(&signed.public_key).ok();
+            let same_signature =
+                hex::decode(&mutated.signature).ok() == hex::decode(&signed.signature).ok();
+            let same_public_key =
+                hex::decode(&mutated.public_key).ok() == hex::decode(&signed.public_key).ok();
             if same_statement && same_signature && same_public_key {
                 mutated.verify("porch.property.v1")?;
             } else {
@@ -57,8 +57,14 @@ fn signed_hex_case_is_not_an_authenticated_byte_mutation() -> Result<()> {
     let mut equivalent = signed.clone();
     equivalent.signature.make_ascii_uppercase();
     equivalent.public_key.make_ascii_uppercase();
-    assert_eq!(hex::decode(&equivalent.signature)?, hex::decode(&signed.signature)?);
-    assert_eq!(hex::decode(&equivalent.public_key)?, hex::decode(&signed.public_key)?);
+    assert_eq!(
+        hex::decode(&equivalent.signature)?,
+        hex::decode(&signed.signature)?
+    );
+    assert_eq!(
+        hex::decode(&equivalent.public_key)?,
+        hex::decode(&signed.public_key)?
+    );
     equivalent.verify("porch.property.v1")?;
 
     // A genuine byte modification, rather than an encoding-only case change,
