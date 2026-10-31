@@ -213,13 +213,18 @@ pub async fn run(node: &Arc<Node>, args: &Value) -> Result<Value> {
             ));
         }
         if args["message"] == true {
+            // Measure the scoped, five-second delivery operation separately.
+            // Overall qualification duration also includes provider discovery,
+            // peer refresh, signed ledger checks and evidence construction.
+            let message_started = std::time::Instant::now();
             let delivery=tokio::time::timeout(std::time::Duration::from_secs(5),node.send_message(&json!({"peer":peer,"text":"Infinite Porch public qualification message","queue_if_offline":false}))).await.unwrap_or_else(|_|Err(anyhow::anyhow!("QUALIFICATION_MESSAGE_TIMEOUT")));
+            let message_attempt_ms = message_started.elapsed().as_millis() as u64;
             match delivery {
                 Ok(v) => {
                     scenarios.push(scenario(
                         "messaging",
                         "Public diagnostic message returns a signed delivery receipt",
-                        json!({"status":v["status"]}),
+                        json!({"status":v["status"],"message_attempt_ms":message_attempt_ms}),
                         if v["status"] == "DELIVERED" {
                             "PASS"
                         } else {
@@ -232,7 +237,7 @@ pub async fn run(node: &Arc<Node>, args: &Value) -> Result<Value> {
                 Err(e) => scenarios.push(scenario(
                     "messaging",
                     "Bounded message grant authorizes delivery",
-                    json!({"reason":safe_error(&e)}),
+                    json!({"reason":safe_error(&e),"message_attempt_ms":message_attempt_ms}),
                     "FAIL",
                     &peers,
                 )),
