@@ -78,7 +78,7 @@ def main():
                                 for word in ('authorization:', 'bearer ', 'api_token=', 'secret=', 'password=')) else line[:500])
                                 for line in lines]
                             print(f'HOSTED_FIELD_STARTUP_DIAGNOSTIC {name}:',flush=True)
-                            print('\\n'.join(safe),flush=True)
+                            print('\n'.join(safe),flush=True)
                 raise
             finally:
                 try:
