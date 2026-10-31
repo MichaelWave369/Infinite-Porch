@@ -26,16 +26,54 @@ fn canonical_signatures_and_parser_mutations_fail_closed() -> Result<()> {
         let mut bytes = serde_json::to_vec(&signed)?;
         let at = rng.gen_range(0..bytes.len());
         bytes[at] ^= rng.gen_range(1..=255);
-        if let Ok(mutated) = serde_json::from_slice::<Signed<serde_json::Value>>(&bytes)
-            && (canonical(&mutated.payload)? != canonical(&v)?
-                || mutated.signature != signed.signature
-                || mutated.signer != signed.signer
-                || mutated.public_key != signed.public_key
-                || mutated.domain != signed.domain)
-        {
-            assert!(mutated.verify("porch.property.v1").is_err());
+        if let Ok(mutated) = serde_json::from_slice::<Signed<serde_json::Value>>(&bytes) {
+            // A text-only change in the case of hexadecimal signature/key digits
+            // does not change the authenticated bytes. Treat invalid hex as a
+            // semantic change, and still reject all changed signed statements.
+            let same_statement = mutated.version == signed.version
+                && mutated.domain == signed.domain
+                && mutated.signer == signed.signer
+                && canonical(&mutated.payload).ok() == canonical(&v).ok();
+            let same_signature =
+                hex::decode(&mutated.signature).ok() == hex::decode(&signed.signature).ok();
+            let same_public_key =
+                hex::decode(&mutated.public_key).ok() == hex::decode(&signed.public_key).ok();
+            if same_statement && same_signature && same_public_key {
+                mutated.verify("porch.property.v1")?;
+            } else {
+                assert!(
+                    mutated.verify("porch.property.v1").is_err(),
+                    "seeded case {i}: changed authenticated content was accepted"
+                );
+            }
         }
     }
+    Ok(())
+}
+#[test]
+fn signed_hex_case_is_not_an_authenticated_byte_mutation() -> Result<()> {
+    let key = libp2p::identity::Keypair::generate_ed25519();
+    let signed = Signed::new(&key, "porch.property.v1", json!({"kind":"test"}))?;
+    let mut equivalent = signed.clone();
+    equivalent.signature.make_ascii_uppercase();
+    equivalent.public_key.make_ascii_uppercase();
+    assert_eq!(
+        hex::decode(&equivalent.signature)?,
+        hex::decode(&signed.signature)?
+    );
+    assert_eq!(
+        hex::decode(&equivalent.public_key)?,
+        hex::decode(&signed.public_key)?
+    );
+    equivalent.verify("porch.property.v1")?;
+
+    // A genuine byte modification, rather than an encoding-only case change,
+    // must still be rejected by the original verifier.
+    let mut forged = signed.clone();
+    let mut signature = hex::decode(&forged.signature)?;
+    signature[0] ^= 1;
+    forged.signature = hex::encode(signature);
+    assert!(forged.verify("porch.property.v1").is_err());
     Ok(())
 }
 #[test]
