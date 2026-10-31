@@ -3,6 +3,19 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '31 7 * * 1'
+  pull_request:
+    paths:
+      - 'crates/porch-core/**'
+      - 'crates/porch-node/**'
+      - 'Cargo.lock'
+      - '.github/workflows/security.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'crates/porch-core/**'
+      - 'crates/porch-node/**'
+      - 'Cargo.lock'
+      - '.github/workflows/security.yml'
 permissions:
   contents: read
 jobs:
