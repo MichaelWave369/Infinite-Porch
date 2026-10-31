@@ -54,6 +54,10 @@ def main():
             kit=a.field_kit_source.resolve() if a.field_kit_source else package/'field-kit/windows'
             common=['pwsh','-NoProfile','-File',str(kit/'Porch-FieldLab.ps1')]
             params=['-PackageRoot',str(package),'-State',str(kit_state),'-ApiPort',str(kit_api),'-PeerPort',str(kit_peer),'-Environment','NATIVE_HOSTED','-NoMdns']
+            # Preserve the exact daemon startup failure on hosted CI; temporary
+            # field state disappears when this package test exits. Never copy
+            # identity.key, api.token, database files or whole runtime state.
+            setup_failed=False
             try:
                 run_captured([*common,'setup','-Alias','HOSTED WINDOWS',*params],timeout=60)
                 key=(kit_state/'identity.key').read_bytes()
@@ -61,8 +65,29 @@ def main():
                 check('native field setup with spaces preserves identity and protects token',key==(kit_state/'identity.key').read_bytes())
                 run_captured(['pwsh','-NoProfile','-File',str(kit/'firewall-enable-private.ps1'),'-PackageRoot',str(package),'-PeerPort',str(kit_peer),'-DryRun'],timeout=60)
                 check('firewall plan executes without privileged mutation')
+            except (subprocess.CalledProcessError,subprocess.TimeoutExpired):
+                setup_failed=True
+                if os.environ.get('GITHUB_ACTIONS')=='true':
+                    for name in ('field-node.stderr.log','field-node.stdout.log'):
+                        log_path=kit_state/name
+                        if log_path.is_file():
+                            # Keep diagnostics bounded, and redact token-bearing
+                            # lines instead of publishing raw logs or private state.
+                            lines=log_path.read_text(encoding='utf-8',errors='replace').splitlines()[-20:]
+                            safe=[('[REDACTED TOKEN LINE]' if any(word in line.lower()
+                                for word in ('authorization:', 'bearer ', 'api_token=', 'secret=', 'password=')) else line[:500])
+                                for line in lines]
+                            print(f'HOSTED_FIELD_STARTUP_DIAGNOSTIC {name}:',flush=True)
+                            print('\\n'.join(safe),flush=True)
+                raise
             finally:
-                run_captured([*common,'stop',*params],timeout=20)
+                try:
+                    run_captured([*common,'stop',*params],timeout=20)
+                except subprocess.CalledProcessError:
+                    # A crashed child cannot be stopped; report its original
+                    # startup exception rather than masking it with stale PID.
+                    # A stop failure after successful setup still fails CI.
+                    if not setup_failed:raise
         node=TestNode('state',temp,binary,ui=str(package/'ui'))
         try:
             q=node.read('qualification');check('bundled node metadata matches package commit',q['build']['software_version']=='0.1.2' and q['build']['protocol_version']==1 and q['build']['commit']==m['commit'] and q['build']['branch']==m['branch'] and q['build']['source_tree_dirty_at_build']==m['source_tree_dirty_at_packaging'])
