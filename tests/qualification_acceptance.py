@@ -85,17 +85,27 @@ def main():
             # add unrelated wall time). Preserve wall time as an observation.
             scenario=next(s for s in q['payload']['scenarios'] if s['id']=='messaging')
             daemon_ms=q['payload'].get('duration_ms')
+            attempt_ms=scenario['observation'].get('message_attempt_ms')
             measurements['offline_message_cli_wall_ms']=round(duration*1000,3)
             measurements['offline_message_daemon_ms']=daemon_ms
+            measurements['offline_message_attempt_ms']=attempt_ms
             measurements['offline_message_result']=scenario['result']
             print('Offline message probe: '+json.dumps({
                 'cli_wall_ms':measurements['offline_message_cli_wall_ms'],
                 'daemon_duration_ms':daemon_ms,
+                'message_attempt_ms':attempt_ms,
                 'message_result':scenario['result'],
             }),flush=True)
+            # The diagnostic also refreshes peers and probes the local provider.
+            # Only the message attempt carries a five-second timeout. Assert
+            # that bound with 2.5s of hosted-runner scheduling allowance rather
+            # than timing unrelated qualification steps or CLI cold startup.
             check('offline message qualification records bounded failure',
-                  isinstance(daemon_ms,(int,float)) and not isinstance(daemon_ms,bool)
-                  and daemon_ms<9000 and scenario['result']=='FAIL')
+                  scenario['result']=='FAIL'
+                  and isinstance(attempt_ms,(int,float)) and not isinstance(attempt_ms,bool)
+                  and 0<=attempt_ms<7500
+                  and isinstance(daemon_ms,(int,float)) and not isinstance(daemon_ms,bool)
+                  and daemon_ms>=attempt_ms)
         finally:
             for n in reversed(nodes):n.stop()
     receipt={'candidate':'0.1.2','environment':EVIDENCE_CLASS,'topology':EVIDENCE_TOPOLOGY,'model_provider':'explicit mock','physical_evidence':'UNVERIFIED','passed':len(checks),'checks':checks,'performance':measurements,'performance_limitations':'Single debug-build sample; manual discovery, pairing includes a deliberate failed fingerprint check; dispatch includes API, discovery and receipt transport. No physical LAN or model inference performance claim.'}
